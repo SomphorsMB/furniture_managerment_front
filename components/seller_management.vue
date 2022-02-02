@@ -3,12 +3,62 @@
     <div class="seller-management mb-2 text-h4" align="center">
         <h1>Sellers Management</h1>
     </div>
-    <div class="add-btn float-right">
-        <v-btn class="mx-2" fab color="C4C4C4">
-            <v-icon dark>
-                mdi-plus
-            </v-icon>
-        </v-btn>
+    <div class="text-center">
+        <v-dialog v-model="dialog" width="500">
+            <template v-slot:activator="{ on, attrs }">
+                <div class="float-right">
+                    <v-btn class="mx-2" fab color="C4C4C4" v-bind="attrs" v-on="on">
+                        <v-icon dark>
+                            mdi-plus
+                        </v-icon>
+                    </v-btn>
+                </div>
+            </template>
+
+            <v-card>
+                <div align="center" class="grey lighten-3 pa-3">
+                    <h2>
+                        Create a Seller
+                    </h2>
+                </div>
+
+                <v-card-text>
+                    <v-form>
+                        <v-container>
+                            <v-row>
+                                <v-col cols="12" sm="6" class="name">
+                                    <v-text-field v-model="firstName" label="First Name" dense small outlined clearable></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" class="name">
+                                    <v-text-field v-model="lastName" label="Last Name" dense small outlined clearable></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" class="tel">
+                                    <v-text-field v-model="tel" label="Tel" dense small outlined clearable></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" class="address">
+                                    <v-text-field v-model="address" label="Address" dense small outlined clearable></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" class="gender">
+                                    <v-radio-group v-model="gender" row>
+                                        <v-radio label="Male" value="M"></v-radio>
+                                        <v-radio label="Female" value="F"></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-form>
+                </v-card-text>
+
+                <v-divider></v-divider>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" text @click="dialog = false">
+                        Save
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
     <div>
         <v-data-table :headers="headers" :items="sellers" class="table elevation-7">
@@ -18,25 +68,18 @@
                         <td>{{ seller.firstName }}</td>
                         <td>{{ seller.lastName }}</td>
                         <td>{{ seller.gender }}</td>
-                        <td>{{ seller.phone }}</td>
+                        <td> +855 {{ seller.phone }}</td>
                         <td>{{ seller.address }}</td>
                         <td>
-                            <v-icon small color="red">
+                            <v-icon small color="red" class="delete mr-2">
                                 mdi-delete
+                            </v-icon>
+                            <v-icon small color="#00E676" class="edit">
+                                mdi-pencil
                             </v-icon>
                         </td>
                     </tr>
                 </tbody>
-                <v-dialog max-width="500px">
-                    <v-card>
-                        <v-card-title class="text-h5">Are you sure you want to delete this seller?</v-card-title>
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="grey" text>Discard</v-btn>
-                            <v-btn color="blue darken-1" text>Okay</v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
             </template>
         </v-data-table>
     </div>
@@ -48,6 +91,12 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            dialog: false,
+            gender: ['M', 'F'],
+            firstName: '',
+            lastName: '',
+            tel: '',
+            address: '',
             headers: [{
                     text: 'First Name',
                     value: 'firstName'
@@ -79,7 +128,7 @@ export default {
                     firstName: 'Thida',
                     lastName: 'Tep',
                     gender: 'F',
-                    phone: '081 328 389',
+                    phone: '81 328 389',
                     address: 'Phnom Penh'
                 },
                 {
@@ -87,7 +136,7 @@ export default {
                     firstName: 'Seyha',
                     lastName: 'Phai',
                     gender: 'M',
-                    phone: '081 328 389',
+                    phone: '81 328 389',
                     address: 'Battambang'
                 },
                 {
@@ -95,7 +144,7 @@ export default {
                     firstName: 'Pheaktra',
                     lastName: 'Sy',
                     gender: 'F',
-                    phone: '081 328 389',
+                    phone: '81 328 389',
                     address: 'Phnom Penh'
                 },
                 {
@@ -103,7 +152,7 @@ export default {
                     firstName: 'Borith',
                     lastName: 'Thai',
                     gender: 'M',
-                    phone: '081 328 389',
+                    phone: '81 328 389',
                     address: 'Phnom Penh'
                 },
                 {
@@ -111,25 +160,17 @@ export default {
                     firstName: 'Panha',
                     lastName: 'Chay',
                     gender: 'M',
-                    phone: '081 328 389',
+                    phone: '81 328 389',
                     address: 'Phnom Penh'
                 }
             ]
         }
     },
     methods: {
-        // getSeller() {
-        //     axios.get('http://localhost:5000/api/sellers')
-        //         .then((res) => {
-        //             this.sellers = res.data;
-        //         })
-        //         .catch((err) => {
-        //             console.log(err);
-        //         })
-        // }
+
     },
     mounted() {
-        // this.getSeller();
+
     }
 }
 </script>
@@ -141,5 +182,22 @@ export default {
 
 .table {
     margin-top: 100px;
+}
+
+.name {
+    margin-top: 10px;
+}
+
+.tel, .address {
+    margin-top: -25px;
+}
+
+.delete:hover, .edit:hover {
+    cursor: pointer;
+}
+
+.gender {
+    margin-top: -50px;
+    margin-bottom: -30px;
 }
 </style>
