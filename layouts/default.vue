@@ -58,9 +58,7 @@
       </v-btn>
     </v-app-bar>
     <v-main>
-      <v-container>
         <Nuxt />
-      </v-container>
     </v-main>
     <v-navigation-drawer
       v-model="rightDrawer"
@@ -98,9 +96,9 @@ export default {
       fixed: false,
       items: [
         {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
+          icon: 'mdi-home',
+          title: 'Home',
+          to: '/home'
         },
         {
           icon: 'mdi-chart-bubble',
