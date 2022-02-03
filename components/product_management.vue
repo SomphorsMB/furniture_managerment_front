@@ -80,15 +80,34 @@
                         <td>{{ product.unit }}</td>
                         <td>{{ product.price }}</td>
                         <td>
-                            <v-icon small color="red" class="delete mr-2">
+                            <v-icon small color="red" class="delete mr-1" @click="deleteItem">
                                 mdi-delete
                             </v-icon>
-                            <v-icon small color="#00E676" class="edit">
+                            <v-icon small color="#00E676" class="edit mr-1">
                                 mdi-pencil
                             </v-icon>
                         </td>
                     </tr>
                 </tbody>
+                <!--  -->
+                <v-dialog v-model="dialogDelete" max-width="350px">
+                    <v-card>
+                        <div align="center" class="grey lighten-3 pa-3">
+                            <h2>
+                                Delete this product
+                            </h2>
+                        </div>
+                        <div align="center" class="mt-3 mb-3">
+                            <p>Are you sure you want to delete this item?</p>
+                        </div>
+                        <v-card-actions>
+                            <v-btn color="red darken-1" text @click="closeDelete">Discard</v-btn>
+                            <v-spacer></v-spacer>
+                            <v-btn color="blue darken-1" text @click="deleteItemConfirm">Okay</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <!--  -->
             </template>
         </v-data-table>
     </div>
@@ -101,6 +120,7 @@ export default {
     data() {
         return {
             dialog: false,
+            dialogDelete: false,
             name: '',
             categories: ['Table', 'Chair', 'Sofa', 'Bed', 'Dinning table', 'Lamp'],
             brands: ['PAINCA', 'DESIREE', 'BONALDO', 'CATTELAN', 'PEDRO'],
@@ -133,6 +153,10 @@ export default {
                 {
                     text: 'Price',
                     value: 'price',
+                },
+                {
+                    text: 'Discount',
+                    value: 'discount',
                 },
                 {
                     text: 'Action',
@@ -180,7 +204,15 @@ export default {
         }
     },
     methods: {
-
+        closeDelete() {
+            this.dialogDelete = false;
+        },
+        deleteItemConfirm() {
+            this.closeDelete();
+        },
+        deleteItem() {
+            this.dialogDelete = true;
+        },
     },
     mounted() {
 

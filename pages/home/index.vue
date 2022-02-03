@@ -1,23 +1,25 @@
 <template>
 <main>
     <slider />
-    <home-card v-for="n in data" :key="n.name" :data="n" />
-    <v-card-title>
-        <h2 class="mx-auto mt-6">Brading</h2>
-    </v-card-title>
-    <div class=" mx-auto mx-0 px-0">
-        <!-- <product-card v-for="n of 4" :key="n" /> -->
-        <v-row class="mx-10">
-            <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="m in brands" :key="m.title">
-                <v-img width="70%" class="mx-auto" :src="m.logo"></v-img>
-            </v-col>
-        </v-row>
+    <div class="px-16">
+        <home-card v-for="n in data" :key="n.name" :data="n" />
+        <v-card-title>
+            <h2 class="mx-auto mt-6">Branding</h2>
+        </v-card-title>
+        <div class=" mx-auto mx-0 px-0">
+            <!-- <product-card v-for="n of 4" :key="n" /> -->
+            <v-row class="mx-10">
+                <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="m in brands" :key="m.title">
+                    <v-img width="70%" class="mx-auto" :src="m.logo"></v-img>
+                </v-col>
+            </v-row>
+        </div>
+        <v-card-actions>
+            <v-btn class="ma-2 mx-auto rounded-0 py-4 mt-6" width="18%" outlined color="black">
+                View All
+            </v-btn>
+        </v-card-actions>
     </div>
-    <v-card-actions>
-        <v-btn class="ma-2 mx-auto rounded-0 py-4 mt-6" width="18%" outlined color="black">
-            View All
-        </v-btn>
-    </v-card-actions>
 </main>
 </template>
 
@@ -67,6 +69,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

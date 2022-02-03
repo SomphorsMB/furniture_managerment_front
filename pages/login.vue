@@ -12,9 +12,9 @@
               py-6
               rounded-0
             " width="70%">
-                    <v-card-text class="grey--text text-h4 py-0">Elegant</v-card-text>
+                    <v-card-text class="#212121--text text-h4 py-0">Elegant</v-card-text>
                     <v-card-text class="black--text text-h3 py-0 font-weight-black">Furniture</v-card-text>
-                    <v-card-text class="grey--text text-h4 py-0">Modern</v-card-text>
+                    <v-card-text class="#212121--text text-h4 py-0">Modern</v-card-text>
                     <v-card-text class="black--text text-h6 px-2 pb-0">Login to the
                         <strong class="font-weight-black">manage</strong> the product and
                         deliver modern furniture to the
@@ -81,6 +81,10 @@ export default {
 
 <style scoped>
 .right-card {
-    border: 0.2px solid rgba(128, 128, 128, 0.251);
+    border: 0.2px solid rgba(128, 128, 128, 0.524);
+}
+
+.cards {
+    background: rgba(202, 201, 201, 0.469);
 }
 </style>

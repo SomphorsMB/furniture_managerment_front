@@ -1,5 +1,5 @@
 <template>
-    <section>
+    <section class="px-16">
         <v-select v-model="select" :items="itemSelect" color="C4C4C4" item-text="name" dense solo label="Products" class='select'></v-select>
         <product-management v-show="select === 'Products' || select === ''" />
         <seller-management v-show="select === 'Sellers'" />

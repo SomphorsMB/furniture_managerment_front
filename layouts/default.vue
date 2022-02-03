@@ -44,11 +44,9 @@
             </v-btn>
         </v-badge>
     </v-app-bar>
-    <!-- <v-main>
-      <v-container>
+    <v-main color="red">
         <Nuxt />
-      </v-container>
-    </v-main> -->
+    </v-main>
 </v-app>
 </template>
 
@@ -68,7 +66,7 @@ export default {
                 {
                     icon: 'mdi-desk-lamp',
                     title: 'Furniture',
-                    to: '/inspire'
+                    to: '/furniture'
                 },
                 {
                     icon: 'mdi-brightness-percent',
