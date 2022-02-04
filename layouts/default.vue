@@ -2,13 +2,13 @@
 <v-app light>
     <v-navigation-drawer class="grey lighten-1" v-model="drawer" :clipped="clipped" temporary fixed app>
         <v-list>
-            <v-list-content>
+            <!-- <v-list-content> -->
                 <v-list-item-title class="text-center ">
                     <h2 class="accent--text font-weight-medium text-shadow">Elegant</h2>
                     <h4 class="display-1 font-weight-medium text-shadow">FURNITURE</h4>
                     <h2 class="accent--text font-weight-medium text-shadow  mb-2">Modern</h2>
                 </v-list-item-title>
-            </v-list-content>
+            <!-- </v-list-content> -->
         </v-list>
         <hr>
         <v-list>

@@ -37,7 +37,8 @@
                         <v-col cols="12" sm="12" md="12" class="py-0">
                             <v-text-field v-model="password" label="Password" :type="show1 ? 'text' : 'password'" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="passwordRule" @click:append="show1 = !show1" outlined dense></v-text-field>
                         </v-col>
-                        <v-btn to="/home" class="mx-auto font-weight-black white--text grey" width="40%">Login</v-btn>
+                        <v-btn @click="userLogin" class="mx-auto font-weight-black white--text grey" width="40%">Login</v-btn>
+                        <v-btn @click="getSeller" class="mx-auto font-weight-black white--text grey" width="40%">getSeller</v-btn>
                     </v-row>
                 </v-form>
             </v-card>
@@ -47,6 +48,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
     layout: "login",
     data() {
@@ -58,6 +60,21 @@ export default {
             passwordRule: [],
         };
     },
+    methods:{
+        ...mapActions(['login','getSellers']),
+        async userLogin() {
+            const user = {
+                email:this.email,
+                password:this.password
+            }
+            this.login(user);
+
+        },
+        async getSeller(){
+            this.getSellers();
+        }
+
+    },
     watch: {
         password() {
             this.passwordRule = [
@@ -67,7 +84,6 @@ export default {
             ];
         },
         email() {
-            console.log(123);
             this.emailRule = [
                 (value) => !!value || "Email is required.",
                 (value) =>

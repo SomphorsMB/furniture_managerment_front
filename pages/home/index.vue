@@ -27,6 +27,7 @@
 import HomeCard from '~/components/homeCard.vue'
 import slider from '~/components/slider.vue'
 export default {
+    layout: "default",
     components: {
         slider,
         HomeCard
@@ -64,7 +65,17 @@ export default {
                 },
             ]
         }
+    },
+    methods:{
+        // ...mapActions(['getSellers'])
+
+    },
+    mounted(){
+        // this.getSellers();
+        // console.log('hjkhjdjh')
+        
     }
+    
 
 }
 </script>
