@@ -40,13 +40,15 @@
         </v-btn>
         <v-badge class="mr-lg-12 mr-sm-6 mt-3" bordered color="error" :icon="number" overlap>
             <v-btn icon>
-                <v-icon class="mb-3" size="36px">mdi-cart-outline</v-icon>
+                <v-icon class="mb-3" size="36px" @click="dialogCart = true">mdi-cart-outline</v-icon>
             </v-btn>
         </v-badge>
     </v-app-bar>
     <v-main color="red">
         <Nuxt />
     </v-main>
+
+    <product-cart v-if="dialogCart" @close="dialogCart = false" />
 </v-app>
 </template>
 
@@ -55,6 +57,7 @@ export default {
     name: 'DefaultLayout',
     data() {
         return {
+            dialogCart: false,
             clipped: false,
             drawer: false,
             fixed: false,
