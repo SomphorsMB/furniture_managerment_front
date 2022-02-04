@@ -2,13 +2,13 @@
 <v-app light>
     <v-navigation-drawer class="grey lighten-1" v-model="drawer" :clipped="clipped" temporary fixed app>
         <v-list>
-            <v-list-content>
+            <!-- <v-list-content> -->
                 <v-list-item-title class="text-center ">
                     <h2 class="accent--text font-weight-medium text-shadow">Elegant</h2>
                     <h4 class="display-1 font-weight-medium text-shadow">FURNITURE</h4>
                     <h2 class="accent--text font-weight-medium text-shadow  mb-2">Modern</h2>
                 </v-list-item-title>
-            </v-list-content>
+            <!-- </v-list-content> -->
         </v-list>
         <hr>
         <v-list>
@@ -40,13 +40,15 @@
         </v-btn>
         <v-badge class="mr-lg-12 mr-sm-6 mt-3" bordered color="error" :icon="number" overlap>
             <v-btn icon>
-                <v-icon class="mb-3" size="36px">mdi-cart-outline</v-icon>
+                <v-icon class="mb-3" size="36px" @click="dialogCart = true">mdi-cart-outline</v-icon>
             </v-btn>
         </v-badge>
     </v-app-bar>
     <v-main color="red">
         <Nuxt />
     </v-main>
+
+    <product-cart v-if="dialogCart" @close="dialogCart = false" />
 </v-app>
 </template>
 
@@ -55,6 +57,7 @@ export default {
     name: 'DefaultLayout',
     data() {
         return {
+            dialogCart: false,
             clipped: false,
             drawer: false,
             fixed: false,

@@ -8,7 +8,8 @@
     <filter-search />
     <v-row>
         <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="m in 12" :key="m">
-            <card />
+            <!-- <card /> -->
+            <product-card />
         </v-col>
     </v-row>
     <div class="text-center mt-4">
@@ -20,11 +21,13 @@
 <script>
 import card from '~/components/card.vue'
 import filter_search from '~/components/filter_search.vue';
+import ProductCard from '../components/productCard.vue';
 
 export default {
     components: {
         'card': card,
-        'filter-search': filter_search
+        'filter-search': filter_search,
+        ProductCard
     },
     data: () => ({
         page: 1,
