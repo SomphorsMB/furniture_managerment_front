@@ -69,7 +69,7 @@
                       <v-card-subtitle class="px-0 pt-0">{{ product.productDetail_rawMaterial }}</v-card-subtitle>
                       <v-card-title class="pb-0 px-0 pt-0 black--text">Product source</v-card-title>
                       <v-divider></v-divider>
-                      <v-card-content class="px-0 pt-0 d-flex">
+                      <v-card-text class="px-0 pt-0 d-flex">
                         <v-card-text class="pa-0 company-info">
                           <v-card-subtitle class="pl-0">
                             <span class="pa-0 black--text text-h7 font-weight-bold">Company:</span>
@@ -84,7 +84,7 @@
                         <v-img :src="'http://localhost:5000/api/product-details/image/'+product.supplier_logo" width="35%"></v-img>
 
                         </v-card-text>
-                      </v-card-content>
+                      </v-card-text>
                   </v-col>
               </v-row>
             
