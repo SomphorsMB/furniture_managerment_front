@@ -58,6 +58,7 @@ export default {
             show1: false,
             emailRule: [],
             passwordRule: [],
+            access_token: ''
         };
     },
     methods:{
