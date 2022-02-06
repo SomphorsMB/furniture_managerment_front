@@ -33,7 +33,7 @@
                 </v-card-text>
                 <v-card-actions class="action">
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="dialog = false">
+                    <v-btn color="primary" text @click="createCategory">
                         Save
                     </v-btn>
                 </v-card-actions>
@@ -132,9 +132,23 @@ export default {
         deleteItem() {
             this.dialogDelete = true;
         },
+        createCategory(){
+            const category = {name:this.name}
+            this.$axios.$post('/categories',category).then(res=>{
+                this.dialog = false;
+                this.name = '';
+                console.log(res)
+            }).catch(error=>{
+                console.log(error)
+            });
+        }
     },
     mounted() {
-
+        this.$axios.$get('/categories').then(res=>{
+                console.log(res)
+            }).catch(error=>{
+                console.log(error)
+            });
     }
 }
 </script>

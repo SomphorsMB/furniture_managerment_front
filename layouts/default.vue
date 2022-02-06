@@ -2,34 +2,41 @@
 <v-app light>
     <v-navigation-drawer class="grey lighten-1" v-model="drawer" :clipped="clipped" temporary fixed app>
         <v-list>
-            <!-- <v-list-content> -->
                 <v-list-item-title class="text-center ">
                     <h2 class="accent--text font-weight-medium text-shadow">Elegant</h2>
                     <h4 class="display-1 font-weight-medium text-shadow">FURNITURE</h4>
                     <h2 class="accent--text font-weight-medium text-shadow  mb-2">Modern</h2>
                 </v-list-item-title>
-            <!-- </v-list-content> -->
         </v-list>
         <hr>
         <v-list>
-            <v-list-item v-for="(item, i) in sellerNav" :key="i" :to="item.to" router exact>
+            <v-list-item v-for="(sellerMenu, index) in sellerNav" :key="index" :to="sellerMenu.to" router exact>
                 <v-list-item-action>
-                    <v-icon>{{ item.icon }}</v-icon>
+                    <v-icon>{{ sellerMenu.icon }}</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title v-text="item.title" />
+                    <v-list-item-title v-text="sellerMenu.title" />
                 </v-list-item-content>
             </v-list-item>
             <hr>
-            <v-list-item v-for="(item, i) in managerNav" :key="i" :to="item.to" router exact>
+            <v-list-item v-for="(managerMenu, index) in managerNav" :key="index" :to="managerMenu.to" router exact>
                 <v-list-item-action>
-                    <v-icon>{{ item.icon }}</v-icon>
+                    <v-icon>{{ managerMenu.icon }}</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title v-text="item.title" />
+                    <v-list-item-title v-text="managerMenu.title" />
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item to='/login' router exact>
+                <v-list-item-action>
+                    <v-icon>mdi-logout</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>Log out</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
         </v-list>
+
     </v-navigation-drawer>
     <v-app-bar class="grey lighten-1" fixed app>
         <v-icon size="36px" @click.stop="drawer = !drawer" class="ml-lg-12 ml-sm-6">mdi-menu</v-icon>
@@ -54,6 +61,7 @@
 
 <script>
 export default {
+    // layout: "default",
     name: 'DefaultLayout',
     data() {
         return {

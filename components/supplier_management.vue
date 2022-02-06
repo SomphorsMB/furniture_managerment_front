@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div class="seller-management mb-2 text-h4" align="center">
+    <div class="supplier-management mb-2 text-h4" align="center">
         <h1>Suppliers Management</h1>
     </div>
     <div class="text-center">
@@ -34,7 +34,7 @@
                                     <label for="file-input">
                                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV9ef4mu_ntPiqBjBlsGQNRNDLBKNILEnBoBP1rJlD_0P3cQ_f3DbGdeR-i5PAffS7oo8&usqp=CAU" width="40px" height="40px"/>
                                     </label>
-                                    <input type="file" show-size counter multiple label="File input" id="file-input" class="file-input"/>
+                                    <input type="file" @change="selectLogo" show-size counter multiple label="File input" id="file-input" class="file-input"/>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -43,7 +43,7 @@
                 <v-divider></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="dialog = false">
+                    <v-btn color="primary" text @click="createSupplier">
                         Save
                     </v-btn>
                 </v-card-actions>
@@ -102,6 +102,7 @@ export default {
             dialogDelete: false,
             brand: '',
             country: '',
+            logo:'',
             headers: [{
                     text: 'Logo',
                     value: 'logo',
@@ -157,15 +158,37 @@ export default {
         deleteItem() {
             this.dialogDelete = true;
         },
+        selectLogo(event){
+            this.logo = event.target.files[0]
+        },
+        createSupplier(){
+            const supplier = new FormData();
+            supplier.append('brand',this.brand);
+            supplier.append('country',this.country);
+            supplier.append('logo',this.logo);
+            this.$axios.$post('/product-suppliers',supplier).then(res=>{
+                this.dialog = false;
+                this.brand = '';
+                this.country = '';
+                this.logo = '';
+                console.log(res)
+            }).catch(error=>{
+                console.log(error)
+            });
+        }
     },
     mounted() {
-
+        this.$axios.$get('/product-suppliers').then(res=>{
+                console.log(res.data)
+            }).catch(error=>{
+                console.log(error)
+            });
     }
 }
 </script>
 
 <style scoped>
-.seller-management {
+.supplier-management {
     text-shadow: 0px 2px 4px #3B3B3B;
 }
 

@@ -53,7 +53,7 @@
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="dialog = false">
+                    <v-btn color="primary" text @click="createSeller">
                         Save
                     </v-btn>
                 </v-card-actions>
@@ -112,7 +112,8 @@ export default {
         return {
             dialog: false,
             dialogDelete: false,
-            gender: ['M', 'F'],
+            genders: ['M', 'F'],
+            gender:'',
             firstName: '',
             lastName: '',
             tel: '',
@@ -196,9 +197,34 @@ export default {
         deleteItem() {
             this.dialogDelete = true;
         },
+        createSeller(){
+            const seller = {
+                firstName:this.firstName,
+                lastName:this.lastName,
+                gender:this.gender,
+                phone:this.tel,
+                address:this.address
+            }
+            console.log(seller)
+            this.$axios.$post('/sellers',seller).then(res=>{
+                this.dialog = false;
+                this.firstName = '';
+                this.lastName = '';
+                this.address = '';
+                this.tel = '';
+                this.gender = '';
+                console.log(res)
+            }).catch(error=>{
+                console.log(error)
+            });
+        }
     },
     mounted() {
-
+        this.$axios.$get('/sellers').then(res=>{
+                console.log(res)
+            }).catch(error=>{
+                console.log(error)
+            });
     }
 }
 </script>

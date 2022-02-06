@@ -24,22 +24,22 @@
                                     <v-text-field v-model="name" label="Name" dense small outlined clearable></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="6" class="category">
-                                    <v-select :items="categories" label="Category" dense small outlined clearable></v-select>
+                                    <v-select :items="categories" item-text="name" v-model="category" label="Category" return-object filled dense small outlined clearable></v-select>
                                 </v-col>
                                 <v-col cols="12" sm="6" class="brand">
-                                    <v-select :items="brands" label="Brand" dense small outlined clearable></v-select>
+                                    <v-select :items="brands" item-text="brand" v-model="brand" label="Brand" return-object dense small outlined clearable></v-select>
                                 </v-col>
                                 <v-col cols="12" sm="6" class="size">
-                                    <v-select :items="sizes" label="Size" dense small outlined clearable></v-select>
+                                    <v-select :items="sizes" v-model="size" label="Size" dense small outlined clearable></v-select>
                                 </v-col>
                                 <v-col cols="12" sm="6" class="unit">
                                     <v-text-field v-model="unit" label="Unit" dense small outlined clearable></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="6" class="color">
-                                    <v-select :items="colors" label="Color" dense small outlined clearable></v-select>
+                                    <v-select :items="colors" label="Color" v-model="color" dense small outlined clearable></v-select>
                                 </v-col>
                                 <v-col cols="12" class="text-area">
-                                    <v-textarea outlined name="input-7-4" label="Raw Materials" value=""></v-textarea>
+                                    <v-textarea outlined name="input-7-4" v-model="rawMaterial" label="Raw Materials" value=""></v-textarea>
                                 </v-col>
                                 <v-col cols="12" sm="10" class="price">
                                     <v-text-field v-model="price" label="Price: XXX$" dense small outlined clearable></v-text-field>
@@ -48,7 +48,7 @@
                                     <label for="file-input">
                                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV9ef4mu_ntPiqBjBlsGQNRNDLBKNILEnBoBP1rJlD_0P3cQ_f3DbGdeR-i5PAffS7oo8&usqp=CAU" width="40px" height="40px" />
                                     </label>
-                                    <input type="file" show-size counter multiple label="File input" id="file-input" class="file-input" />
+                                    <input type="file" show-size counter multiple label="File input" id="file-input" class="file-input" @change="selectImage"/>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -57,7 +57,7 @@
                 <v-devider class="devider"></v-devider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="dialog = false" class="save">
+                    <v-btn color="primary" text @click="createProduct" class="save">
                         Save
                     </v-btn>
                 </v-card-actions>
@@ -180,13 +180,21 @@ export default {
             dialogAdd: false,
             dialogDiscount: false,
             name: "",
+            brand:null,
+            size:"",
+            category:null,
+            color:"",
+            unit:0,
+            rawMaterial:"",
+            price:0,
+            avatar:"",
             discount: "0%",
             amount: 0,
             date: format(parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
             start_date: false,
             end_date: false,
-            categories: ["Table", "Chair", "Sofa", "Bed", "Dinning table", "Lamp"],
-            brands: ["PAINCA", "DESIREE", "BONALDO", "CATTELAN", "PEDRO"],
+            categories: [],
+            brands: [],
             sizes: ["Small", "Medium", "Large"],
             colors: [
                 "Red",
@@ -205,8 +213,6 @@ export default {
                 "Orange",
                 "Purple",
             ],
-            unit: 0,
-            price: "",
             headers: [{
                     text: "Furniture",
                     value: "furniture",
@@ -320,8 +326,69 @@ export default {
         discountItem() {
             this.dialogDiscount = true;
         },
+
+        selectImage(event){
+            this.avatar = event.target.files[0]
+        },
+        createProduct(){
+            const product = {
+                name:this.name,
+                category:this.category.id,
+            }      
+            console.log(product);
+            this.$axios.$post('/products',product).then(product=>{
+                this.dialog = false;
+                console.log(product)
+                const productDetail =  new FormData();
+                productDetail.append("supplier",this.brand.id);
+                productDetail.append("product",product.productId);
+                productDetail.append("color",this.color);
+                productDetail.append("size",this.size);
+                productDetail.append("price",parseInt(this.price));
+                productDetail.append("unit",parseInt(this.unit));
+                productDetail.append("rawMaterial",this.rawMaterial);
+                productDetail.append("avatar",this.avatar);
+                this.$axios.$post('/product-details',productDetail).then(res=>{
+                    this.name = '';
+                    this.brand = null;
+                    this.rawMaterial = '';
+                    this.price = 0;
+                    this.avatar = '';
+                    this.unit = '';
+                    this.size = '';
+                    this.color = '';
+                    this.category =  null;
+                    console.log(res)
+                }).catch(error=>{
+                    console.log(error)
+                });
+            }).catch(error=>{
+                console.log(error)
+            });
+        },
+        getCategories(){
+            this.$axios.$get('/categories').then(categories=>{
+                this.categories = categories
+                console.log(this.categories)
+            })
+
+        },
+        getBrands(){
+            this.$axios.$get('/product-suppliers').then(brands=>{
+                this.brands = brands.data
+                console.log(this.brands)
+            })
+        }
     },
-    mounted() {},
+    mounted() {
+        this.getCategories();
+        this.getBrands();
+        this.$axios.$get('/products').then(res=>{
+                console.log(res)
+            }).catch(error=>{
+                console.log(error)
+            });
+    },
 };
 </script>
 

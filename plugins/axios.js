@@ -1,8 +1,8 @@
 export default function ({ store, app: { $axios }, redirect }) {
     $axios.onRequest((config) => {
-      console.log(store.getters['getToken'])
-      if (store.getters['getToken']) {
-        config.headers.Authorization = 'Bearer ' + store.getters['getToken']
+      const token = window.localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = 'Bearer ' + token
       }
       return config
     })

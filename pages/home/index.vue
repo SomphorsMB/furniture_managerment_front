@@ -67,12 +67,18 @@ export default {
         }
     },
     methods:{
+        // getSeller(){
         // ...mapActions(['getSellers'])
+        // this.getSellers();
+
+
+        // }
 
     },
     mounted(){
-        // this.getSellers();
-        // console.log('hjkhjdjh')
+        // this.$axios.$get('sellers').then(res=>{
+        //     console.log(res)
+        // })
         
     }
     

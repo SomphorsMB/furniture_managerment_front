@@ -38,7 +38,7 @@
                             <v-text-field v-model="password" label="Password" :type="show1 ? 'text' : 'password'" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="passwordRule" @click:append="show1 = !show1" outlined dense></v-text-field>
                         </v-col>
                         <v-btn @click="userLogin" class="mx-auto font-weight-black white--text grey" width="40%">Login</v-btn>
-                        <v-btn @click="getSeller" class="mx-auto font-weight-black white--text grey" width="40%">getSeller</v-btn>
+                        <!-- <v-btn @click="getSeller" class="mx-auto font-weight-black white--text grey" width="40%">getSeller</v-btn> -->
                     </v-row>
                 </v-form>
             </v-card>
@@ -70,9 +70,9 @@ export default {
             this.login(user);
 
         },
-        async getSeller(){
-            this.getSellers();
-        }
+        // async getSeller(){
+        //     this.getSellers();
+        // }
 
     },
     watch: {

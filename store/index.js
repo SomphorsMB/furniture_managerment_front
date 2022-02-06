@@ -18,9 +18,9 @@ export const AUTH_MUTATIONS = {
       state.email = email
     },
   
-    async [AUTH_MUTATIONS.SET_PAYLOAD] (state, access_token, refresh_token = null ) {
+    [AUTH_MUTATIONS.SET_PAYLOAD] (state, access_token, refresh_token = null ) {
       state.access_token = access_token
-      console.log('Payload', access_token)
+      // console.log('Payload', access_token)
       if (refresh_token) {
         state.refresh_token = refresh_token
       }
@@ -41,8 +41,10 @@ export const AUTH_MUTATIONS = {
         '/auth/login', 
         { email, password }
       ).then(res => {
+        window.localStorage.setItem('token',res.data.access_token);
         commit(AUTH_MUTATIONS.SET_USER, res.data.user)
         commit(AUTH_MUTATIONS.SET_PAYLOAD, res.data.access_token, null)
+        this.$router.push('/home')
       })
       
       
@@ -96,7 +98,7 @@ export const AUTH_MUTATIONS = {
       return state.access_token && state.access_token !== ''
     },
     getToken(state){
-      console.log(state.access_token)
+      // console.log(state.access_token)
 
       return state.access_token;
     }
