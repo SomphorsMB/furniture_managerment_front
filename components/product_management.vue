@@ -70,14 +70,14 @@
                 <tbody>
                     <tr v-for="product in items" :key="product.id">
                         <td>
-                            <img width="40px" height="40px" src="https://media.istockphoto.com/photos/modern-designer-chair-on-white-background-texture-chair-picture-id899418544?b=1&k=20&m=899418544&s=170667a&w=0&h=KKBpKvOtEXd2yVmRbQ6zYOnJmQ00Q6E-ks18F8_yrFQ=" />
+                            <img width="40px" height="40px" :src="'http://localhost:5000/api/product-details/image/'+ product.detail[0].avatar" />
                         </td>
                         <td>{{ product.name }}</td>
-                        <td>{{ product.brand }}</td>
-                        <td>{{ product.country }}</td>
-                        <td>{{ product.unit }}</td>
-                        <td>{{ product.price }}</td>
-                        <td>{{ product.discount }}</td>
+                        <td>{{ product.detail[0].supplier[0].brand}}</td>
+                        <td>{{ product.detail[0].supplier[0].country }}</td>
+                        <td>{{ product.detail[0].unit }}</td>
+                        <td>{{ product.detail[0].price }}$</td>
+                        <td>0%</td>
                         <td>
                             <v-icon small color="red" class="delete mr-1" @click="deleteItem">
                                 mdi-delete
@@ -248,47 +248,7 @@ export default {
                     sortable: false,
                 },
             ],
-            products: [{
-                    name: "Chair",
-                    brand: "Benaldo",
-                    country: "Italy",
-                    unit: 2,
-                    price: "150$",
-                    discount: "20%",
-                },
-                {
-                    name: "Chair",
-                    brand: "Benaldo",
-                    country: "Italy",
-                    unit: 2,
-                    price: "150$",
-                    discount: "40%",
-                },
-                {
-                    name: "Chair",
-                    brand: "Benaldo",
-                    country: "Italy",
-                    unit: 2,
-                    price: "150$",
-                    discount: "15%",
-                },
-                {
-                    name: "Chair",
-                    brand: "Benaldo",
-                    country: "Italy",
-                    unit: 2,
-                    price: "150$",
-                    discount: "No discount",
-                },
-                {
-                    name: "Chair",
-                    brand: "Benaldo",
-                    country: "Italy",
-                    unit: 2,
-                    price: "150$",
-                    discount: "99%",
-                },
-            ],
+            products: [],
         };
     },
     computed: {
@@ -302,6 +262,7 @@ export default {
             this.dialogAdd = false;
             this.dialogDiscount = false;
         },
+
 
         deleteItemConfirm() {
             this.closeDelete();
@@ -338,7 +299,6 @@ export default {
             console.log(product);
             this.$axios.$post('/products',product).then(product=>{
                 this.dialog = false;
-                console.log(product)
                 const productDetail =  new FormData();
                 productDetail.append("supplier",this.brand.id);
                 productDetail.append("product",product.productId);
@@ -384,7 +344,8 @@ export default {
         this.getCategories();
         this.getBrands();
         this.$axios.$get('/products').then(res=>{
-                console.log(res)
+                console.log(res.data)
+                this.products = res.data
             }).catch(error=>{
                 console.log(error)
             });
