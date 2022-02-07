@@ -80,7 +80,7 @@ export default {
   build: {
   },
 
-  server: {
-    port: 8000
-  }
+  // server: {
+  //   port: 8000
+  // }
 }
