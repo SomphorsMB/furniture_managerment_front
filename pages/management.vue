@@ -15,6 +15,7 @@ import category_management from '../components/category_management.vue';
 import supplier_management from '../components/supplier_management.vue';
 export default {
     name: 'ManagementPage',
+    layout: "default",
     components: {
         'seller-management': seller_management,
         'product-management': product_management,

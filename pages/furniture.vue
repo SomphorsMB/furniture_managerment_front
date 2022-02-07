@@ -26,6 +26,7 @@ import filter_search from '~/components/filter_search.vue';
 import ProductCard from '../components/productCard.vue';
 
 export default {
+    layout: "default",
     components: {
         'card': card,
         'filter-search': filter_search,
@@ -33,7 +34,6 @@ export default {
     },
     data: () => ({
         page: 1,
-        products:[]
     }),
     computed:
         mapState(['products']),

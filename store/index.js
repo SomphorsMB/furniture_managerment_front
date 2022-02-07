@@ -10,7 +10,8 @@ export const AUTH_MUTATIONS = {
     refresh_token: null, // JWT refresh token
     id: null, // user id
     email: null, // user email address
-    products: []
+    products: [],
+    productDiscount: []
   })
   
   export const mutations = {
@@ -38,6 +39,12 @@ export const AUTH_MUTATIONS = {
     addproducts(state, products){
       state.products = products
       console.log(state.products)
+
+    },
+    addproductDiscount(state, productDiscount){
+      state.productDiscount = productDiscount;
+      console.log(state.productDiscount)
+
     }
   }
   
@@ -102,6 +109,14 @@ export const AUTH_MUTATIONS = {
       });
       // commit('addproducts', allProducts);
 
+    },
+
+    async getAllProductDiscount({commit, state}){
+        await this.$axios.$get('/products/product-discount').then(res=>{
+          commit('addproductDiscount', [...res.data])
+      }).catch(error=>{
+          console.log(error)
+      });
     },
   
     // logout the user

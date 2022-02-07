@@ -24,8 +24,9 @@
     <v-card-subtitle class="pb-0 red--text" v-else> Out Stock </v-card-subtitle>
 
     <v-card-actions>
-        <h4 class="pl-2 orange--text">{{ product.productDetail_price }} $</h4>
-        <h4 class=" pl-1 text-decoration-line-through orange--text" v-if="status=='Product Discount'">123$</h4>
+        <h4 class="pl-2 orange--text"  v-if="product.discount_discount !== null">$ {{ product.productDetail_price-product.productDetail_price*product.discount_discount/100 }}</h4>
+        <h4 class="pl-2 orange--text"  v-if="product.discount_discount == null">$ {{ product.productDetail_price }}</h4>
+        <h4 class=" pl-1 text-decoration-line-through orange--text" v-else>$ {{ product.productDetail_price }}</h4>
 
         <v-spacer></v-spacer>
 
@@ -49,7 +50,7 @@
 
 <script>
 export default {
-    props: ['status', 'product', 'productName'],
+    props: ['product', 'productName'],
     data() {
         return {
             min: 1,
