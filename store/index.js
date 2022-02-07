@@ -46,6 +46,18 @@ export const AUTH_MUTATIONS = {
     addproducts(state, products){
       state.products = products
       console.log(state.products)
+    },
+    addcategories(state,categories){
+      state.categories = categories
+    },
+    addbrands(state,brands){
+      state.brands = brands
+    },
+    addsellers(state,sellers){
+      state.sellers = sellers;
+    },
+    addrole(state,role){
+      state.role = role;
 
     },
     addproductDiscount(state, productDiscount){
