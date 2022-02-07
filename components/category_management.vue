@@ -33,7 +33,7 @@
                 </v-card-text>
                 <v-card-actions class="action">
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="createCategory">
+                    <v-btn color="primary" text @click="create">
                         Save
                     </v-btn>
                 </v-card-actions>
@@ -83,6 +83,7 @@
 
 <script>
 import axios from 'axios';
+import {mapActions,mapGetters, mapState} from 'vuex';
 export default {
     data() {
         return {
@@ -100,10 +101,13 @@ export default {
                     sortable: false
                 },
             ],
-            categories: []
         }
     },
+    computed:{
+        ...mapState(['categories']),
+    },
     methods: {
+        ...mapActions(['createCategory','getAllCategories']),
         closeDelete() {
             this.dialogDelete = false;
         },
@@ -113,24 +117,15 @@ export default {
         deleteItem() {
             this.dialogDelete = true;
         },
-        createCategory(){
+        create(){
             const category = {name:this.name}
-            this.$axios.$post('/categories',category).then(res=>{
-                this.dialog = false;
-                this.name = '';
-                console.log(res)
-            }).catch(error=>{
-                console.log(error)
-            });
+            this.createCategory(category);
+            this.dialog = false;
+            this.name="";
         }
     },
     mounted() {
-        this.$axios.$get('/categories').then(res=>{
-                console.log(res)
-                this.categories = res;
-            }).catch(error=>{
-                console.log(error)
-            });
+        this.getAllCategories();
     }
 }
 </script>

@@ -71,9 +71,6 @@ export default {
             this.login(user);
 
         },
-        // async getSeller(){
-        //     this.getSellers();
-        // }
 
     },
     watch: {

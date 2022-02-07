@@ -18,24 +18,44 @@
                     <v-list-item-title v-text="sellerMenu.title" />
                 </v-list-item-content>
             </v-list-item>
+        </v-list>
+        <v-list v-if="role==='manager'">
             <hr>
             <v-list-item v-for="(managerMenu, index) in managerNav" :key="index" :to="managerMenu.to" router exact>
-                <v-list-item-action>
-                    <v-icon>{{ managerMenu.icon }}</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title v-text="managerMenu.title" />
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item to='/login' router exact>
-                <v-list-item-action>
-                    <v-icon>mdi-logout</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>Log out</v-list-item-title>
-                </v-list-item-content>
+            <v-list-item-action>
+                <v-icon>{{ managerMenu.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+                <v-list-item-title v-text="managerMenu.title" />
+            </v-list-item-content>
             </v-list-item>
         </v-list>
+        <hr>
+        <v-list>
+            <v-list-item @click="userLogout" router exact>
+            <v-list-item-action>
+                <v-icon>mdi-logout</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+                <v-list-item-title>Log out</v-list-item-title>
+            </v-list-item-content>
+            </v-list-item>
+        </v-list>
+        <v-dialog v-model="dialogLogout" max-width="350px">
+            <v-card>
+                <div align="center" class="grey lighten-3 pa-3">
+                    <h2>Logout Account</h2>
+                </div>
+                <div align="center" class="mt-3 mb-3">
+                    <p>Are you sure you want to logout?</p>
+                </div>
+                <v-card-actions>
+                    <v-btn color="red darken-1" text @click="closeDialogLogout">No</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="logoutConfirm">Yes</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
 
     </v-navigation-drawer>
     <v-app-bar class="grey lighten-1" fixed app>
@@ -60,6 +80,7 @@
 </template>
 
 <script>
+import {mapActions,mapState} from 'vuex';
 export default {
     // layout: "default",
     name: 'DefaultLayout',
@@ -97,8 +118,28 @@ export default {
                 }
             ],
             miniVariant: false,
-            number: "28"
+            number: "28",
+            dialogLogout:false,
         }
+    },
+    computed:{
+        ...mapState(['role'])
+    },
+    methods:{
+        ...mapActions(['getUserRole','logout']),
+        userLogout(){
+            this.dialogLogout = true;
+        },
+        closeDialogLogout(){
+            this.dialogLogout = false;
+        },
+        logoutConfirm(){
+            this.dialogLogout = false;
+            this.logout();
+        }
+    },
+    mounted(){
+        this.getUserRole();
     }
 }
 </script>
