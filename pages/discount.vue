@@ -7,9 +7,9 @@
     </div>
     <filter-search />
     <v-row>
-        <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="product in products" :key="product">
+        <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="product in productDiscount" :key="product">
             <!-- <card /> -->
-            <product-card  v-if="product.discount_discount !==null" :product="product" />
+            <product-card :product="product" />
         </v-col>
     </v-row>
     <div class="text-center mt-4">
@@ -24,6 +24,7 @@ import filter_search from '../components/filter_search.vue';
 import ProductCard from '../components/productCard.vue';
 import { mapActions, mapGetters, mapState } from 'vuex';
 export default {
+    layout: "default",
     components: {
         'card': card,
         'filter-search': filter_search,
@@ -43,12 +44,12 @@ export default {
         size: null,
     }),
     computed:
-        mapState(['products']),
+        mapState(['productDiscount']),
     methods: {
-        ...mapActions(['getAllProduct']),
+        ...mapActions(['getAllProductDiscount']),
     },
     mounted(){
-        this.getAllProduct();
+        this.getAllProductDiscount();
 
     }
 }

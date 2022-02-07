@@ -14,7 +14,9 @@ export const AUTH_MUTATIONS = {
     products: [],
     categories:[],
     brands:[],
-    sellers:[]
+    sellers:[],
+    products: [],
+    productDiscount: []
   })
   
   export const mutations = {
@@ -44,18 +46,12 @@ export const AUTH_MUTATIONS = {
     addproducts(state, products){
       state.products = products
       console.log(state.products)
+
     },
-    addcategories(state,categories){
-      state.categories = categories
-    },
-    addbrands(state,brands){
-      state.brands = brands
-    },
-    addsellers(state,sellers){
-      state.sellers = sellers;
-    },
-    addrole(state,role){
-      state.role = role;
+    addproductDiscount(state, productDiscount){
+      state.productDiscount = productDiscount;
+      console.log(state.productDiscount)
+
     }
   }
   
@@ -192,7 +188,14 @@ export const AUTH_MUTATIONS = {
       }).catch(error=>{
           console.log(error)
       });
+    },
 
+    async getAllProductDiscount({commit, state}){
+        await this.$axios.$get('/products/product-discount').then(res=>{
+          commit('addproductDiscount', [...res.data])
+      }).catch(error=>{
+          console.log(error)
+      });
     },
   
     // logout the user

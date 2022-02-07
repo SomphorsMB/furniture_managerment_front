@@ -139,7 +139,13 @@ export default {
         },
         selectLogo(event){
             this.logo = event.target.files[0]
-            console.log(this.logo)
+        },
+        getSupplier(){
+            this.$axios.$get('/product-suppliers').then(res=>{
+                this.suppliers = res.data;
+            }).catch(error=>{
+                console.log(error)
+            });
         },
         create(){
             const supplier = new FormData();

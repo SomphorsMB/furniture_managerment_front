@@ -68,7 +68,7 @@
                         <td>{{ seller.firstName }}</td>
                         <td>{{ seller.lastName }}</td>
                         <td>{{ seller.gender }}</td>
-                        <td> +855 {{ seller.phone }}</td>
+                        <td>{{ seller.phone }}</td>
                         <td>{{ seller.address }}</td>
                         <td>
                             <v-icon small color="red" class="delete mr-2" @click="deleteItem">
@@ -156,6 +156,14 @@ export default {
         },
         deleteItemConfirm() {
             this.closeDelete();
+        },
+        getSellers(){
+            this.$axios.$get('/sellers').then(res=>{
+                console.log(res)
+                this.sellers = res;
+            }).catch(error=>{
+                console.log(error)
+            });
         },
         deleteItem() {
             this.dialogDelete = true;

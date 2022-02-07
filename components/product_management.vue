@@ -54,7 +54,7 @@
                         </v-container>
                     </v-form>
                 </v-card-text>
-                <v-devider class="devider"></v-devider>
+                <v-divider class="devider"></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="primary" text @click="create" class="save">
@@ -77,7 +77,7 @@
                         <td>{{ product.supplier_country }}</td>
                         <td>{{ product.productDetail_unit }}</td>
                         <td>{{ product.productDetail_price }}$</td>
-                        
+
                         <td v-if="product.discount_discount == null">0%</td>
                         <td v-else>{{product.discount_discount}}%</td>
                         <td>

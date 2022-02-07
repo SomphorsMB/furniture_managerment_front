@@ -5,6 +5,7 @@
         <seller-management v-show="select === 'Sellers'" />
         <category-management v-show="select === 'Categories'" />
         <supplier-management v-show="select === 'Suppliers'" />
+        <product-sold v-show="select == 'ProductSold'" />
     </section>
 </template>
 
@@ -13,18 +14,22 @@ import seller_management from '../components/seller_management.vue';
 import product_management from '../components/product_management.vue';
 import category_management from '../components/category_management.vue';
 import supplier_management from '../components/supplier_management.vue';
+import productSold_management from '../components/productSold_management.vue';
+
 export default {
     name: 'ManagementPage',
+    layout: "default",
     components: {
         'seller-management': seller_management,
         'product-management': product_management,
         'category-management': category_management,
-        'supplier-management': supplier_management
+        'supplier-management': supplier_management,
+        'product-sold': productSold_management
     },
     data() {
         return {
             select: "",
-            itemSelect: ["Products", "Sellers", "Categories", "Suppliers"],
+            itemSelect: ["Products", "Sellers", "Categories", "Suppliers", "ProductSold"],
         };
     }
 }
