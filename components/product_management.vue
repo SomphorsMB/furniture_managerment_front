@@ -70,25 +70,27 @@
                 <tbody>
                     <tr v-for="product in items" :key="product.id">
                         <td>
-                            <img width="40px" height="40px" :src="'http://localhost:5000/api/product-details/image/'+ product.detail[0].avatar" />
+                            <img width="40px" height="40px" :src="'http://localhost:5000/api/product-details/image/'+ product.productDetail_avatar" />
                         </td>
-                        <td>{{ product.name }}</td>
-                        <td>{{ product.detail[0].supplier[0].brand}}</td>
-                        <td>{{ product.detail[0].supplier[0].country }}</td>
-                        <td>{{ product.detail[0].unit }}</td>
-                        <td>{{ product.detail[0].price }}$</td>
-                        <td>0%</td>
+                        <td>{{ product.product_name }}</td>
+                        <td>{{ product.supplier_brand}}</td>
+                        <td>{{ product.supplier_country }}</td>
+                        <td>{{ product.productDetail_unit }}</td>
+                        <td>{{ product.productDetail_price }}$</td>
+                        
+                        <td v-if="product.discount_discount == null">0%</td>
+                        <td v-else>{{product.discount_discount}}%</td>
                         <td>
-                            <v-icon small color="red" class="delete mr-1" @click="deleteItem">
+                            <v-icon small color="red" class="delete mr-1" @click="deleteItem(product.product_id)">
                                 mdi-delete
                             </v-icon>
                             <v-icon small color="#00E676" class="edit mr-1">
                                 mdi-pencil
                             </v-icon>
-                            <v-icon small color="#00E676" class="edit" @click="addAmount">
+                            <v-icon small color="#00E676" class="edit" @click="addAmount(product.productDetail_id)">
                                 mdi-plus
                             </v-icon>
-                            <v-icon small color="#00E676" class="edit" @click="discountItem">
+                            <v-icon small color="#00E676" class="edit" @click="discountItem(product.productDetail_id)">
                                 mdi-percent
                             </v-icon>
                         </td>
@@ -143,7 +145,7 @@
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-text-field :value="computedDateFormattedMomentjs" dense small outlined clearable label="Start Date" v-bind="attrs" v-on="on"></v-text-field>
                                     </template>
-                                    <v-date-picker v-model="date" @change="start_date = false"></v-date-picker>
+                                    <v-date-picker v-model="start_at" @change="start_date = false"></v-date-picker>
                                 </v-menu>
                             </v-col>
                             <v-col cols="12" class="end_date">
@@ -151,7 +153,7 @@
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-text-field :value="computedDateFormattedMomentjs" dense small outlined clearable label="End Date" v-bind="attrs" v-on="on"></v-text-field>
                                     </template>
-                                    <v-date-picker v-model="date" @change="end_date = false"></v-date-picker>
+                                    <v-date-picker v-model="end_at" @change="end_date = false"></v-date-picker>
                                 </v-menu>
                             </v-col>
                         </div>
@@ -193,6 +195,8 @@ export default {
             date: format(parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
             start_date: false,
             end_date: false,
+            start_at:null,
+            end_at:null,
             categories: [],
             brands: [],
             sizes: ["Small", "Medium", "Large"],
@@ -249,6 +253,7 @@ export default {
                 },
             ],
             products: [],
+            id:null,
         };
     },
     computed: {
@@ -268,7 +273,7 @@ export default {
             this.closeDelete();
         },
 
-        deleteItem() {
+        deleteItem(produtId) {
             this.dialogDelete = true;
         },
 
@@ -281,10 +286,21 @@ export default {
         },
 
         discountItemConfirm() {
-            this.closeDelete();
+            const discount = {
+                product:this.id,
+                discount:parseInt(this.discount),
+                start_at:this.start_at,
+                end_at:this.end_at
+            }
+            console.log(discount)
+            this.$axios.$post('discount',discount).then(res=>{
+                this.closeDelete();
+                console.log(res);
+            })
         },
 
-        discountItem() {
+        discountItem(productDetailId) {
+            this.id = productDetailId;
             this.dialogDiscount = true;
         },
 

@@ -3,7 +3,7 @@
     <v-card-text class="cardNew py-1 black white--text rounded-0">New</v-card-text>
     <v-card-text class="cardDiscount py-1 grey darken-1 white--text" v-if="status=='Product Discount'">-20%</v-card-text>
     <v-hover v-slot="{ hover }" >
-        <v-img src="https://www.fabindia.com/ccstore/v1/images/?source=/file/v6387149487885218198/products/10628633SF.f.211219.jpg&height=475&width=475" height="320px" >
+        <v-img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQW7BOwfl74SxdnbCVc_90PLER2CrOwSwZ5Q&usqp=CAU" height="320px" >
             <v-overlay
                 v-if="hover"
                 absolute
@@ -17,12 +17,12 @@
 
     </v-hover>
 
-    <v-card-title> Furniture Name </v-card-title>
+    <v-card-title> Furnitrue Name </v-card-title>
     <v-card-subtitle class="pb-0 green--text"> In Stock </v-card-subtitle>
 
     <v-card-actions>
-        <h4 class="pl-2 orange--text">123$</h4>
-        <h4 class=" pl-1 text-decoration-line-through orange--text" v-if="status=='Product Discount'">123$</h4>
+        <h4 class="pl-2 orange--text">400$</h4>
+        <h4 class=" pl-1 text-decoration-line-through orange--text"  v-if="status=='Product Discount'">123$</h4>
 
         <v-spacer></v-spacer>
 

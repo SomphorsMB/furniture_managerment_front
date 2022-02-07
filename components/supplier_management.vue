@@ -135,8 +135,11 @@ export default {
         },
         selectLogo(event){
             this.logo = event.target.files[0]
+            console.log(this.logo)
         },
         createSupplier(){
+            console.log(this.brand,this.country);
+            console.log(this.logo);
             const supplier = new FormData();
             supplier.append('brand',this.brand);
             supplier.append('country',this.country);

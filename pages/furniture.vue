@@ -9,7 +9,7 @@
     <v-row>
         <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="m in 12" :key="m">
             <!-- <card /> -->
-            <product-card />
+            <product-card/>
         </v-col>
     </v-row>
     <div class="text-center mt-4">
@@ -31,8 +31,16 @@ export default {
     },
     data: () => ({
         page: 1,
+        products:[]
     }),
-    methods: {}
+    methods: {},
+    mounted(){
+        // this.$axios.$get('/products').then(res=>{
+        //         this.products = res.data
+        //     }).catch(error=>{
+        //         console.log(error)
+        //     });
+    }
 }
 </script>
 
