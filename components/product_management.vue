@@ -41,10 +41,10 @@
                                 <v-col cols="12" class="text-area">
                                     <v-textarea outlined name="input-7-4" v-model="rawMaterial" label="Raw Materials" value=""></v-textarea>
                                 </v-col>
-                                <v-col cols="12" sm="6" class="price">
+                                <v-col cols="12" sm="10" class="price">
                                     <v-text-field v-model="price" label="Price: XXX$" dense small outlined clearable></v-text-field>
                                 </v-col>
-                                <v-col cols="12" sm="6" class="file">
+                                <v-col cols="12" sm="2" class="file">
                                     <label for="file-input">
                                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV9ef4mu_ntPiqBjBlsGQNRNDLBKNILEnBoBP1rJlD_0P3cQ_f3DbGdeR-i5PAffS7oo8&usqp=CAU" width="40px" height="40px" />
                                     </label>
@@ -54,7 +54,7 @@
                         </v-container>
                     </v-form>
                 </v-card-text>
-                <v-devider class="devider"></v-devider>
+                <v-divider class="devider"></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="primary" text @click="createProduct" class="save">
@@ -268,7 +268,6 @@ export default {
             this.dialogDiscount = false;
         },
 
-
         deleteItemConfirm() {
             this.closeDelete();
         },
@@ -308,6 +307,15 @@ export default {
             this.avatar = event.target.files[0]
         },
 
+        getProduct(){
+            this.$axios.$get('/products').then(res=>{
+                console.log(res.data)
+                this.products = res.data
+            }).catch(error=>{
+                console.log(error)
+            });
+        },
+
         createProduct(){
             const product = {
                 name:this.name,
@@ -335,6 +343,7 @@ export default {
                     this.size = '';
                     this.color = '';
                     this.category =  null;
+                    this.getProduct()
                     console.log(res)
                 }).catch(error=>{
                     console.log(error)
@@ -360,12 +369,7 @@ export default {
     mounted() {
         this.getCategories();
         this.getBrands();
-        this.$axios.$get('/products').then(res=>{
-                console.log(res.data)
-                this.products = res.data
-            }).catch(error=>{
-                console.log(error)
-            });
+        this.getProduct();
     },
 };
 </script>

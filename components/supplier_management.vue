@@ -135,11 +135,15 @@ export default {
         },
         selectLogo(event){
             this.logo = event.target.files[0]
-            console.log(this.logo)
+        },
+        getSupplier(){
+            this.$axios.$get('/product-suppliers').then(res=>{
+                this.suppliers = res.data;
+            }).catch(error=>{
+                console.log(error)
+            });
         },
         createSupplier(){
-            console.log(this.brand,this.country);
-            console.log(this.logo);
             const supplier = new FormData();
             supplier.append('brand',this.brand);
             supplier.append('country',this.country);
@@ -149,19 +153,14 @@ export default {
                 this.brand = '';
                 this.country = '';
                 this.logo = '';
-                console.log(res)
+                this.getSupplier();
             }).catch(error=>{
                 console.log(error)
             });
         }
     },
     mounted() {
-        this.$axios.$get('/product-suppliers').then(res=>{
-                console.log(res.data)
-                this.suppliers = res.data;
-            }).catch(error=>{
-                console.log(error)
-            });
+        this.getSupplier();
     }
 }
 </script>
