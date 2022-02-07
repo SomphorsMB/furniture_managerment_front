@@ -152,6 +152,9 @@ export default {
         },
         deleteItemConfirm() {
             this.closeDelete();
+            this.$axios.$delete('sellers').then(() => {
+                this.getSellers()
+            })
         },
         getSellers(){
             this.$axios.$get('/sellers').then(res=>{
