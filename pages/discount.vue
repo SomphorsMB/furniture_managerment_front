@@ -9,7 +9,7 @@
     <v-row>
         <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="product in products" :key="product">
             <!-- <card /> -->
-            <product-card  v-if="product.discount_discount > 0" :product="product" />
+            <product-card  v-if="product.discount_discount !==null" :product="product" />
         </v-col>
     </v-row>
     <div class="text-center mt-4">

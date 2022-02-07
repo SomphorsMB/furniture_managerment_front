@@ -57,7 +57,7 @@
                 <v-devider class="devider"></v-devider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="createProduct" class="save">
+                    <v-btn color="primary" text @click="create" class="save">
                         Save
                     </v-btn>
                 </v-card-actions>
@@ -173,6 +173,7 @@
 <script>
 import axios from "axios";
 import moment from 'moment'
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { format, parseISO } from 'date-fns'
 export default {
     data() {
@@ -197,8 +198,8 @@ export default {
             end_date: false,
             start_at:null,
             end_at:null,
-            categories: [],
-            brands: [],
+            // categories: [],
+            // brands: [],
             sizes: ["Small", "Medium", "Large"],
             colors: [
                 "Red",
@@ -252,23 +253,26 @@ export default {
                     sortable: false,
                 },
             ],
-            products: [],
+            // products: [],
             id:null,
         };
     },
     computed: {
+
         computedDateFormattedMomentjs () {
             return this.date ? moment(this.date).format('dddd, MMMM Do YYYY') : ''
         },
+        ...mapState(['products','categories','brands']),
+
     },
     methods: {
+        ...mapActions(['createProduct','createDiscount','getAllProduct','getAllCategories','getAllBrands']),
+
         closeDelete() {
             this.dialogDelete = false;
             this.dialogAdd = false;
             this.dialogDiscount = false;
         },
-
-
         deleteItemConfirm() {
             this.closeDelete();
         },
@@ -292,11 +296,8 @@ export default {
                 start_at:this.start_at,
                 end_at:this.end_at
             }
-            console.log(discount)
-            this.$axios.$post('discount',discount).then(res=>{
-                this.closeDelete();
-                console.log(res);
-            })
+            this.createDiscount(discount)
+            this.closeDelete();
         },
 
         discountItem(productDetailId) {
@@ -307,64 +308,41 @@ export default {
         selectImage(event){
             this.avatar = event.target.files[0]
         },
-        createProduct(){
+        create(){
             const product = {
                 name:this.name,
                 category:this.category.id,
-            }      
-            console.log(product);
-            this.$axios.$post('/products',product).then(product=>{
-                this.dialog = false;
-                const productDetail =  new FormData();
-                productDetail.append("supplier",this.brand.id);
-                productDetail.append("product",product.productId);
-                productDetail.append("color",this.color);
-                productDetail.append("size",this.size);
-                productDetail.append("price",parseInt(this.price));
-                productDetail.append("unit",parseInt(this.unit));
-                productDetail.append("rawMaterial",this.rawMaterial);
-                productDetail.append("avatar",this.avatar);
-                this.$axios.$post('/product-details',productDetail).then(res=>{
-                    this.name = '';
-                    this.brand = null;
-                    this.rawMaterial = '';
-                    this.price = 0;
-                    this.avatar = '';
-                    this.unit = '';
-                    this.size = '';
-                    this.color = '';
-                    this.category =  null;
-                    console.log(res)
-                }).catch(error=>{
-                    console.log(error)
-                });
-            }).catch(error=>{
-                console.log(error)
-            });
+            }
+            const productDetail =  new FormData();
+            productDetail.append("supplier",this.brand.id);
+            productDetail.append("color",this.color);
+            productDetail.append("size",this.size);
+            productDetail.append("price",parseInt(this.price));
+            productDetail.append("unit",parseInt(this.unit));
+            productDetail.append("rawMaterial",this.rawMaterial);
+            productDetail.append("avatar",this.avatar);
+            const productData = {
+                product: product,
+                productDetail: productDetail
+            }
+            this.createProduct(productData);
+            this.dialog = false;
+            this.name = '';
+            this.brand = null;
+            this.rawMaterial = '';
+            this.price = 0;
+            this.avatar = '';
+            this.unit = '';
+            this.size = '';
+            this.color = '';
+            this.category =  null;    
         },
-        getCategories(){
-            this.$axios.$get('/categories').then(categories=>{
-                this.categories = categories
-                console.log(this.categories)
-            })
-
-        },
-        getBrands(){
-            this.$axios.$get('/product-suppliers').then(brands=>{
-                this.brands = brands.data
-                console.log(this.brands)
-            })
-        }
     },
     mounted() {
-        this.getCategories();
-        this.getBrands();
-        this.$axios.$get('/products').then(res=>{
-                console.log(res.data)
-                this.products = res.data
-            }).catch(error=>{
-                console.log(error)
-            });
+        this.getAllCategories();
+        this.getAllBrands();
+        this.getAllProduct();
+
     },
 };
 </script>

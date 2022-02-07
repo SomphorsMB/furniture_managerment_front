@@ -15,7 +15,6 @@
     <div class="text-center mt-4">
         <v-pagination v-model="page" :length="3" color="grey"></v-pagination>
     </div>
-
 </div>
 </template>
 
@@ -33,7 +32,7 @@ export default {
     },
     data: () => ({
         page: 1,
-        products:[]
+        // products:[]
     }),
     computed:
         mapState(['products']),
@@ -42,7 +41,6 @@ export default {
     },
     mounted(){
         this.getAllProduct();
-
     }
 }
 </script>

@@ -53,7 +53,7 @@
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="createSeller">
+                    <v-btn color="primary" text @click="create">
                         Save
                     </v-btn>
                 </v-card-actions>
@@ -106,6 +106,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters, mapState} from 'vuex';
 export default {
     data() {
         return {
@@ -143,10 +144,13 @@ export default {
                     sortable: false
                 },
             ],
-            sellers: []
         }
     },
+    computed:{
+        ...mapState(['sellers'])
+    },
     methods: {
+        ...mapActions(['createSeller','getAllsellers']),
         closeDelete() {
             this.dialogDelete = false;
         },
@@ -156,7 +160,7 @@ export default {
         deleteItem() {
             this.dialogDelete = true;
         },
-        createSeller(){
+        create(){
             const seller = {
                 firstName:this.firstName,
                 lastName:this.lastName,
@@ -164,27 +168,17 @@ export default {
                 phone:this.tel,
                 address:this.address
             }
-            console.log(seller)
-            this.$axios.$post('/sellers',seller).then(res=>{
+            this.createSeller(seller);
                 this.dialog = false;
                 this.firstName = '';
                 this.lastName = '';
                 this.address = '';
                 this.tel = '';
                 this.gender = '';
-                console.log(res)
-            }).catch(error=>{
-                console.log(error)
-            });
         }
     },
     mounted() {
-        this.$axios.$get('/sellers').then(res=>{
-                console.log(res)
-                this.sellers = res;
-            }).catch(error=>{
-                console.log(error)
-            });
+        this.getAllsellers();
     }
 }
 </script>
