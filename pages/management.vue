@@ -18,6 +18,7 @@ import productSold_management from '../components/productSold_management.vue';
 
 export default {
     name: 'ManagementPage',
+    layout: "default",
     components: {
         'seller-management': seller_management,
         'product-management': product_management,
