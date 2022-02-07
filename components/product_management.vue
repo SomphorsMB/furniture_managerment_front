@@ -41,10 +41,10 @@
                                 <v-col cols="12" class="text-area">
                                     <v-textarea outlined name="input-7-4" v-model="rawMaterial" label="Raw Materials" value=""></v-textarea>
                                 </v-col>
-                                <v-col cols="12" sm="10" class="price">
+                                <v-col cols="12" sm="6" class="price">
                                     <v-text-field v-model="price" label="Price: XXX$" dense small outlined clearable></v-text-field>
                                 </v-col>
-                                <v-col cols="12" sm="2" class="file">
+                                <v-col cols="12" sm="6" class="file">
                                     <label for="file-input">
                                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV9ef4mu_ntPiqBjBlsGQNRNDLBKNILEnBoBP1rJlD_0P3cQ_f3DbGdeR-i5PAffS7oo8&usqp=CAU" width="40px" height="40px" />
                                     </label>
@@ -73,11 +73,11 @@
                             <img width="40px" height="40px" src="https://media.istockphoto.com/photos/modern-designer-chair-on-white-background-texture-chair-picture-id899418544?b=1&k=20&m=899418544&s=170667a&w=0&h=KKBpKvOtEXd2yVmRbQ6zYOnJmQ00Q6E-ks18F8_yrFQ=" />
                         </td>
                         <td>{{ product.name }}</td>
-                        <td>{{ product.brand }}</td>
-                        <td>{{ product.country }}</td>
-                        <td>{{ product.unit }}</td>
-                        <td>{{ product.price }}</td>
-                        <td>{{ product.discount }}</td>
+                        <!-- <td>{{ product.detail[0].supplier[0].brand }}</td> -->
+                        <!-- <td>{{ product.detail[0].supplier[0].country }}</td> -->
+                        <!-- <td>{{ product.unit }}</td> -->
+                        <td>{{ product.detail[0].price }}</td>
+                        <!-- <td>{{ product.discount }}</td> -->
                         <td>
                             <v-icon small color="red" class="delete mr-1" @click="deleteItem">
                                 mdi-delete
@@ -248,47 +248,7 @@ export default {
                     sortable: false,
                 },
             ],
-            products: [{
-                    name: "Chair",
-                    brand: "Benaldo",
-                    country: "Italy",
-                    unit: 2,
-                    price: "150$",
-                    discount: "20%",
-                },
-                {
-                    name: "Chair",
-                    brand: "Benaldo",
-                    country: "Italy",
-                    unit: 2,
-                    price: "150$",
-                    discount: "40%",
-                },
-                {
-                    name: "Chair",
-                    brand: "Benaldo",
-                    country: "Italy",
-                    unit: 2,
-                    price: "150$",
-                    discount: "15%",
-                },
-                {
-                    name: "Chair",
-                    brand: "Benaldo",
-                    country: "Italy",
-                    unit: 2,
-                    price: "150$",
-                    discount: "No discount",
-                },
-                {
-                    name: "Chair",
-                    brand: "Benaldo",
-                    country: "Italy",
-                    unit: 2,
-                    price: "150$",
-                    discount: "99%",
-                },
-            ],
+            products: [],
         };
     },
     computed: {
@@ -330,11 +290,12 @@ export default {
         selectImage(event){
             this.avatar = event.target.files[0]
         },
+
         createProduct(){
             const product = {
                 name:this.name,
                 category:this.category.id,
-            }      
+            }
             console.log(product);
             this.$axios.$post('/products',product).then(product=>{
                 this.dialog = false;
@@ -371,20 +332,25 @@ export default {
                 this.categories = categories
                 console.log(this.categories)
             })
-
         },
+
         getBrands(){
             this.$axios.$get('/product-suppliers').then(brands=>{
                 this.brands = brands.data
                 console.log(this.brands)
             })
-        }
+        },
     },
     mounted() {
         this.getCategories();
         this.getBrands();
         this.$axios.$get('/products').then(res=>{
-                console.log(res)
+                this.products = res.data
+                console.log(this.products);
+                for (let i of this.products){
+                    console.log(i.name);
+                    console.log(i.detail[0].supplier[0].brand);
+                }
             }).catch(error=>{
                 console.log(error)
             });
