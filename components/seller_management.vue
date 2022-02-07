@@ -143,47 +143,7 @@ export default {
                     sortable: false
                 },
             ],
-            sellers: [{
-                    id: 1,
-                    firstName: 'Thida',
-                    lastName: 'Tep',
-                    gender: 'F',
-                    phone: '81 328 389',
-                    address: 'Phnom Penh'
-                },
-                {
-                    id: 2,
-                    firstName: 'Seyha',
-                    lastName: 'Phai',
-                    gender: 'M',
-                    phone: '81 328 389',
-                    address: 'Battambang'
-                },
-                {
-                    id: 3,
-                    firstName: 'Pheaktra',
-                    lastName: 'Sy',
-                    gender: 'F',
-                    phone: '81 328 389',
-                    address: 'Phnom Penh'
-                },
-                {
-                    id: 4,
-                    firstName: 'Borith',
-                    lastName: 'Thai',
-                    gender: 'M',
-                    phone: '81 328 389',
-                    address: 'Phnom Penh'
-                },
-                {
-                    id: 5,
-                    firstName: 'Panha',
-                    lastName: 'Chay',
-                    gender: 'M',
-                    phone: '81 328 389',
-                    address: 'Phnom Penh'
-                }
-            ]
+            sellers: []
         }
     },
     methods: {
@@ -221,6 +181,7 @@ export default {
     mounted() {
         this.$axios.$get('/sellers').then(res=>{
                 console.log(res)
+                this.sellers = res;
             }).catch(error=>{
                 console.log(error)
             });

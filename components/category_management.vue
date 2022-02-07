@@ -100,26 +100,7 @@ export default {
                     sortable: false
                 },
             ],
-            categories: [
-                {
-                    name: 'Chair'
-                },
-                {
-                    name: 'Bed'
-                },
-                {
-                    name: 'Sofa'
-                },
-                {
-                    name: 'Dinner table'
-                },
-                {
-                    name: 'Armchair'
-                },
-                {
-                    name: 'Bed'
-                },
-            ]
+            categories: []
         }
     },
     methods: {
@@ -146,6 +127,7 @@ export default {
     mounted() {
         this.$axios.$get('/categories').then(res=>{
                 console.log(res)
+                this.categories = res;
             }).catch(error=>{
                 console.log(error)
             });

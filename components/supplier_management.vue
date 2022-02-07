@@ -55,7 +55,7 @@
             <template v-slot:body="{ items }">
                 <tbody>
                     <tr v-for="supplier in items" :key="supplier.id">
-                        <td><img :src="supplier.logo" alt="" width="50px" height="50px"></td>
+                        <td><img :src="'http://localhost:5000/api/product-details/image/'+supplier.logo" alt="" width="50px" height="50px"></td>
                         <td>{{ supplier.brand }}</td>
                         <td>{{ supplier.country }}</td>
                         <td>
@@ -120,32 +120,7 @@ export default {
                     value: 'action'
                 }
             ],
-            suppliers: [{
-                    brand: 'PAINCA',
-                    country: 'SPAIN',
-                    logo: 'https://coollogo.net/wp-content/uploads/2021/02/CATTELAN-ITALIA-logo.svg'
-                },
-                {
-                    brand: 'CATTELAN',
-                    country: 'ITALY',
-                    logo: 'https://coollogo.net/wp-content/uploads/2021/02/CATTELAN-ITALIA-logo.svg'
-                },
-                {
-                    brand: 'DESIREE',
-                    country: 'ITALY',
-                    logo: 'https://coollogo.net/wp-content/uploads/2021/02/CATTELAN-ITALIA-logo.svg'
-                },
-                {
-                    brand: 'BENALDO',
-                    country: 'FRANCE',
-                    logo: 'https://coollogo.net/wp-content/uploads/2021/02/CATTELAN-ITALIA-logo.svg'
-                },
-                {
-                    brand: 'PEDRO',
-                    country: 'ENGLAND',
-                    logo: 'https://coollogo.net/wp-content/uploads/2021/02/CATTELAN-ITALIA-logo.svg'
-                },
-            ]
+            suppliers: []
         }
     },
     methods: {
@@ -160,8 +135,11 @@ export default {
         },
         selectLogo(event){
             this.logo = event.target.files[0]
+            console.log(this.logo)
         },
         createSupplier(){
+            console.log(this.brand,this.country);
+            console.log(this.logo);
             const supplier = new FormData();
             supplier.append('brand',this.brand);
             supplier.append('country',this.country);
@@ -180,6 +158,7 @@ export default {
     mounted() {
         this.$axios.$get('/product-suppliers').then(res=>{
                 console.log(res.data)
+                this.suppliers = res.data;
             }).catch(error=>{
                 console.log(error)
             });

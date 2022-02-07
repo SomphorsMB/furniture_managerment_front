@@ -14,35 +14,41 @@
           <v-container class="pt-0 mt-0">
               <v-row>
                   <v-col cols="5" class="pa-0">
-                    <v-card-text class="black white--text pa-1 cardDiscount" >-99%</v-card-text>
+                    <v-card-text class="black white--text pa-1 cardDiscount" v-if="product.discount_discount !== null">-{{product.discount_discount}}%</v-card-text>
                       <v-img
           src="https://cdn.shopify.com/s/files/1/0279/9153/9746/products/furniture_2_1.jpg?v=1576499893"
           height="82vh"
         ></v-img>
                   </v-col>
                   <v-col cols="7" class="">
-                      <h1 class="black--text">TAUPE WOVEN BROCK CONVERTIBLE SOFA</h1>
+                      <h1 class="black--text text-uppercase">{{ product.product_name }}</h1>
                       <v-card-text class="d-flex px-0">
-                          <span  class="green--text font-weight-bold"> 
+                          <span  class="green--text font-weight-bold" v-if="product.productDetail_unit > 0"> 
                             <v-icon  class="green--text">mdi-check-circle</v-icon>
                             In Stock
                             </span>
-                          <span  class="red--text font-weight-bold" v-show="false">
+                          <span  class="red--text font-weight-bold" v-else>
                               <v-icon class="red--text">mdi-close-circle</v-icon>
                               Out Stock
                               </span>
                       </v-card-text>
                       <v-card-text class="pa-0 text-h7">
                           <span class="black--text font-weight-bold">Type: </span>
-                          <span class="grey--text">Wood wood</span>
+                          <span class="grey--text">{{ product.category_name }}</span>
                       </v-card-text>
                       <v-card-text class="pa-0 text-h7">
                           <span class="black--text font-weight-bold">Size: </span>
-                          <span class="grey--text">Medium</span>
+                          <span class="grey--text">{{ product.productDetail_size }}</span>
                       </v-card-text>
+                      <v-card-text class="pa-0 text-h7">
+                          <span class="black--text font-weight-bold">Total Unit: </span>
+                          <span class="grey--text">{{ product.productDetail_unit }}</span>
+                      </v-card-text>
+                      
                       <v-card-text class="px-0 d-flex">
-                          <v-card-title class="pa-0 text-h4 font-weight-bold black--text orange--text">$98.00</v-card-title>
-                          <v-card-title class="py-0 text-h4 font-weight-bold black--text text-decoration-line-through orange--text">$985.00</v-card-title>
+                          <v-card-title class="pa-0 text-h4 font-weight-bold black--text orange--text" v-if="product.discount_discount !== null">${{ product.productDetail_price-product.productDetail_price*product.discount_discount/100 }}</v-card-title>
+                          <v-card-title class="pa-0 text-h4 font-weight-bold black--text orange--text" v-if="product.discount_discount === null">${{ product.productDetail_price }}</v-card-title>
+                          <v-card-title class="py-0 text-h4 font-weight-bold black--text text-decoration-line-through orange--text" v-else>${{ product.productDetail_price }}</v-card-title>
                       </v-card-text>
                       <v-card-text class="pa-0">
                           <span class="font-weight-bold black--text">QTY</span>
@@ -60,25 +66,25 @@
                       </v-card-text>
                       <v-card-title class="py-0 px-0 black--text">Description</v-card-title>
                       <v-divider></v-divider>
-                      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sapiente quam aliquid, id dolores officiis ab minima commodi quibusdam voluptatum placeat autem perspiciatis ut nisi doloremque soluta illum vel, dolorem maiores.</p>
+                      <v-card-subtitle class="px-0 pt-0">{{ product.productDetail_rawMaterial }}</v-card-subtitle>
                       <v-card-title class="pb-0 px-0 pt-0 black--text">Product source</v-card-title>
                       <v-divider></v-divider>
-                      <v-card-content class="px-0 pt-0 d-flex">
+                      <v-card-text class="px-0 pt-0 d-flex">
                         <v-card-text class="pa-0 company-info">
                           <v-card-subtitle class="pl-0">
                             <span class="pa-0 black--text text-h7 font-weight-bold">Company:</span>
-                             <span class="text-h7">Comany Name</span>
+                             <span class="text-h7">{{ product.supplier_brand }}</span>
                           </v-card-subtitle>
                           <v-card-subtitle class="pt-0 pl-0">
                             <span class="pa-0 black--text text-h7 font-weight-bold">Country:</span>
-                            <span class="text-h7">Comany Country</span>
+                            <span class="text-h7">{{ product.supplier_country }}</span>
                           </v-card-subtitle>
                         </v-card-text>
                         <v-card-text class="company-info pa-0">
-                        <v-img src="https://iconape.com/wp-content/files/uf/300420/png/300420.png" width="35%"></v-img>
+                        <v-img :src="'http://localhost:5000/api/product-details/image/'+product.supplier_logo" width="35%"></v-img>
 
                         </v-card-text>
-                      </v-card-content>
+                      </v-card-text>
                   </v-col>
               </v-row>
             
@@ -91,6 +97,7 @@
 
 <script>
 export default {
+  props: ['product'],
   data: () => ({
     dialog: true,
     min: 1,

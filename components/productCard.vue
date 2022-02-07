@@ -1,9 +1,10 @@
 <template>
+<section>
 <v-card class="mt-4 mx-1 rounded-0">
     <v-card-text class="cardNew py-1 black white--text rounded-0">New</v-card-text>
-    <v-card-text class="cardDiscount py-1 grey darken-1 white--text" v-if="status=='Product Discount'">-20%</v-card-text>
+    <v-card-text class="cardDiscount py-1 grey darken-1 white--text" v-if="product.discount_discount !== null">-{{product.discount_discount}}%</v-card-text>
     <v-hover v-slot="{ hover }" >
-        <v-img src="https://www.fabindia.com/ccstore/v1/images/?source=/file/v6387149487885218198/products/10628633SF.f.211219.jpg&height=475&width=475" height="320px" >
+        <v-img :src="'http://localhost:5000/api/product-details/image/'+product.productDetail_avatar" height="320px" >
             <v-overlay
                 v-if="hover"
                 absolute
@@ -17,11 +18,13 @@
 
     </v-hover>
 
-    <v-card-title> Furniture Name </v-card-title>
-    <v-card-subtitle class="pb-0 green--text"> In Stock </v-card-subtitle>
+    <v-card-title> {{product.product_name}} </v-card-title>
+    <!-- <v-card-title> 1231 </v-card-title> -->
+    <v-card-subtitle class="pb-0 green--text" v-if="product.productDetail_unit > 0"> In Stock </v-card-subtitle>
+    <v-card-subtitle class="pb-0 red--text" v-else> Out Stock </v-card-subtitle>
 
     <v-card-actions>
-        <h4 class="pl-2 orange--text">123$</h4>
+        <h4 class="pl-2 orange--text">{{ product.productDetail_price }} $</h4>
         <h4 class=" pl-1 text-decoration-line-through orange--text" v-if="status=='Product Discount'">123$</h4>
 
         <v-spacer></v-spacer>
@@ -38,14 +41,15 @@
         </v-btn>
     </v-card-actions>
 
-    <product-detail v-if="dialog" @close="dialog = false"/>
+    <product-detail v-if="dialog" @close="dialog = false" :product="product"/>
 
 </v-card>
+</section>
 </template>
 
 <script>
 export default {
-    props: ['status'],
+    props: ['status', 'product', 'productName'],
     data() {
         return {
             min: 1,
