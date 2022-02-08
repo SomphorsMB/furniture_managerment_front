@@ -15,7 +15,6 @@
     <div class="text-center mt-4">
         <v-pagination v-model="page" :length="3" color="grey"></v-pagination>
     </div>
-
 </div>
 </template>
 
@@ -42,7 +41,6 @@ export default {
     },
     mounted(){
         this.getAllProduct();
-
     }
 }
 </script>

@@ -53,7 +53,7 @@
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="createSeller">
+                    <v-btn color="primary" text @click="create">
                         Save
                     </v-btn>
                 </v-card-actions>
@@ -68,10 +68,10 @@
                         <td>{{ seller.firstName }}</td>
                         <td>{{ seller.lastName }}</td>
                         <td>{{ seller.gender }}</td>
-                        <td> +855 {{ seller.phone }}</td>
+                        <td>{{ seller.phone }}</td>
                         <td>{{ seller.address }}</td>
                         <td>
-                            <v-icon small color="red" class="delete mr-2" @click="deleteItem">
+                            <v-icon small color="red" class="delete mr-2" @click="deleted(seller.id)">
                                 mdi-delete
                             </v-icon>
                             <v-icon small color="#00E676" class="edit">
@@ -92,9 +92,9 @@
                             <p>Are you sure you want to remove this seller ?</p>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Discard</v-btn>
+                            <v-btn color="red darken-1" text @click="closeDelete">Cancel</v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="deleteItemConfirm">Okay</v-btn>
+                            <v-btn color="blue darken-1" text @click="deleteSellerConfirm">Yes</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -106,6 +106,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters, mapState} from 'vuex';
 export default {
     data() {
         return {
@@ -117,6 +118,7 @@ export default {
             lastName: '',
             tel: '',
             address: '',
+            id:null,
             headers: [{
                     text: 'First Name',
                     value: 'firstName'
@@ -143,20 +145,37 @@ export default {
                     sortable: false
                 },
             ],
-            sellers: []
         }
     },
+    computed:{
+        ...mapState(['sellers'])
+    },
     methods: {
+        ...mapActions(['createSeller','getAllsellers','deleteSeller']),
         closeDelete() {
             this.dialogDelete = false;
         },
-        deleteItemConfirm() {
+        async deleteSellerConfirm() {
+            await this.deleteSeller(this.id);
+            this.getAllsellers();
             this.closeDelete();
+            this.$axios.$delete('sellers').then(() => {
+                this.getSellers()
+            })
         },
-        deleteItem() {
+        getSellers(){
+            this.$axios.$get('/sellers').then(res=>{
+                console.log(res)
+                this.sellers = res;
+            }).catch(error=>{
+                console.log(error)
+            });
+        },
+        deleted(sellerId) {
             this.dialogDelete = true;
+            this.id = sellerId;
         },
-        createSeller(){
+        async create(){
             const seller = {
                 firstName:this.firstName,
                 lastName:this.lastName,
@@ -164,27 +183,18 @@ export default {
                 phone:this.tel,
                 address:this.address
             }
-            console.log(seller)
-            this.$axios.$post('/sellers',seller).then(res=>{
+            await this.createSeller(seller);
+            this.getAllsellers();
                 this.dialog = false;
                 this.firstName = '';
                 this.lastName = '';
                 this.address = '';
                 this.tel = '';
                 this.gender = '';
-                console.log(res)
-            }).catch(error=>{
-                console.log(error)
-            });
         }
     },
     mounted() {
-        this.$axios.$get('/sellers').then(res=>{
-                console.log(res)
-                this.sellers = res;
-            }).catch(error=>{
-                console.log(error)
-            });
+        this.getAllsellers();
     }
 }
 </script>

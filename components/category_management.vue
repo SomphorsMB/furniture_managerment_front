@@ -33,7 +33,7 @@
                 </v-card-text>
                 <v-card-actions class="action">
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="createCategory">
+                    <v-btn color="primary" text @click="create">
                         Save
                     </v-btn>
                 </v-card-actions>
@@ -47,7 +47,7 @@
                     <tr v-for="category in items" :key="category.id">
                         <td>{{ category.name }}</td>
                         <td>
-                            <v-icon small color="red" class="delete mr-2" @click="deleteItem">
+                            <v-icon small color="red" class="delete mr-2" @click="deleted(category.id)">
                                 mdi-delete
                             </v-icon>
                             <v-icon small color="#00E676" class="edit">
@@ -68,9 +68,9 @@
                             <p>Are you sure you want to remove this category ?</p>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Discard</v-btn>
+                            <v-btn color="red darken-1" text @click="closeDelete">Cancel</v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="deleteItemConfirm">Okay</v-btn>
+                            <v-btn color="blue darken-1" text @click="deleteCategoryConfirm">Yes</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -83,12 +83,14 @@
 
 <script>
 import axios from 'axios';
+import {mapActions,mapGetters, mapState} from 'vuex';
 export default {
     data() {
         return {
             dialog: false,
             dialogDelete: false,
             name: '',
+            categoryId:null,
             headers: [
                 {
                     text: 'Name',
@@ -100,37 +102,38 @@ export default {
                     sortable: false
                 },
             ],
-            categories: []
         }
     },
+    computed:{
+        ...mapState(['categories']),
+    },
     methods: {
+        ...mapActions(['createCategory','getAllCategories','deleteCategory']),
         closeDelete() {
             this.dialogDelete = false;
+            this.categoryId = null;
         },
-        deleteItemConfirm() {
+        async deleteCategoryConfirm() {
+            await this.deleteCategory(this.categoryId);
+            this.getAllCategories();
+
             this.closeDelete();
         },
-        deleteItem() {
+        deleted(categoryId) {
             this.dialogDelete = true;
+            this.categoryId = categoryId
         },
-        createCategory(){
+        async create(){
             const category = {name:this.name}
-            this.$axios.$post('/categories',category).then(res=>{
-                this.dialog = false;
-                this.name = '';
-                console.log(res)
-            }).catch(error=>{
-                console.log(error)
-            });
+            await this.createCategory(category);
+            this.getAllCategories();
+
+            this.dialog = false;
+            this.name="";
         }
     },
     mounted() {
-        this.$axios.$get('/categories').then(res=>{
-                console.log(res)
-                this.categories = res;
-            }).catch(error=>{
-                console.log(error)
-            });
+        this.getAllCategories();
     }
 }
 </script>

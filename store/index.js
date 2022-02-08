@@ -10,6 +10,11 @@ export const AUTH_MUTATIONS = {
     refresh_token: null, // JWT refresh token
     id: null, // user id
     email: null, // user email address
+    role:null,
+    products: [],
+    categories:[],
+    brands:[],
+    sellers:[],
     products: [],
     productDiscount: [],
     productInCart: [],
@@ -33,13 +38,27 @@ export const AUTH_MUTATIONS = {
     [AUTH_MUTATIONS.LOGOUT] (state) {
       state.id = null
       state.email = null
+      state.role = null
       state.access_token = null
       state.refresh_token = null
+
     },
 
     addproducts(state, products){
       state.products = products
       console.log(state.products)
+    },
+    addcategories(state,categories){
+      state.categories = categories
+    },
+    addbrands(state,brands){
+      state.brands = brands
+    },
+    addsellers(state,sellers){
+      state.sellers = sellers;
+    },
+    addrole(state,role){
+      state.role = role;
 
     },
     addproductDiscount(state, productDiscount){
@@ -62,6 +81,7 @@ export const AUTH_MUTATIONS = {
         '/auth/login', 
         { email, password }
       ).then(res => {
+        window.localStorage.setItem('role',res.data.user.role);
         window.localStorage.setItem('token',res.data.access_token);
         commit(AUTH_MUTATIONS.SET_USER, res.data.user)
         commit(AUTH_MUTATIONS.SET_PAYLOAD, res.data.access_token, null)
@@ -70,6 +90,21 @@ export const AUTH_MUTATIONS = {
       
       
     },
+    // logout the user
+    logout ({ commit, state }) {
+      window.localStorage.setItem('token',null);
+      window.localStorage.setItem('role',null);
+      this.$router.push('/login')
+      this.$axios.$post('/auth/logout');
+      commit(AUTH_MUTATIONS.LOGOUT)
+    },
+
+    async getUserRole({commit,state}){
+      const role = window.localStorage.getItem('role');
+      console.log(role)
+      commit('addrole',role)
+    },
+
     async getSellers () {
        await this.$axios.get('sellers').then(res => {
         console.log(res)
@@ -77,8 +112,47 @@ export const AUTH_MUTATIONS = {
       
       
     },
+    async createProduct({ commit, append },{product,productDetail}){
+      await this.$axios.$post('/products',product).then(product=>{
+        productDetail.append("product",product.productId);
+        this.$axios.$post('/product-details',productDetail).then(res=>{
+          console.log(res)
+        }).catch(error=>{
+          console.log(error)
+      });
+      }).catch(error=>{
+        console.log(error)
+      });
+    },
+
+    async createDiscount({ commit, dispatch }, discount){
+      await this.$axios.$post('/discount',discount).then(discount=>{
+        console.log(discount);
+      }).catch(error=>{
+        console.log(error)
+      });
+    },
     
-  
+    async createCategory({ commit, dispatch }, category){
+      await this.$axios.$post('/categories',category).then(category=>{
+        console.log(category);
+      }).catch(error=>{
+        console.log(error)
+      });
+    },
+
+    
+    async createBrand({ commit, dispatch }, brand){
+      await this.$axios.$post('/product-suppliers',brand).then(brand=>{
+        console.log(brand);
+      });
+    },
+    async createSeller({ commit, dispatch }, seller){
+      await this.$axios.$post('/sellers',seller).then(seller=>{
+        console.log(seller);
+      });
+    },
+
     async register ({ commit }, { email, password }) {
       // make an API call to register the user
       const { data: { data: { user, payload } } } = await this.$axios.post(
@@ -118,6 +192,32 @@ export const AUTH_MUTATIONS = {
       // commit('addproducts', allProducts);
 
     },
+    async getAllCategories({commit, state}){
+        await this.$axios.$get('/categories').then(res=>{
+          // console.log(res)
+          commit('addcategories', [...res])
+      }).catch(error=>{
+          console.log(error)
+      });
+
+    },
+    async getAllBrands({commit, state}){
+      await this.$axios.$get('/product-suppliers').then(res=>{
+        console.log(res.data)
+        commit('addbrands', [...res.data])
+      }).catch(error=>{
+          console.log(error)
+      });
+
+    },
+    async getAllsellers({commit, state}){
+      await this.$axios.$get('/sellers').then(res=>{
+        console.log(res)
+        commit('addsellers', [...res])
+      }).catch(error=>{
+          console.log(error)
+      });
+    },
 
     async getAllProductDiscount({commit, state}){
         await this.$axios.$get('/products/product-discount').then(res=>{
@@ -154,8 +254,34 @@ export const AUTH_MUTATIONS = {
     // logout the user
     logout ({ commit, state }) {
       commit(AUTH_MUTATIONS.LOGOUT)
+
     },
+    async deleteProduct({commit, state},id){
+      await this.$axios.$delete('/products/'+id).then(res=>{
+          console.log(res);
+      })
+    },
+    async deleteSeller({commit, state},id){
+      await this.$axios.$delete('/sellers/'+id).then(res=>{
+          console.log(res);
+      })
+    },
+    async deleteCategory({commit, state},id){
+      await this.$axios.$delete('/categories/'+id).then(res=>{
+          console.log(res);
+      })
+    },
+    async deleteSupplier({commit, state},id){
+      await this.$axios.$delete('/product-suppliers/'+id).then(res=>{
+          console.log(res);
+      })
+    }
+  
+    
   }
+
+
+
   
   export const getters = {
     // determine if the user is authenticated based on the presence of the access token
@@ -172,5 +298,20 @@ export const AUTH_MUTATIONS = {
 
     products(state){
       return state.products;
+    },
+    categories(state){
+      console.log('hash',state.categories);
+      return state.categories;
+    },
+    brands(state){
+      console.log('hash',state.brands);
+      return state.brands;
+    },
+    sellers(state){
+      console.log('hash',state.sellers);
+      return state.sellers;
+    },
+    rols(state){
+      return state.role;
     }
   }

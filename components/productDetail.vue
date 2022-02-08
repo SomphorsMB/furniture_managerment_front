@@ -16,14 +16,14 @@
                   <v-col cols="5" class="pa-0">
                     <v-card-text class="black white--text pa-1 cardDiscount" v-if="product.discount_discount !== null">-{{product.discount_discount}}%</v-card-text>
                       <v-img
-          src="https://cdn.shopify.com/s/files/1/0279/9153/9746/products/furniture_2_1.jpg?v=1576499893"
+          :src="'http://localhost:5000/api/product-details/image/'+product.productDetail_avatar"
           height="82vh"
         ></v-img>
                   </v-col>
                   <v-col cols="7" class="">
                       <h1 class="black--text text-uppercase">{{ product.product_name }}</h1>
                       <v-card-text class="d-flex px-0">
-                          <span  class="green--text font-weight-bold" v-if="product.productDetail_unit > 0"> 
+                          <span  class="green--text font-weight-bold" v-if="product.productDetail_unit > 0">
                             <v-icon  class="green--text">mdi-check-circle</v-icon>
                             In Stock
                             </span>
@@ -44,7 +44,7 @@
                           <span class="black--text font-weight-bold">Total Unit: </span>
                           <span class="grey--text">{{ product.productDetail_unit }}</span>
                       </v-card-text>
-                      
+
                       <v-card-text class="px-0 d-flex">
                           <v-card-title class="pa-0 text-h4 font-weight-bold black--text orange--text" v-if="product.discount_discount !== null">${{ product.productDetail_price-product.productDetail_price*product.discount_discount/100 }}</v-card-title>
                           <v-card-title class="pa-0 text-h4 font-weight-bold black--text orange--text" v-if="product.discount_discount === null">${{ product.productDetail_price }}</v-card-title>
@@ -87,7 +87,7 @@
                       </v-card-text>
                   </v-col>
               </v-row>
-            
+
           </v-container>
         </v-card-text>
       </v-card>

@@ -41,10 +41,10 @@
                                 <v-col cols="12" class="text-area">
                                     <v-textarea outlined name="input-7-4" v-model="rawMaterial" label="Raw Materials" value=""></v-textarea>
                                 </v-col>
-                                <v-col cols="12" sm="6" class="price">
+                                <v-col cols="12" sm="10" class="price">
                                     <v-text-field v-model="price" label="Price: XXX$" dense small outlined clearable></v-text-field>
                                 </v-col>
-                                <v-col cols="12" sm="6" class="file">
+                                <v-col cols="12" sm="2" class="file">
                                     <label for="file-input">
                                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV9ef4mu_ntPiqBjBlsGQNRNDLBKNILEnBoBP1rJlD_0P3cQ_f3DbGdeR-i5PAffS7oo8&usqp=CAU" width="40px" height="40px" />
                                     </label>
@@ -54,10 +54,10 @@
                         </v-container>
                     </v-form>
                 </v-card-text>
-                <v-devider class="devider"></v-devider>
+                <v-divider class="devider"></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="createProduct" class="save">
+                    <v-btn color="primary" text @click="create" class="save">
                         Save
                     </v-btn>
                 </v-card-actions>
@@ -87,7 +87,7 @@
                             <v-icon small color="#00E676" class="edit mr-1">
                                 mdi-pencil
                             </v-icon>
-                            <v-icon small color="#00E676" class="edit" @click="addAmount(product.productDetail_id)">
+                            <v-icon small color="#00E676" class="edit" @click="addAmount(product)">
                                 mdi-plus
                             </v-icon>
                             <v-icon small color="#00E676" class="edit" @click="discountItem(product.productDetail_id)">
@@ -106,9 +106,9 @@
                             <p>Are you sure you want to delete this item?</p>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Discard</v-btn>
+                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="deleteItemConfirm">Okay</v-btn>
+                            <v-btn color="blue darken-1" text @click="deleteItemConfirm">Yes</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -124,9 +124,9 @@
                             </v-col>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Cancel</v-btn>
+                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="addAmountConfirm">Save</v-btn>
+                            <v-btn color="blue darken-1" text @click="addAmountConfirm">Add</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -158,7 +158,7 @@
                             </v-col>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Cancel</v-btn>
+                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-spacer></v-spacer>
                             <v-btn color="blue darken-1" text @click="discountItemConfirm">Save</v-btn>
                         </v-card-actions>
@@ -173,6 +173,7 @@
 <script>
 import axios from "axios";
 import moment from 'moment'
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { format, parseISO } from 'date-fns'
 export default {
     data() {
@@ -197,8 +198,8 @@ export default {
             end_date: false,
             start_at:null,
             end_at:null,
-            categories: [],
-            brands: [],
+            // categories: [],
+            // brands: [],
             sizes: ["Small", "Medium", "Large"],
             colors: [
                 "Red",
@@ -252,51 +253,70 @@ export default {
                     sortable: false,
                 },
             ],
-            products: [],
-            id:null,
+            // products: [],
+            productId:null,
+            productDetail:{},
         };
     },
     computed: {
+
         computedDateFormattedMomentjs () {
             return this.date ? moment(this.date).format('dddd, MMMM Do YYYY') : ''
         },
+        ...mapState(['products','categories','brands']),
+
     },
     methods: {
-        closeDelete() {
+        ...mapActions(['createProduct','createDiscount','getAllProduct','getAllCategories','getAllBrands','deleteProduct']),
+
+        closeDialog() {
             this.dialogDelete = false;
             this.dialogAdd = false;
             this.dialogDiscount = false;
+            this.productId = null;
+        },
+        async deleteItemConfirm() {
+            await this.deleteProduct(this.productId);
+            this.getAllProduct();
+
+            this.closeDialog();
+
         },
 
-
-        deleteItemConfirm() {
-            this.closeDelete();
-        },
-
-        deleteItem(produtId) {
+        deleteItem(productId) {
             this.dialogDelete = true;
+            this.productId = productId;
         },
 
         addAmountConfirm() {
-            this.closeDelete();
+
+            this.closeDialog();
         },
 
-        addAmount() {
+        addAmount(productDetail) {
+            
+            // this.productDetail.avatar = productDetail.productDetail_avatar;
+            // this.productDetail.avatar = productDetail.productDetail_unit;
+            // this.productDetail.avatar = productDetail.productDetail_price;
+            // this.productDetail.avatar = productDetail.productDetail_color;
+            // this.productDetail.avatar = productDetail.productDetail_rawMaterial;
+            // this.productDetail.avatar = productDetail.productDetail_size;
+            // this.productDetail.product = productDetail.productDetail_productId;
+            // this.productDetail.avatar = productDetail.productDetail_supplierId;
+
             this.dialogAdd = true;
         },
 
-        discountItemConfirm() {
+        async discountItemConfirm() {
             const discount = {
                 product:this.id,
                 discount:parseInt(this.discount),
                 start_at:this.start_at,
                 end_at:this.end_at
             }
-            console.log(discount)
-            this.$axios.$post('discount',discount).then(res=>{
-                this.closeDelete();
-                console.log(res);
-            })
+            await this.createDiscount(discount);
+            this.getAllProduct();
+            this.closeDialog();
         },
 
         discountItem(productDetailId) {
@@ -307,65 +327,42 @@ export default {
         selectImage(event){
             this.avatar = event.target.files[0]
         },
-
-        createProduct(){
+        async create(){
             const product = {
                 name:this.name,
                 category:this.category.id,
             }
-            console.log(product);
-            this.$axios.$post('/products',product).then(product=>{
-                this.dialog = false;
-                const productDetail =  new FormData();
-                productDetail.append("supplier",this.brand.id);
-                productDetail.append("product",product.productId);
-                productDetail.append("color",this.color);
-                productDetail.append("size",this.size);
-                productDetail.append("price",parseInt(this.price));
-                productDetail.append("unit",parseInt(this.unit));
-                productDetail.append("rawMaterial",this.rawMaterial);
-                productDetail.append("avatar",this.avatar);
-                this.$axios.$post('/product-details',productDetail).then(res=>{
-                    this.name = '';
-                    this.brand = null;
-                    this.rawMaterial = '';
-                    this.price = 0;
-                    this.avatar = '';
-                    this.unit = '';
-                    this.size = '';
-                    this.color = '';
-                    this.category =  null;
-                    console.log(res)
-                }).catch(error=>{
-                    console.log(error)
-                });
-            }).catch(error=>{
-                console.log(error)
-            });
-        },
-        getCategories(){
-            this.$axios.$get('/categories').then(categories=>{
-                this.categories = categories
-                console.log(this.categories)
-            })
-        },
-
-        getBrands(){
-            this.$axios.$get('/product-suppliers').then(brands=>{
-                this.brands = brands.data
-                console.log(this.brands)
-            })
+            const productDetail =  new FormData();
+            productDetail.append("supplier",this.brand.id);
+            productDetail.append("color",this.color);
+            productDetail.append("size",this.size);
+            productDetail.append("price",parseInt(this.price));
+            productDetail.append("unit",parseInt(this.unit));
+            productDetail.append("rawMaterial",this.rawMaterial);
+            productDetail.append("avatar",this.avatar);
+            const productData = {
+                product: product,
+                productDetail: productDetail
+            }
+            await this.createProduct(productData);
+            this.getAllProduct();
+            this.dialog = false;
+            this.name = '';
+            this.brand = null;
+            this.rawMaterial = '';
+            this.price = 0;
+            this.avatar = '';
+            this.unit = '';
+            this.size = '';
+            this.color = '';
+            this.category =  null;
         },
     },
     mounted() {
-        this.getCategories();
-        this.getBrands();
-        this.$axios.$get('/products').then(res=>{
-                console.log(res.data)
-                this.products = res.data
-            }).catch(error=>{
-                console.log(error)
-            });
+        this.getAllCategories();
+        this.getAllBrands();
+        this.getAllProduct();
+
     },
 };
 </script>

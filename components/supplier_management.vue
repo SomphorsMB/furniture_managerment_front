@@ -43,7 +43,7 @@
                 <v-divider></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="createSupplier">
+                    <v-btn color="primary" text @click="create">
                         Save
                     </v-btn>
                 </v-card-actions>
@@ -51,15 +51,15 @@
         </v-dialog>
     </div>
     <div class="category-table">
-        <v-data-table :headers="headers" :items="suppliers" class="table elevation-7">
+        <v-data-table :headers="headers" :items="brands" class="table elevation-7">
             <template v-slot:body="{ items }">
                 <tbody>
-                    <tr v-for="supplier in items" :key="supplier.id">
-                        <td><img :src="'http://localhost:5000/api/product-details/image/'+supplier.logo" alt="" width="50px" height="50px"></td>
-                        <td>{{ supplier.brand }}</td>
-                        <td>{{ supplier.country }}</td>
+                    <tr v-for="brand in items" :key="brand.id">
+                        <td><img :src="'http://localhost:5000/api/product-details/image/'+brand.logo" alt="" width="50px" height="50px"></td>
+                        <td>{{ brand.brand }}</td>
+                        <td>{{ brand.country }}</td>
                         <td>
-                            <v-icon small color="red" class="delete mr-2" @click="deleteItem">
+                            <v-icon small color="red" class="delete mr-2" @click="deleted(brand.id)">
                                 mdi-delete
                             </v-icon>
                             <v-icon small color="#00E676" class="edit">
@@ -80,9 +80,9 @@
                             <p>Are you sure you want to remove this supplier ?</p>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Discard</v-btn>
+                            <v-btn color="red darken-1" text @click="closeDelete">Cancel</v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="deleteItemConfirm">Okay</v-btn>
+                            <v-btn color="blue darken-1" text @click="deleteSupplierConfirm">Yes</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -95,6 +95,7 @@
 
 <script>
 import axios from 'axios';
+import {mapActions,mapGetters,mapState} from 'vuex';
 export default {
     data() {
         return {
@@ -103,6 +104,7 @@ export default {
             brand: '',
             country: '',
             logo:'',
+            supplierId:null,
             headers: [{
                     text: 'Logo',
                     value: 'logo',
@@ -120,48 +122,46 @@ export default {
                     value: 'action'
                 }
             ],
-            suppliers: []
         }
     },
+    computed:{
+        ...mapState(['brands'])
+    },
     methods: {
+        ...mapActions(['getAllBrands','createBrand','deleteSupplier']),
         closeDelete() {
             this.dialogDelete = false;
+            this.supplierId = null;
         },
-        deleteItemConfirm() {
+        async deleteSupplierConfirm() {
+            await this.deleteSupplier(this.supplierId);
+            this.getAllBrands();
+
             this.closeDelete();
         },
-        deleteItem() {
+        deleted(supplierId) {
+            this.supplierId = supplierId;
             this.dialogDelete = true;
         },
         selectLogo(event){
             this.logo = event.target.files[0]
-            console.log(this.logo)
         },
-        createSupplier(){
-            console.log(this.brand,this.country);
-            console.log(this.logo);
+        async create(){
             const supplier = new FormData();
             supplier.append('brand',this.brand);
             supplier.append('country',this.country);
             supplier.append('logo',this.logo);
-            this.$axios.$post('/product-suppliers',supplier).then(res=>{
+            await this.createBrand(supplier);
+            this.getAllBrands();
+
                 this.dialog = false;
                 this.brand = '';
                 this.country = '';
                 this.logo = '';
-                console.log(res)
-            }).catch(error=>{
-                console.log(error)
-            });
         }
     },
     mounted() {
-        this.$axios.$get('/product-suppliers').then(res=>{
-                console.log(res.data)
-                this.suppliers = res.data;
-            }).catch(error=>{
-                console.log(error)
-            });
+        this.getAllBrands();
     }
 }
 </script>
