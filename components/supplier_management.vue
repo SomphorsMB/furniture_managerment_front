@@ -151,18 +151,18 @@ export default {
                 console.log(error)
             });
         },
-        create(){
+        async create(){
             const supplier = new FormData();
             supplier.append('brand',this.brand);
             supplier.append('country',this.country);
             supplier.append('logo',this.logo);
-            this.createBrand(supplier);
+            await this.createBrand(supplier);
+                this.getAllBrands();
                 this.dialog = false;
                 this.brand = '';
                 this.country = '';
                 this.logo = '';
-                console.log(res)
-          
+
         }
     },
     mounted() {

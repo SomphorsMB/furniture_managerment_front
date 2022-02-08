@@ -351,7 +351,7 @@ export default {
             this.unit = '';
             this.size = '';
             this.color = '';
-            this.category =  null;    
+            this.category =  null;
         },
     },
     mounted() {
