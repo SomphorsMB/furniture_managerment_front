@@ -155,8 +155,9 @@ export default {
         closeDelete() {
             this.dialogDelete = false;
         },
-        deleteSellerConfirm() {
-            this.deleteSeller(this.id);
+        async deleteSellerConfirm() {
+            await this.deleteSeller(this.id);
+            this.getAllsellers();
             this.closeDelete();
         },
         getSellers(){
@@ -171,7 +172,7 @@ export default {
             this.dialogDelete = true;
             this.id = sellerId;
         },
-        create(){
+        async create(){
             const seller = {
                 firstName:this.firstName,
                 lastName:this.lastName,
@@ -179,7 +180,8 @@ export default {
                 phone:this.tel,
                 address:this.address
             }
-            this.createSeller(seller);
+            await this.createSeller(seller);
+            this.getAllsellers();
                 this.dialog = false;
                 this.firstName = '';
                 this.lastName = '';

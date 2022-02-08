@@ -113,17 +113,21 @@ export default {
             this.dialogDelete = false;
             this.categoryId = null;
         },
-        deleteCategoryConfirm() {
-            this.deleteCategory(this.categoryId);
+        async deleteCategoryConfirm() {
+            await this.deleteCategory(this.categoryId);
+            this.getAllCategories();
+
             this.closeDelete();
         },
         deleted(categoryId) {
             this.dialogDelete = true;
             this.categoryId = categoryId
         },
-        create(){
+        async create(){
             const category = {name:this.name}
-            this.createCategory(category);
+            await this.createCategory(category);
+            this.getAllCategories();
+
             this.dialog = false;
             this.name="";
         }
