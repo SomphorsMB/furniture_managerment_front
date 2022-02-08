@@ -59,7 +59,7 @@
                         <td>{{ brand.brand }}</td>
                         <td>{{ brand.country }}</td>
                         <td>
-                            <v-icon small color="red" class="delete mr-2" @click="deleteItem">
+                            <v-icon small color="red" class="delete mr-2" @click="deleted(brand.id)">
                                 mdi-delete
                             </v-icon>
                             <v-icon small color="#00E676" class="edit">
@@ -80,9 +80,9 @@
                             <p>Are you sure you want to remove this supplier ?</p>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Discard</v-btn>
+                            <v-btn color="red darken-1" text @click="closeDelete">Cancel</v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="deleteItemConfirm">Okay</v-btn>
+                            <v-btn color="blue darken-1" text @click="deleteSupplierConfirm">Yes</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -104,6 +104,7 @@ export default {
             brand: '',
             country: '',
             logo:'',
+            supplierId:null,
             headers: [{
                     text: 'Logo',
                     value: 'logo',
@@ -127,14 +128,17 @@ export default {
         ...mapState(['brands'])
     },
     methods: {
-        ...mapActions(['getAllBrands','createBrand']),
+        ...mapActions(['getAllBrands','createBrand','deleteSupplier']),
         closeDelete() {
             this.dialogDelete = false;
+            this.supplierId = null;
         },
-        deleteItemConfirm() {
+        deleteSupplierConfirm() {
+            this.deleteSupplier(this.supplierId);
             this.closeDelete();
         },
-        deleteItem() {
+        deleted(supplierId) {
+            this.supplierId = supplierId;
             this.dialogDelete = true;
         },
         selectLogo(event){

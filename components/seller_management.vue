@@ -71,7 +71,7 @@
                         <td>{{ seller.phone }}</td>
                         <td>{{ seller.address }}</td>
                         <td>
-                            <v-icon small color="red" class="delete mr-2" @click="deleteItem">
+                            <v-icon small color="red" class="delete mr-2" @click="deleted(seller.id)">
                                 mdi-delete
                             </v-icon>
                             <v-icon small color="#00E676" class="edit">
@@ -92,9 +92,9 @@
                             <p>Are you sure you want to remove this seller ?</p>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Discard</v-btn>
+                            <v-btn color="red darken-1" text @click="closeDelete">Cancel</v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="deleteItemConfirm">Okay</v-btn>
+                            <v-btn color="blue darken-1" text @click="deleteSellerConfirm">Yes</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -118,6 +118,7 @@ export default {
             lastName: '',
             tel: '',
             address: '',
+            id:null,
             headers: [{
                     text: 'First Name',
                     value: 'firstName'
@@ -150,11 +151,12 @@ export default {
         ...mapState(['sellers'])
     },
     methods: {
-        ...mapActions(['createSeller','getAllsellers']),
+        ...mapActions(['createSeller','getAllsellers','deleteSeller']),
         closeDelete() {
             this.dialogDelete = false;
         },
-        deleteItemConfirm() {
+        deleteSellerConfirm() {
+            this.deleteSeller(this.id);
             this.closeDelete();
         },
         getSellers(){
@@ -165,8 +167,9 @@ export default {
                 console.log(error)
             });
         },
-        deleteItem() {
+        deleted(sellerId) {
             this.dialogDelete = true;
+            this.id = sellerId;
         },
         create(){
             const seller = {

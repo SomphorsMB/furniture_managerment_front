@@ -47,7 +47,7 @@ export default {
     },
     methods: {
         getProductSold() {
-            this.$axios.$get('sellers').then((product_sold) => {
+            this.$axios.$get('product-solds').then((product_sold) => {
                 this.products_sold = product_sold;
                 console.log(this.products_sold);
             }).catch((err) => {

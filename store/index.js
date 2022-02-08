@@ -82,6 +82,15 @@ export const AUTH_MUTATIONS = {
       
       
     },
+    // logout the user
+    logout ({ commit, state }) {
+      window.localStorage.setItem('token',null);
+      window.localStorage.setItem('role',null);
+      this.$router.push('/login')
+      this.$axios.$post('/auth/logout');
+      commit(AUTH_MUTATIONS.LOGOUT)
+    },
+
     async getUserRole({commit,state}){
       const role = window.localStorage.getItem('role');
       console.log(role)
@@ -209,16 +218,35 @@ export const AUTH_MUTATIONS = {
           console.log(error)
       });
     },
-  
-    // logout the user
-    logout ({ commit, state }) {
-      window.localStorage.setItem('token',null);
-      window.localStorage.setItem('role',null);
-      this.$router.push('/login')
-      this.$axios.$post('/auth/logout');
-      commit(AUTH_MUTATIONS.LOGOUT)
+
+
+    async deleteProduct({commit, state},id){
+      await this.$axios.$delete('/products/'+id).then(res=>{
+          console.log(res);
+      })
     },
+    async deleteSeller({commit, state},id){
+      await this.$axios.$delete('/sellers/'+id).then(res=>{
+          console.log(res);
+      })
+    },
+    async deleteCategory({commit, state},id){
+      await this.$axios.$delete('/categories/'+id).then(res=>{
+          console.log(res);
+      })
+    },
+    async deleteSupplier({commit, state},id){
+      await this.$axios.$delete('/product-suppliers/'+id).then(res=>{
+          console.log(res);
+      })
+    }
+  
+    
   }
+
+
+
+
   
   export const getters = {
     // determine if the user is authenticated based on the presence of the access token

@@ -47,7 +47,7 @@
                     <tr v-for="category in items" :key="category.id">
                         <td>{{ category.name }}</td>
                         <td>
-                            <v-icon small color="red" class="delete mr-2" @click="deleteItem">
+                            <v-icon small color="red" class="delete mr-2" @click="deleted(category.id)">
                                 mdi-delete
                             </v-icon>
                             <v-icon small color="#00E676" class="edit">
@@ -68,9 +68,9 @@
                             <p>Are you sure you want to remove this category ?</p>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Discard</v-btn>
+                            <v-btn color="red darken-1" text @click="closeDelete">Cancel</v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="deleteItemConfirm">Okay</v-btn>
+                            <v-btn color="blue darken-1" text @click="deleteCategoryConfirm">Yes</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -90,6 +90,7 @@ export default {
             dialog: false,
             dialogDelete: false,
             name: '',
+            categoryId:null,
             headers: [
                 {
                     text: 'Name',
@@ -107,15 +108,18 @@ export default {
         ...mapState(['categories']),
     },
     methods: {
-        ...mapActions(['createCategory','getAllCategories']),
+        ...mapActions(['createCategory','getAllCategories','deleteCategory']),
         closeDelete() {
             this.dialogDelete = false;
+            this.categoryId = null;
         },
-        deleteItemConfirm() {
+        deleteCategoryConfirm() {
+            this.deleteCategory(this.categoryId);
             this.closeDelete();
         },
-        deleteItem() {
+        deleted(categoryId) {
             this.dialogDelete = true;
+            this.categoryId = categoryId
         },
         create(){
             const category = {name:this.name}
