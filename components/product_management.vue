@@ -87,7 +87,7 @@
                             <v-icon small color="#00E676" class="edit mr-1">
                                 mdi-pencil
                             </v-icon>
-                            <v-icon small color="#00E676" class="edit" @click="addAmount(product.productDetail_id)">
+                            <v-icon small color="#00E676" class="edit" @click="addAmount(product)">
                                 mdi-plus
                             </v-icon>
                             <v-icon small color="#00E676" class="edit" @click="discountItem(product.productDetail_id)">
@@ -106,9 +106,9 @@
                             <p>Are you sure you want to delete this item?</p>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Discard</v-btn>
+                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="deleteItemConfirm">Okay</v-btn>
+                            <v-btn color="blue darken-1" text @click="deleteItemConfirm">Yes</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -124,9 +124,9 @@
                             </v-col>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Cancel</v-btn>
+                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" text @click="addAmountConfirm">Save</v-btn>
+                            <v-btn color="blue darken-1" text @click="addAmountConfirm">Add</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -158,7 +158,7 @@
                             </v-col>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Cancel</v-btn>
+                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-spacer></v-spacer>
                             <v-btn color="blue darken-1" text @click="discountItemConfirm">Save</v-btn>
                         </v-card-actions>
@@ -254,7 +254,8 @@ export default {
                 },
             ],
             // products: [],
-            id:null,
+            productId:null,
+            productDetail:{},
         };
     },
     computed: {
@@ -266,26 +267,41 @@ export default {
 
     },
     methods: {
-        ...mapActions(['createProduct','createDiscount','getAllProduct','getAllCategories','getAllBrands']),
+        ...mapActions(['createProduct','createDiscount','getAllProduct','getAllCategories','getAllBrands','deleteProduct']),
 
-        closeDelete() {
+        closeDialog() {
             this.dialogDelete = false;
             this.dialogAdd = false;
             this.dialogDiscount = false;
+            this.productId = null;
         },
         deleteItemConfirm() {
-            this.closeDelete();
+            this.deleteProduct(this.productId);
+            this.closeDialog();
+
         },
 
-        deleteItem(produtId) {
+        deleteItem(productId) {
             this.dialogDelete = true;
+            this.productId = productId;
         },
 
         addAmountConfirm() {
-            this.closeDelete();
+
+            this.closeDialog();
         },
 
-        addAmount() {
+        addAmount(productDetail) {
+            
+            // this.productDetail.avatar = productDetail.productDetail_avatar;
+            // this.productDetail.avatar = productDetail.productDetail_unit;
+            // this.productDetail.avatar = productDetail.productDetail_price;
+            // this.productDetail.avatar = productDetail.productDetail_color;
+            // this.productDetail.avatar = productDetail.productDetail_rawMaterial;
+            // this.productDetail.avatar = productDetail.productDetail_size;
+            // this.productDetail.product = productDetail.productDetail_productId;
+            // this.productDetail.avatar = productDetail.productDetail_supplierId;
+
             this.dialogAdd = true;
         },
 
@@ -297,7 +313,7 @@ export default {
                 end_at:this.end_at
             }
             this.createDiscount(discount)
-            this.closeDelete();
+            this.closeDialog();
         },
 
         discountItem(productDetailId) {
