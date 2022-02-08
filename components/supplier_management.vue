@@ -133,8 +133,10 @@ export default {
             this.dialogDelete = false;
             this.supplierId = null;
         },
-        deleteSupplierConfirm() {
-            this.deleteSupplier(this.supplierId);
+        async deleteSupplierConfirm() {
+            await this.deleteSupplier(this.supplierId);
+            this.getAllBrands();
+
             this.closeDelete();
         },
         deleted(supplierId) {
@@ -144,25 +146,18 @@ export default {
         selectLogo(event){
             this.logo = event.target.files[0]
         },
-        getSupplier(){
-            this.$axios.$get('/product-suppliers').then(res=>{
-                this.suppliers = res.data;
-            }).catch(error=>{
-                console.log(error)
-            });
-        },
         async create(){
             const supplier = new FormData();
             supplier.append('brand',this.brand);
             supplier.append('country',this.country);
             supplier.append('logo',this.logo);
             await this.createBrand(supplier);
-                this.getAllBrands();
+            this.getAllBrands();
+
                 this.dialog = false;
                 this.brand = '';
                 this.country = '';
                 this.logo = '';
-
         }
     },
     mounted() {
