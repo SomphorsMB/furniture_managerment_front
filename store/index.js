@@ -11,7 +11,8 @@ export const AUTH_MUTATIONS = {
     id: null, // user id
     email: null, // user email address
     products: [],
-    productDiscount: []
+    productDiscount: [],
+    productInCart: [],
   })
   
   export const mutations = {
@@ -45,6 +46,13 @@ export const AUTH_MUTATIONS = {
       state.productDiscount = productDiscount;
       console.log(state.productDiscount)
 
+    },
+    addProductCart(state, product){
+      state.productInCart.push({...product})
+      console.log(state.productInCart)
+    },
+    setProductInCart(state, products){
+      state.productInCart = products;
     }
   }
   
@@ -119,6 +127,30 @@ export const AUTH_MUTATIONS = {
       });
     },
   
+    async addProductToCart({commit}, {product, newValue}){
+      const newProduct = {
+        product: product,
+        unit: newValue
+      }
+      commit('addProductCart', {...newProduct})
+    },
+
+    async updateProductInCart({commit, state}, {id, unit}){
+      let array = []
+     for(let product of state.productInCart){
+      console.log(id, unit)
+
+       if (product.product.productDetail_id == id){
+          product.unit = unit;
+          array.push({...product});
+       }else{
+        array.push({...product});
+       }
+     }
+
+     commit('setProductInCart', [...array])
+    },
+
     // logout the user
     logout ({ commit, state }) {
       commit(AUTH_MUTATIONS.LOGOUT)
@@ -131,13 +163,14 @@ export const AUTH_MUTATIONS = {
       return state.access_token && state.access_token !== ''
     },
     getToken(state){
-      // console.log(state.access_token)
-
       return state.access_token;
     },
 
+    productInCart(state){
+      return state.productInCart;
+    },
+
     products(state){
-      console.log('hash',state.products);
       return state.products;
     }
   }

@@ -45,7 +45,7 @@
         <v-btn icon class="mr-lg-6">
             <v-icon>mdi-magnify</v-icon>
         </v-btn>
-        <v-badge class="mr-lg-12 mr-sm-6 mt-3" bordered color="error" :icon="number" overlap>
+        <v-badge class="mr-lg-12 mr-sm-6 mt-3" bordered color="error" :icon="productInCart.length" overlap>
             <v-btn icon>
                 <v-icon class="mb-3" size="36px" @click="dialogCart = true">mdi-cart-outline</v-icon>
             </v-btn>
@@ -60,6 +60,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex"
 export default {
     // layout: "default",
     name: 'DefaultLayout',
@@ -99,7 +100,14 @@ export default {
             miniVariant: false,
             number: "28"
         }
-    }
+    },
+    computed:{
+        ...mapGetters(['productInCart']),
+    },
+    // methods:{
+    //     ...mapGetters(['productInCart']),
+    // },
+    
 }
 </script>
 

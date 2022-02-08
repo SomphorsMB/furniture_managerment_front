@@ -15,22 +15,25 @@
             <v-row>
               <v-col cols="8" class="">
                 <v-row>
-                  <v-col cols="8" class="font-weight-bold"> Item </v-col>
-                  <v-col cols="2" class="text-center font-weight-bold"> QTY </v-col>
+                  <v-col cols="7" class="font-weight-bold"> Item </v-col>
+                  <v-col cols="3" class="text-center font-weight-bold"> QTY </v-col>
                   <v-col cols="2" class="text-center font-weight-bold"> Price </v-col>
                 </v-row>
                 <v-divider></v-divider>
-                <v-row class="elevation-1 mt-2" v-for="n in 12" :key="n">
-                  <v-col cols="8" class="d-flex align-start">
-                    <v-img
-                      src="https://cdn.shopify.com/s/files/1/0279/9153/9746/products/furniture_18_1_180x.jpg?v=1576499523"
-                      width="35%"
+                <v-card-subtitle class="mx-auto text-center" v-if="productInCart.length == 0">Cart Emty</v-card-subtitle>
+                <v-row class="elevation-1 mt-2" v-for="product in productInCart" :key="product">
+                  <v-col cols="7" class="d-flex align-start">
+                    <v-col cols="5" class="pa-0">
+                      <v-img
+                      :src="'http://localhost:5000/api/product-details/image/'+product.product.productDetail_avatar"
+                      height="200px"
                     ></v-img>
+                    </v-col>
                     <v-card-subtitle class="pt-0 text-h6"
-                      >Antique Mirror Beau Accent Table</v-card-subtitle
+                      >{{product.product.product_name}}</v-card-subtitle
                     >
                   </v-col>
-                  <v-col cols="2" class="text-center px-0">
+                  <v-col cols="3" class="text-center px-0">
                     <div class="minusplusnumber mt-2">
                       <div
                         class="mpbtn minus text-h6 px-3"
@@ -41,20 +44,20 @@
                       <div id="field_container">
                         <input
                           type="text"
-                          v-model="newValue"
+                          v-model="product.unit"
                           class="text-center"
                         />
                       </div>
-                      <div class="mpbtn plus text-h6" v-on:click="plus()">
+                      <div class="mpbtn plus text-h6" v-on:click="plus(product.product.productDetail_id, product.unit+1)">
                         +
                       </div>
                     </div>
                   </v-col>
                   <v-col cols="2" class="text-center mt-4 px-0">
-                    <span class="orange--text">$8227.00</span><br />
-                    <span class="text-decoration-line-through orange--text"
-                      >$8227.00</span
-                    ><br />
+                    <span class="orange--text" v-if="product.product.discount_discount !== null">${{ product.product.productDetail_price-product.product.productDetail_price*product.product.discount_discount/100 }}</span><br v-if="product.product.discount_discount !== null"/>
+                    <span class="orange--text" v-if="product.product.discount_discount == null">${{ product.product.productDetail_price }}</span><br v-if="product.product.discount_discount == null"/>
+                    <!-- <span class="orange--text" v-else>$8227.00</span><br /> -->
+                    <span class="text-decoration-line-through orange--text" v-if="product.product.discount_discount !== null">$ {{ product.product.productDetail_price }}</span><br v-if="product.product.discount_discount !== null"/>
                     <div class="space"></div>
                     <v-icon class="float-end mr-5">mdi-delete</v-icon>
                   </v-col>
@@ -65,7 +68,7 @@
                   <v-divider></v-divider>
                   <v-card-text class="px-0 d-flex justify-space-between">
                       <v-card-subtitle class="pa-0 font-weight-bold">Total Price:</v-card-subtitle>
-                      <v-card-subtitle class="py-0 font-weight-bold orange--text">$3143.12</v-card-subtitle>
+                      <v-card-subtitle class="py-0 font-weight-bold orange--text">$ {{ totalPrice }}</v-card-subtitle>
                   </v-card-text>
                   <v-select
                     :items="sellers"
@@ -79,7 +82,6 @@
                         rows="1"
                         row-height="15"
                         label="Description"
-                        value="The Woodman s"
                     ></v-textarea>
 
                     <v-btn width="100%" class="" dark>Check out</v-btn>
@@ -93,19 +95,27 @@
 </template>
 
 <script>
+import { mapGetters, mapActions} from "vuex"
 export default {
   data: () => ({
     dialog: true,
     min: 1,
     max: 100,
     newValue: 1,
-    sellers: ['Somphors NGOUN', 'Pros NOB', 'Bunsal HUL']
+    sellers: ['Somphors NGOUN', 'Pros NOB', 'Bunsal HUL'],
+    totalPrice: 0
   }),
+  computed:{
+    ...mapGetters(['productInCart']),
+  },
   methods: {
-    plus: function () {
-        if (this.max === undefined || this.newValue < this.max) {
-            this.newValue = this.newValue + 1;
+    ...mapActions(['updateProductInCart']),
+    plus: function (id, unit) {
+        if (unit === undefined || unit < this.max) {
+            // this.product.unit = this.product.unit + 1;
             // this.$emit('input', this.newValue)
+            this.updateProductInCart({id: id, unit: unit})
+            this.totalProductPrice();
         }
     },
     minus: function () {
@@ -114,6 +124,27 @@ export default {
             // this.$emit('input', this.newValue)
         }
     },
+    totalProductPrice(){
+      for(let product of this.productInCart){
+        console.log(product.product.productDetail_price ,product.unit)
+        if (product.product.discount_discount !== null){
+          this.totalPrice += product.product.productDetail_price-product.product.productDetail_price*product.product.discount_discount/100
+        }else {
+          this.totalPrice += product.product.productDetail_price
+        }
+      }
+    }
+  },
+  mounted(){
+    // this.totalProductPrice();
+    for(let product of this.productInCart){
+        console.log(product.product.productDetail_price ,product.unit)
+        if (product.product.discount_discount !== null){
+          this.totalPrice += (product.product.productDetail_price-product.product.productDetail_price*product.product.discount_discount/100)*product.unit
+        }else {
+          this.totalPrice += (product.product.productDetail_price)*product.unit
+        }
+      }
   }
 };
 </script>
@@ -155,5 +186,8 @@ export default {
 }
 .space {
   height: 110px;
+}
+.image{
+  width: 100px;
 }
 </style>
