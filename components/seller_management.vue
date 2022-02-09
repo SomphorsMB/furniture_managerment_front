@@ -4,17 +4,16 @@
         <h1>Sellers Management</h1>
     </div>
     <div class="text-center">
-        <v-dialog v-model="dialog" width="500">
-            <template v-slot:activator="{ on, attrs }">
-                <div class="float-right">
-                    <v-btn class="mx-2" fab color="C4C4C4" v-bind="attrs" v-on="on">
-                        <v-icon dark>
-                            mdi-plus
-                        </v-icon>
-                    </v-btn>
-                </div>
-            </template>
-
+        <template>
+            <div class="float-right">
+                <v-btn class="mx-2" fab color="C4C4C4" @click="openFormCreate">
+                    <v-icon dark>
+                        mdi-plus
+                    </v-icon>
+                </v-btn>
+            </div>
+        </template>
+        <v-dialog persistent v-model="dialog" width="500">
             <v-card>
                 <div align="center" class="grey lighten-3 pa-3">
                     <h2>
@@ -53,9 +52,9 @@
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="create">
-                        Save
-                    </v-btn>
+                    <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
+                    <v-btn color="primary" v-show="addBtn" text @click="create">Add</v-btn>
+                    <v-btn color="primary" v-show="updateBtn" text @click="update">Update</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -74,14 +73,14 @@
                             <v-icon small color="red" class="delete mr-2" @click="deleted(seller.id)">
                                 mdi-delete
                             </v-icon>
-                            <v-icon small color="#00E676" class="edit">
+                            <v-icon small color="#00E676" class="edit" @click="openFormUpdate(seller)">
                                 mdi-pencil
                             </v-icon>
                         </td>
                     </tr>
                 </tbody>
                 <!--  -->
-                <v-dialog v-model="dialogDelete" max-width="350px">
+                <v-dialog persistent v-model="dialogDelete" max-width="350px">
                     <v-card>
                         <div align="center" class="grey lighten-3 pa-3">
                             <h2>
@@ -92,8 +91,8 @@
                             <p>Are you sure you want to remove this seller ?</p>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Cancel</v-btn>
                             <v-spacer></v-spacer>
+                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-btn color="blue darken-1" text @click="deleteSellerConfirm">Yes</v-btn>
                         </v-card-actions>
                     </v-card>
@@ -118,7 +117,9 @@ export default {
             lastName: '',
             tel: '',
             address: '',
-            id:null,
+            sellerId:null,
+            addBtn:true,
+            updateBtn:false,
             headers: [{
                     text: 'First Name',
                     value: 'firstName'
@@ -151,26 +152,57 @@ export default {
         ...mapState(['sellers'])
     },
     methods: {
-        ...mapActions(['createSeller','getAllsellers','deleteSeller']),
-        closeDelete() {
+        ...mapActions(['createSeller','getAllsellers','deleteSeller','updateSeller',]),
+        closeDialog() {
+            this.addBtn =  true;
+            this.updateBtn = false;
             this.dialogDelete = false;
+            this.sellerId = null;
+            this.dialog = false;
+            this.firstName = '';
+            this.lastName = '';
+            this.address = '';
+            this.tel = '';
+            this.gender = '';
         },
         async deleteSellerConfirm() {
-            await this.deleteSeller(this.id);
+            await this.deleteSeller(this.sellerId);
             this.getAllsellers();
-            this.closeDelete();
-        },
-        getSellers(){
-            this.$axios.$get('/sellers').then(res=>{
-                console.log(res)
-                this.sellers = res;
-            }).catch(error=>{
-                console.log(error)
-            });
+            this.closeDialog();
         },
         deleted(sellerId) {
             this.dialogDelete = true;
-            this.id = sellerId;
+            this.sellerId = sellerId;
+        },
+
+        openFormCreate(){
+            this.dialog = true;
+        },
+
+        openFormUpdate(seller){  
+            this.addBtn = false;
+            this.updateBtn = true;
+            this.dialog = true;
+            this.sellerId = seller.id;
+            this.lastName = seller.lastName;
+            this.firstName = seller.firstName;
+            this.tel = seller.phone;
+            this.gender = seller.gender;
+            this.address = seller.address;
+        },
+
+        async update(){
+            const seller = {
+                firstName:this.firstName,
+                lastName:this.lastName,
+                gender:this.gender,
+                phone:this.tel,
+                address:this.address
+            }
+            const sellerData = {id:this.sellerId,seller:seller}
+            await this.updateSeller(sellerData);
+            this.getAllsellers();
+            this.closeDialog();
         },
         async create(){
             const seller = {
@@ -182,12 +214,7 @@ export default {
             }
             await this.createSeller(seller);
             this.getAllsellers();
-                this.dialog = false;
-                this.firstName = '';
-                this.lastName = '';
-                this.address = '';
-                this.tel = '';
-                this.gender = '';
+            this.closeDialog();
         }
     },
     mounted() {

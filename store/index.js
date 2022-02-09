@@ -142,6 +142,8 @@ export const AUTH_MUTATIONS = {
     async createSeller({ commit, dispatch }, seller){
       await this.$axios.$post('/sellers',seller).then(seller=>{
         console.log(seller);
+      }).catch(error=>{
+        console.log(error);
       });
     },
 
@@ -218,6 +220,61 @@ export const AUTH_MUTATIONS = {
           console.log(error)
       });
     },
+
+    //UpdateProduct Detail
+    async updateProductDetail({ commit, dispatch }, {id,productDetail}){
+      console.log(id)
+      console.log(productDetail)
+      await this.$axios.$patch('/product-details/'+id,productDetail).then(res=>{
+        console.log(res);
+      })
+    },
+
+    async updateProduct({ commit, append },{productId,product,productDetailId,productDetail}){
+      await this.$axios.$patch('/products/'+productId,product).then(()=>{
+        productDetail.append("product",productId);
+        this.$axios.$patch('/product-details/'+productDetailId,productDetail).then(res=>{
+          console.log(res)
+        }).catch(error=>{
+          console.log(error)
+      });
+      }).catch(error=>{
+        console.log(error)
+      });
+    },
+
+    async updateCategory({ commit, dispatch }, {id,category}){
+      await this.$axios.$patch('/categories/'+id,category).then(category=>{
+        console.log(category);
+      }).catch(error=>{
+        console.log(error)
+      });
+    },
+    
+    async updateBrand({ commit, dispatch }, {id,supplier}){
+      await this.$axios.$patch('/product-suppliers/'+id,supplier).then(supplier=>{
+        console.log(supplier);
+      }).catch(error=>{
+        console.log(error)
+      });
+    },
+
+    async updateSeller({ commit, dispatch }, {id,seller}){
+      await this.$axios.$patch('/sellers/'+id,seller).then(seller=>{
+        console.log(seller);
+      }).catch(error=>{
+        console.log(error)
+      });
+    },
+    async updateDiscount({ commit, dispatch }, {id,discount}){
+      await this.$axios.$patch('/discount/'+id,discount).then(discount=>{
+        console.log(discount);
+      }).catch(error=>{
+        console.log(error)
+      });
+    },
+
+
 
 
     async deleteProduct({commit, state},id){

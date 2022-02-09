@@ -4,14 +4,14 @@
         <h1>Products Management</h1>
     </div>
     <div class="text-center">
-        <v-dialog v-model="dialog" width="500">
-            <template v-slot:activator="{ on, attrs }">
+        <template>
                 <div class="float-right">
-                    <v-btn class="mx-2" fab color="C4C4C4" v-bind="attrs" v-on="on">
-                        <v-icon dark> mdi-plus </v-icon>
+                    <v-btn class="mx-2" fab color="C4C4C4"  @click="addDialog">
+                        <v-icon dark > mdi-plus </v-icon>
                     </v-btn>
                 </div>
-            </template>
+        </template>
+        <v-dialog persistent v-model="dialog" width="500">
             <v-card>
                 <div align="center" class="grey lighten-3 pa-3">
                     <h2>Create a Product</h2>
@@ -54,12 +54,11 @@
                         </v-container>
                     </v-form>
                 </v-card-text>
-                <v-divider class="devider"></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="create" class="save">
-                        Save
-                    </v-btn>
+                    <v-btn color="red darken-1" text @click="closeDialog" class="cancel">Cancel</v-btn>
+                    <v-btn color="primary" v-show="addBtn" text @click="create" class="add">Add</v-btn>
+                    <v-btn color="primary" v-show="updateBtn" text @click="update" class="update">Update</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -84,20 +83,20 @@
                             <v-icon small color="red" class="delete mr-1" @click="deleteItem(product.product_id)">
                                 mdi-delete
                             </v-icon>
-                            <v-icon small color="#00E676" class="edit mr-1">
+                            <v-icon small color="#00E676" class="edit mr-1" @click="updateDialog(product)">
                                 mdi-pencil
                             </v-icon>
                             <v-icon small color="#00E676" class="edit" @click="addAmount(product)">
                                 mdi-plus
                             </v-icon>
-                            <v-icon small color="#00E676" class="edit" @click="discountItem(product.productDetail_id)">
+                            <v-icon small color="#00E676" class="edit" @click="discountItem(product)">
                                 mdi-percent
                             </v-icon>
                         </td>
                     </tr>
                 </tbody>
                 <!--  -->
-                <v-dialog v-model="dialogDelete" max-width="350px">
+                <v-dialog persistent v-model="dialogDelete" max-width="350px">
                     <v-card>
                         <div align="center" class="grey lighten-3 pa-3">
                             <h2>Delete this product</h2>
@@ -106,14 +105,14 @@
                             <p>Are you sure you want to delete this item?</p>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-spacer></v-spacer>
+                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-btn color="blue darken-1" text @click="deleteItemConfirm">Yes</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
                 <!--  -->
-                <v-dialog v-model="dialogAdd" max-width="350px">
+                <v-dialog persistent v-model="dialogAdd" max-width="350px">
                     <v-card>
                         <div align="center" class="grey lighten-3 pa-3">
                             <h2>Increase Product</h2>
@@ -124,14 +123,14 @@
                             </v-col>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-spacer></v-spacer>
+                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-btn color="blue darken-1" text @click="addAmountConfirm">Add</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
                 <!--  -->
-                <v-dialog v-model="dialogDiscount" max-width="350px">
+                <v-dialog persistent v-model="dialogDiscount" max-width="350px">
                     <v-card>
                         <div align="center" class="grey lighten-3 pa-3">
                             <h2>Discount Product</h2>
@@ -142,24 +141,24 @@
                             </v-col>
                             <v-col cols="12" class="start_date">
                                 <v-menu v-model="start_date" :close-on-content-click="false" max-width="290">
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-text-field :value="computedDateFormattedMomentjs" dense small outlined clearable label="Start Date" v-bind="attrs" v-on="on"></v-text-field>
+                                    <template v-slot:activator="{ on, start_at }">
+                                        <v-text-field :value="startDateFormatted" dense small outlined clearable label="Start Date" v-bind="start_at" v-on="on"></v-text-field>
                                     </template>
                                     <v-date-picker v-model="start_at" @change="start_date = false"></v-date-picker>
                                 </v-menu>
                             </v-col>
                             <v-col cols="12" class="end_date">
                                 <v-menu v-model="end_date" :close-on-content-click="false" max-width="290">
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-text-field :value="computedDateFormattedMomentjs" dense small outlined clearable label="End Date" v-bind="attrs" v-on="on"></v-text-field>
+                                    <template v-slot:activator="{ on, end_at }">
+                                        <v-text-field :value="endDateFormatted" dense small outlined clearable label="End Date" v-bind="end_at" v-on="on"></v-text-field>
                                     </template>
                                     <v-date-picker v-model="end_at" @change="end_date = false"></v-date-picker>
                                 </v-menu>
                             </v-col>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-spacer></v-spacer>
+                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-btn color="blue darken-1" text @click="discountItemConfirm">Save</v-btn>
                         </v-card-actions>
                     </v-card>
@@ -175,6 +174,7 @@ import axios from "axios";
 import moment from 'moment'
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { format, parseISO } from 'date-fns'
+import productCardVue from './productCard.vue';
 export default {
     data() {
         return {
@@ -193,13 +193,10 @@ export default {
             avatar:"",
             discount: "0%",
             amount: 0,
-            date: format(parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
             start_date: false,
             end_date: false,
-            start_at:null,
-            end_at:null,
-            // categories: [],
-            // brands: [],
+            start_at:format(parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
+            end_at:format(parseISO(new Date().toISOString()), 'yyyy-MM-dd'),
             sizes: ["Small", "Medium", "Large"],
             colors: [
                 "Red",
@@ -255,32 +252,109 @@ export default {
             ],
             // products: [],
             productId:null,
+            productDetailId:null,
+            categoryId : null,
+            brandId:null,
+            discountId:null,
             productDetail:{},
+            addBtn : true,
+            updateBtn : false,
         };
     },
     computed: {
 
-        computedDateFormattedMomentjs () {
-            return this.date ? moment(this.date).format('dddd, MMMM Do YYYY') : ''
+        startDateFormatted() {
+            return this.start_at ? moment(this.start_at).format('dddd, MMMM Do YYYY') : ''
+        },
+        endDateFormatted() {
+            return this.end_at ? moment(this.end_at ).format('dddd, MMMM Do YYYY') : ''
         },
         ...mapState(['products','categories','brands']),
 
     },
     methods: {
-        ...mapActions(['createProduct','createDiscount','getAllProduct','getAllCategories','getAllBrands','deleteProduct']),
+        ...mapActions(['createProduct','createDiscount','getAllProduct','getAllCategories','getAllBrands','deleteProduct','updateProductDetail','updateProduct','updateDiscount']),
 
         closeDialog() {
             this.dialogDelete = false;
+            this.dialog = false;
             this.dialogAdd = false;
             this.dialogDiscount = false;
             this.productId = null;
+            this.productDetailId = null;
+            this.discountId = null;
+            this.name = '';
+            this.brand = null;
+            this.rawMaterial = '';
+            this.price = 0;
+            this.avatar = '';
+            this.unit = '';
+            this.size = '';
+            this.color = '';
+            this.category =  null;
+        },
+
+        addDialog(){
+            this.addBtn = true;
+            this.updateBtn= false;
+            this.dialog = true;
+        },
+
+        updateDialog(product){
+            this.productId = product.product_id;
+            this.productDetailId = product.productDetail_id;
+            this.categoryId = product.category_id;
+            this.brandId = product.productDetail_supplierId;
+            this.dialog = true;
+            this.addBtn = false;
+            this.updateBtn = true;
+            this.name = product.product_name;
+            this.brand = product.supplier_brand;
+            this.rawMaterial = product.productDetail_rawMaterial;
+            this.price = product.productDetail_price;
+            this.avatar = product.productDetail_avatar;
+            this.unit = product.productDetail_unit;
+            this.size = product.productDetail_size;
+            this.color = product.productDetail_color;
+            this.category = product.category_name;
+        },
+
+        async update(){
+            const product = {};
+            product.name = this.name;
+            if(this.category.id == undefined){
+                product.category = this.categoryId;
+
+            }else{
+                product.category = this.category.id;
+            }
+           
+            const productDetail =  new FormData();
+            if(this.brand.id == undefined){
+                productDetail.append("supplier",this.brandId);
+            }else{
+                productDetail.append("supplier",this.brand.id);
+            }
+            productDetail.append("color",this.color);
+            productDetail.append("size",this.size);
+            productDetail.append("price",parseInt(this.price));
+            productDetail.append("unit",parseInt(this.unit));
+            productDetail.append("rawMaterial",this.rawMaterial);
+            productDetail.append("avatar",this.avatar);
+            const productData = {
+                productId:this.productId,
+                product: product,
+                productDetailId: this.productDetailId,
+                productDetail: productDetail
+            }
+            await this.updateProduct(productData);
+            this.getAllProduct();
+            this.closeDialog();
         },
         async deleteItemConfirm() {
             await this.deleteProduct(this.productId);
             this.getAllProduct();
-
             this.closeDialog();
-
         },
 
         deleteItem(productId) {
@@ -288,39 +362,59 @@ export default {
             this.productId = productId;
         },
 
-        addAmountConfirm() {
-
+        async addAmountConfirm() {
+            this.productDetail.unit =  (this.productDetail.unit + parseInt(this.amount)).toString();
+            const productDetailData = {
+                id:this.productDetailId,
+                productDetail:this.productDetail
+            }
+            await this.updateProductDetail(productDetailData);
+            this.amount = null;
+            this.getAllProduct();
             this.closeDialog();
         },
 
         addAmount(productDetail) {
-            
-            // this.productDetail.avatar = productDetail.productDetail_avatar;
-            // this.productDetail.avatar = productDetail.productDetail_unit;
-            // this.productDetail.avatar = productDetail.productDetail_price;
-            // this.productDetail.avatar = productDetail.productDetail_color;
-            // this.productDetail.avatar = productDetail.productDetail_rawMaterial;
-            // this.productDetail.avatar = productDetail.productDetail_size;
-            // this.productDetail.product = productDetail.productDetail_productId;
-            // this.productDetail.avatar = productDetail.productDetail_supplierId;
-
+            this.productDetailId = productDetail.productDetail_id
+            this.productDetail.avatar = productDetail.productDetail_avatar;
+            this.productDetail.price = (productDetail.productDetail_price).toString();
+            this.productDetail.unit = productDetail.productDetail_unit;
+            this.productDetail.color = productDetail.productDetail_color;
+            this.productDetail.rawMaterial = productDetail.productDetail_rawMaterial;
+            this.productDetail.size = productDetail.productDetail_size;
             this.dialogAdd = true;
         },
 
         async discountItemConfirm() {
             const discount = {
-                product:this.id,
+                product:this.productDetailId,
                 discount:parseInt(this.discount),
                 start_at:this.start_at,
                 end_at:this.end_at
             }
-            await this.createDiscount(discount);
+            console.log(this.discountId);
+            if(this.discountId !== null){
+              await this.updateDiscount({id:this.discountId,discount:discount});
+            }else{
+              await this.createDiscount(discount);
+            }
             this.getAllProduct();
             this.closeDialog();
         },
 
-        discountItem(productDetailId) {
-            this.id = productDetailId;
+        discountItem(product) {
+            this.productDetailId = product.productDetail_id;
+            if(product.discount_id !==null){
+                this.discountId = product.discount_id;
+                this.discount =  product.discount_discount;
+                this.start_at = format(parseISO(new Date(product.discount_start_at).toISOString()), 'yyyy-MM-dd');
+                this.end_at = format(parseISO(new Date(product.discount_end_at).toISOString()), 'yyyy-MM-dd');
+            }
+            else{
+                this.discount =  0;
+                this.start_at = format(parseISO(new Date().toISOString()), 'yyyy-MM-dd');
+                this.end_at = format(parseISO(new Date().toISOString()), 'yyyy-MM-dd');
+            }
             this.dialogDiscount = true;
         },
 
@@ -346,23 +440,13 @@ export default {
             }
             await this.createProduct(productData);
             this.getAllProduct();
-            this.dialog = false;
-            this.name = '';
-            this.brand = null;
-            this.rawMaterial = '';
-            this.price = 0;
-            this.avatar = '';
-            this.unit = '';
-            this.size = '';
-            this.color = '';
-            this.category =  null;    
+            this.closeDialog();  
         },
     },
     mounted() {
         this.getAllCategories();
         this.getAllBrands();
         this.getAllProduct();
-
     },
 };
 </script>
@@ -400,7 +484,8 @@ export default {
     display: none;
 }
 
-.save {
+
+.add,.update,.cancel {
     margin-top: -40px;
 }
 

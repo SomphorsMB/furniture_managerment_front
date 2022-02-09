@@ -4,16 +4,16 @@
         <h1>Suppliers Management</h1>
     </div>
     <div class="text-center">
-        <v-dialog v-model="dialog" width="350">
-            <template v-slot:activator="{ on, attrs }">
-                <div class="float-right">
-                    <v-btn class="mx-2" fab color="C4C4C4" v-bind="attrs" v-on="on">
-                        <v-icon dark>
-                            mdi-plus
-                        </v-icon>
-                    </v-btn>
-                </div>
-            </template>
+        <template>
+            <div class="float-right">
+                <v-btn class="mx-2" fab color="C4C4C4" @click="openFormCreate">
+                    <v-icon dark>
+                        mdi-plus
+                    </v-icon>
+                </v-btn>
+            </div>
+        </template>
+        <v-dialog persistent v-model="dialog" width="350">
             <v-card>
                 <div align="center" class="grey lighten-3 pa-3">
                     <h2>
@@ -43,9 +43,9 @@
                 <v-divider></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="create">
-                        Save
-                    </v-btn>
+                    <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
+                    <v-btn color="primary"  v-show="addBtn" text @click="create">Add</v-btn>
+                    <v-btn color="primary" v-show="updateBtn" text @click="update">Update</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -62,14 +62,14 @@
                             <v-icon small color="red" class="delete mr-2" @click="deleted(brand.id)">
                                 mdi-delete
                             </v-icon>
-                            <v-icon small color="#00E676" class="edit">
+                            <v-icon small color="#00E676" class="edit" @click="openFormUpdate(brand)">
                                 mdi-pencil
                             </v-icon>
                         </td>
                     </tr>
                 </tbody>
                 <!--  -->
-                <v-dialog v-model="dialogDelete" max-width="350px">
+                <v-dialog persistent v-model="dialogDelete" max-width="350px">
                     <v-card>
                         <div align="center" class="grey lighten-3 pa-3">
                             <h2>
@@ -80,8 +80,8 @@
                             <p>Are you sure you want to remove this supplier ?</p>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Cancel</v-btn>
                             <v-spacer></v-spacer>
+                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-btn color="blue darken-1" text @click="deleteSupplierConfirm">Yes</v-btn>
                         </v-card-actions>
                     </v-card>
@@ -105,6 +105,9 @@ export default {
             country: '',
             logo:'',
             supplierId:null,
+            addBtn : true,
+            updateBtn : false,
+            supplierId : null,
             headers: [{
                     text: 'Logo',
                     value: 'logo',
@@ -128,16 +131,21 @@ export default {
         ...mapState(['brands'])
     },
     methods: {
-        ...mapActions(['getAllBrands','createBrand','deleteSupplier']),
-        closeDelete() {
+        ...mapActions(['getAllBrands','createBrand','deleteSupplier','updateBrand']),
+        closeDialog() {
+            this.addBtn = true;
+            this.updateBtn = false;
             this.dialogDelete = false;
+            this.dialog = false;
             this.supplierId = null;
+            this.brand = '';
+            this.country = '';
+            this.logo = '';  
         },
         async deleteSupplierConfirm() {
             await this.deleteSupplier(this.supplierId);
             this.getAllBrands();
-
-            this.closeDelete();
+            this.closeDialog();
         },
         deleted(supplierId) {
             this.supplierId = supplierId;
@@ -146,6 +154,33 @@ export default {
         selectLogo(event){
             this.logo = event.target.files[0]
         },
+        openFormCreate(){
+            this.dialog = true;
+
+        },
+        openFormUpdate(supplier){
+            this.supplierId = supplier.id;
+            this.brand = supplier.brand;
+            this.country = supplier.country;
+            this.logo = supplier.logo;
+            this.dialog = true;
+            this.addBtn = false;
+            this.updateBtn = true;
+        },
+        async update(){
+            const supplier = new FormData();
+            supplier.append('brand',this.brand);
+            supplier.append('country',this.country);
+            supplier.append('logo',this.logo);
+            const supplierData = {
+                id:this.supplierId,
+                supplier:supplier,
+            }
+            await this.updateBrand(supplierData);
+            this.getAllBrands();
+            this.closeDialog(); 
+
+        },
         async create(){
             const supplier = new FormData();
             supplier.append('brand',this.brand);
@@ -153,11 +188,7 @@ export default {
             supplier.append('logo',this.logo);
             await this.createBrand(supplier);
             this.getAllBrands();
-
-                this.dialog = false;
-                this.brand = '';
-                this.country = '';
-                this.logo = '';          
+            this.closeDialog();         
         }
     },
     mounted() {
