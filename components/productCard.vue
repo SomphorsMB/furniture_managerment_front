@@ -37,8 +37,11 @@
             </div>
             <div class="mpbtn plus text-h6" v-on:click="plus()">+</div>
         </div>
-        <v-btn>
+        <v-btn @click="addProductToCart({product: product, newValue: newValue})" v-if="product.productDetail_unit > 0">
             <v-icon>mdi-cart</v-icon>
+        </v-btn>
+        <v-btn v-else>
+            <v-icon class="grey--text">mdi-cart</v-icon>
         </v-btn>
     </v-card-actions>
 
@@ -49,6 +52,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 export default {
     props: ['product', 'productName'],
     data() {
@@ -71,6 +75,12 @@ export default {
                 this.newValue = this.newValue - 1;
                 // this.$emit('input', this.newValue)
             }
+        },
+        ...mapActions(['addProductToCart']),
+        prepareProductForAddToCart(product){
+            const AProduct = product;
+            AProduct.productDetail_unit = this.newValue;
+            this.addProductToCart(AProduct);
         },
     },
 };

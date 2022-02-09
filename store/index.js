@@ -16,7 +16,8 @@ export const AUTH_MUTATIONS = {
     brands:[],
     sellers:[],
     products: [],
-    productDiscount: []
+    productDiscount: [],
+    productInCart: [],
   })
   
   export const mutations = {
@@ -64,6 +65,13 @@ export const AUTH_MUTATIONS = {
       state.productDiscount = productDiscount;
       console.log(state.productDiscount)
 
+    },
+    addProductCart(state, product){
+      state.productInCart.push({...product})
+      console.log(state.productInCart)
+    },
+    setProductInCart(state, products){
+      state.productInCart = products;
     }
   }
   
@@ -220,6 +228,14 @@ export const AUTH_MUTATIONS = {
           console.log(error)
       });
     },
+  
+    async addProductToCart({commit}, {product, newValue}){
+      const newProduct = {
+        product: product,
+        unit: newValue
+      }
+      commit('addProductCart', {...newProduct})
+    },
 
     //UpdateProduct Detail
     async updateProductDetail({ commit, dispatch }, {id,productDetail}){
@@ -276,7 +292,27 @@ export const AUTH_MUTATIONS = {
 
 
 
+    async updateProductInCart({commit, state}, {id, unit}){
+      let array = []
+     for(let product of state.productInCart){
+      console.log(id, unit)
 
+       if (product.product.productDetail_id == id){
+          product.unit = unit;
+          array.push({...product});
+       }else{
+        array.push({...product});
+       }
+     }
+
+     commit('setProductInCart', [...array])
+    },
+
+    // logout the user
+    logout ({ commit, state }) {
+      commit(AUTH_MUTATIONS.LOGOUT)
+
+    },
     async deleteProduct({commit, state},id){
       await this.$axios.$delete('/products/'+id).then(res=>{
           console.log(res);
@@ -303,7 +339,6 @@ export const AUTH_MUTATIONS = {
 
 
 
-
   
   export const getters = {
     // determine if the user is authenticated based on the presence of the access token
@@ -311,12 +346,14 @@ export const AUTH_MUTATIONS = {
       return state.access_token && state.access_token !== ''
     },
     getToken(state){
-      // console.log(state.access_token)
       return state.access_token;
     },
 
+    productInCart(state){
+      return state.productInCart;
+    },
+
     products(state){
-      console.log('hash',state.products);
       return state.products;
     },
     categories(state){

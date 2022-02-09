@@ -8,10 +8,11 @@
             <template v-slot:body="{ items }">
                 <tbody>
                     <tr v-for="product_sold in items" :key="product_sold.id">
-                        <td>{{ product_sold }}</td>
-                        <td>{{ product_sold }}</td>
-                        <td>{{ product_sold }}</td>
-                        <td>{{ product_sold }}</td>
+                        <td>{{ product_sold.product_name }}</td>
+                        <td>{{ product_sold.productDetail_unit }}</td>
+                        <td>{{ "Bopha Phoung" }}</td>
+                        <td>{{ "30%" }}</td>
+                        <td>{{ product_sold.productDetail_price }}</td>
                     </tr>
                 </tbody>
             </template>
@@ -39,7 +40,11 @@ export default {
                     value: "seller",
                 },
                 {
-                    text: "Total income",
+                    text: "Discount",
+                    value: "discount",
+                },
+                {
+                    text: "Total Income",
                     value: "income",
                 },
             ],
