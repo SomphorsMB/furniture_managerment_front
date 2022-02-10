@@ -7,13 +7,15 @@
     </div>
     <filter-search />
     <v-row >
+        <!-- {{meta}}
+        {{links}} -->
         <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="product in products" :key="product.product_id">
-            <!-- <card /> -->
             <product-card :product="product"/>
+            <!-- <p>product</p> -->
         </v-col>
     </v-row>
-    <div class="text-center mt-4">
-        <v-pagination v-model="page" :length="3" color="grey"></v-pagination>
+    <div class="text-center mt-8">
+        <v-pagination v-model="pagination.current" :length="pagination.total" @input="onPageChange" :total-visible="7" color="grey"></v-pagination>
     </div>
 </div>
 </template>
@@ -33,14 +35,29 @@ export default {
     },
     data: () => ({
         page: 1,
+        products: [],
+        pagination: {
+            current: 1,
+            total: 0
+        },
     }),
     computed:
-        mapState(['products']),
+        mapState(['meta', 'links']),
     methods: {
         ...mapActions(['getAllProduct']),
+        getProduct() {
+            this.$axios.$get('products?page=' + this.pagination.current).then((res) => {
+                this.products = res.items;
+                this.pagination.current = res.meta.currentPage;
+                this.pagination.total = res.meta.totalPages;
+            })
+        },
+        onPageChange() {
+            this.getProduct();
+        },
     },
     mounted(){
-        this.getAllProduct();
+        this.getProduct();
     }
 }
 </script>
