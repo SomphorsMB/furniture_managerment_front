@@ -22,15 +22,41 @@
 <script>
 import {mapActions,mapState} from 'vuex';
 export default {
+    emits:['filter'],
     data: () => ({
-        price: [10, 50, 100, 200, 1000],
-        sizes: ['small', 'medium', 'large'],
+        price: [1,5,10,50, 100, 200,500,1000,2000],
+        sizes: ['Small', 'Medium', 'Large'],
         minPrice: null,
         maxPrice: null,
         category: null,
         brand: null,
         size: null,
+        filter:{min:null,max:null,category:null,size:null,brand:null},
     }),
+    watch:{
+
+        minPrice(){
+            this.filter.min= this.minPrice;
+            this.$emit('filter',this.filter);
+        },
+        maxPrice(){
+            this.filter.max= this.maxPrice;
+            this.$emit('filter',this.filter);
+        },
+        category(){
+            this.filter.category= this.category;
+            this.$emit('filter',this.filter);
+        },
+        brand(){
+            this.filter.brand= this.brand;
+            this.$emit('filter',this.filter);
+        },
+        size(){
+            this.filter.size= this.size;
+            this.$emit('filter',this.filter);
+        },
+        
+    },
     computed:{
         ...mapState(['brands','categories'])
     },

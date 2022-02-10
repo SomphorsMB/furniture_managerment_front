@@ -11,6 +11,7 @@ export const AUTH_MUTATIONS = {
     id: null, // user id
     email: null, // user email address
     role:null,
+    search:null,
     products: [],
     meta: [],
     links: [],
@@ -75,6 +76,9 @@ export const AUTH_MUTATIONS = {
     },
     setProductInCart(state, products){
       state.productInCart = products;
+    },
+    addsearch(state,search){
+      state.search=search;
     },
     updateProductInCart(state, {id, unit}){
       let array = []
@@ -194,6 +198,10 @@ export const AUTH_MUTATIONS = {
       commit(AUTH_MUTATIONS.SET_PAYLOAD, payload)
     },
 
+    async setSearch({ commit, state },value){
+      await commit('addsearch', value);
+    },
+
 
 
 
@@ -274,7 +282,7 @@ export const AUTH_MUTATIONS = {
       })
       commit('updateProductInCart', {id: id, unit: unit})
     },
-    //UpdateProduct Detail
+    // UpdateProduct Detail
     async updateProductDetail({ commit, dispatch }, {id,productDetail}){
       console.log(id)
       console.log(productDetail)
@@ -368,9 +376,6 @@ export const AUTH_MUTATIONS = {
     }
 
   }
-
-
-
   export const getters = {
     // determine if the user is authenticated based on the presence of the access token
     isAuthenticated: (state) => {
@@ -398,5 +403,8 @@ export const AUTH_MUTATIONS = {
     },
     rols(state){
       return state.role;
+    },
+    search(state){
+      return state.search;
     }
   }
