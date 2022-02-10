@@ -52,7 +52,7 @@ export default {
         },
     },
     computed:
-        mapState(['search','meta', 'links']),
+        mapState(['search']),
     methods: {
         ...mapActions(['getAllProduct']),
        
@@ -62,6 +62,7 @@ export default {
             this.searching(this.search,value);
         },
         searching(search,filter){
+            console.log(search,filter);
             this.listproducts = this.products;
             if(!(filter.min === null || filter.min==='')){
                 this.listproducts = this.listproducts.filter(product => product.productDetail_price >= filter.min);
@@ -84,7 +85,9 @@ export default {
         },
         getProduct() {
             this.$axios.$get('products?page=' + this.pagination.current).then((res) => {
-                this.listproducts = res.items;
+                this.products = res.items;
+                this.listproducts = this.products;
+                this.searching(this.search,this.filters);
                 this.pagination.current = res.meta.currentPage;
                 this.pagination.total = res.meta.totalPages;
             })

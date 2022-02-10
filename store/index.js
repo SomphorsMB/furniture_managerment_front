@@ -321,6 +321,7 @@ export const AUTH_MUTATIONS = {
         console.log(error)
       });
     },
+
     async deleteProduct({commit, state},id){
       await this.$axios.$delete('/products/'+id).then(res=>{
           console.log(res);

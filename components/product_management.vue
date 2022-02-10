@@ -250,7 +250,7 @@ export default {
                     sortable: false,
                 },
             ],
-            // products: [],
+            products: [],
             productId:null,
             productDetailId:null,
             categoryId : null,
@@ -269,11 +269,11 @@ export default {
         endDateFormatted() {
             return this.end_at ? moment(this.end_at ).format('dddd, MMMM Do YYYY') : ''
         },
-        ...mapState(['products','categories','brands']),
+        ...mapState(['categories','brands']),
 
     },
     methods: {
-        ...mapActions(['createProduct','createDiscount','getAllProduct','getAllCategories','getAllBrands','deleteProduct','updateProductDetail','updateProduct','updateDiscount']),
+        ...mapActions(['createProduct','createDiscount','getAllCategories','getAllBrands','deleteProduct','updateProductDetail','updateProduct','updateDiscount']),
 
         closeDialog() {
             this.dialogDelete = false;
@@ -442,6 +442,13 @@ export default {
             this.getAllProduct();
             this.closeDialog();
         },
+        getAllProduct(){
+            this.$axios.$get('products/getAll').then((res) => {
+                this.products = res.data;
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
     },
     mounted() {
         this.getAllCategories();
