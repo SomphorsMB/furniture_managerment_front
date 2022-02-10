@@ -1,8 +1,16 @@
 <template>
 <div>
-    <div class="seller-management mb-2 text-h4" align="center">
+    <div class="index" align="center">
+        <v-alert  v-model="alert" type="success" width="502px">
+        {{text}}
+        </v-alert>
+    </div>
+    <div class="category-management mb-2 text-h4" align="center">
         <h1>Categories Management</h1>
     </div>
+     <!-- <v-dialog persistent > -->
+    
+    <!-- </v-dialog> -->
     <div class="text-center">
         <template>
             <div class="float-right">
@@ -94,6 +102,8 @@ export default {
             addBtn:true,
             updateBtn:false,
             categoryId : null,
+            alert:false,
+            text:null,
             headers: [
                 {
                     text: 'Name',
@@ -122,6 +132,7 @@ export default {
         },
         async deleteCategoryConfirm() {
             await this.deleteCategory(this.categoryId);
+            this.alertMessage("Category was deleted successfully.");
             this.getAllCategories();
             this.closeDialog();
         },
@@ -147,14 +158,22 @@ export default {
                 category:category
             }
             await this.updateCategory(categoryData);
+            this.alertMessage("Category was updated successfully.")
             this.getAllCategories();
             this.closeDialog();
         },
         async create(){
             const category = {name:this.name}
             await this.createCategory(category);
+            this.alertMessage("Category was created successfully.");
             this.getAllCategories();
             this.closeDialog();
+        }
+        ,
+        alertMessage(message){
+            this.alert = true;
+            this.text=message;
+            setTimeout(()=>{this.alert = false},1500);
         }
     },
     mounted() {
@@ -164,7 +183,7 @@ export default {
 </script>
 
 <style scoped>
-.seller-management {
+.category-management {
     text-shadow: 0px 2px 4px #3B3B3B;
 }
 
@@ -187,5 +206,12 @@ export default {
 
 .delete:hover, .edit:hover {
     cursor: pointer;
+}
+.index{
+    z-index: 99;
+    position: absolute;
+    margin-top: 100px;
+    margin-left: 445px;
+
 }
 </style>

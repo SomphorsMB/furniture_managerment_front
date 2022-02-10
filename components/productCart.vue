@@ -79,13 +79,13 @@
                     dense
                     outlined
                     ></v-select>
-                    <v-textarea
+                    <!-- <v-textarea
                         outlined
                         name="input-1-1"
                         rows="1"
                         row-height="15"
                         label="Description"
-                    ></v-textarea>
+                    ></v-textarea> -->
 
                     <v-btn width="100%" class="" dark @click="checkOut">Check out</v-btn>
               </v-col>
@@ -112,7 +112,7 @@ export default {
     ...mapState(['productInCart','sellers']),
   },
   methods: {
-    ...mapActions(['updateProductInCart', 'getProductInCart', 'deleteProductFromCart', 'getAllsellers']),
+    ...mapActions(['updateProductInCart', 'getProductInCart', 'deleteProductFromCart', 'getAllsellers', 'checkOutProduct']),
 
     async plus(id, unit, productId, productUnit) {
         if (unit === undefined || unit < productUnit) {
@@ -121,7 +121,8 @@ export default {
         }
     },
     async minus(id, unit, productId) {
-        if (unit > this.min) {
+        if (unit >= this.min) {
+          console.log(unit)
             await this.updateProductInCart({id: id, unit: unit, product: productId})
             this.totalProductPrice();
         }
@@ -129,36 +130,38 @@ export default {
     deleteProduct(id, unit, price, discount){
       this.deleteProductFromCart(id)
       console.log(discount)
-      if (discount != null){
+      if (discount != null || discount != undefined){
         price = price-price*discount/100
       }
-      console.log(price)
       this.totalPrice = this.totalPrice - unit*price
+      console.log(unit*price)
     },
     totalProductPrice(){
+      this.totalPrice = 0
       for(let product of this.productInCart){
-        if (product.discount_discount !== null){
-          this.totalPrice += product.productDetail_price-product.productDetail_price*product.discount_discount/100
-        }else {
-          this.totalPrice += product.productDetail_price
-        }
-      }
-    },
-
-    checkOut(){
-      console.log(this.seller)
-    }
-  },
-  async mounted(){
-    await this.getProductInCart()
-    this.getAllsellers()
-    for(let product of this.productInCart){
         if (product.discount_discount !== null){
           this.totalPrice += (product.productDetail_price-product.productDetail_price*product.discount_discount/100)*product.productCart_unit
         }else {
           this.totalPrice += (product.productDetail_price)*product.productCart_unit
         }
       }
+    },
+    checkOut(){
+      console.log(this.seller)
+      this.checkOutProduct({ sellerId:this.seller.id});
+    }
+  },
+  async mounted(){
+    await this.getProductInCart()
+    this.getAllsellers()
+    this.totalProductPrice()
+    // for(let product of this.productInCart){
+    //     if (product.discount_discount !== null){
+    //       this.totalPrice += (product.productDetail_price-product.productDetail_price*product.discount_discount/100)*product.productCart_unit
+    //     }else {
+    //       this.totalPrice += (product.productDetail_price)*product.productCart_unit
+    //     }
+    //   }
   }
 
 };

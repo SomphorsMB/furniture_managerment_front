@@ -11,6 +11,7 @@ export const AUTH_MUTATIONS = {
     id: null, // user id
     email: null, // user email address
     role:null,
+    search:null,
     products: [],
     loginErr: '',
     meta: [],
@@ -21,6 +22,8 @@ export const AUTH_MUTATIONS = {
     products: [],
     productDiscount: [],
     productInCart: [],
+    visibleWarning: false,
+    visibleSucess: false,
   })
 
   export const mutations = {
@@ -78,6 +81,9 @@ export const AUTH_MUTATIONS = {
     setProductInCart(state, products){
       state.productInCart = products;
     },
+    addsearch(state,search){
+      state.search=search;
+    },
     updateProductInCart(state, {id, unit}){
       let array = []
       for(let product of state.productInCart){
@@ -98,8 +104,13 @@ export const AUTH_MUTATIONS = {
         }
       }
       state.productInCart = array;
+    },
+    setVisibleWarning(state, visible){
+      state.visibleWarning = visible;
+    },
+    setVisibleSucess(state, visible){
+      state.visibleSucess = visible;
     }
-
   }
 
   export const actions = {
@@ -193,6 +204,10 @@ export const AUTH_MUTATIONS = {
       commit(AUTH_MUTATIONS.SET_PAYLOAD, payload)
     },
 
+    async setSearch({ commit, state },value){
+      await commit('addsearch', value);
+    },
+
 
 
 
@@ -252,12 +267,18 @@ export const AUTH_MUTATIONS = {
       for (let oldProduct of state.productInCart){
         if (oldProduct.productCart_productId === product){
           if(oldProduct.productCart_unit+newValue > oldProduct.productDetail_unit){
-            console.log(12)
-            newValue = oldProduct.productCart_unit+newValue - oldProduct.productDetail_unit;
+            commit('setVisibleWarning', true);
+            newValue = oldProduct.productDetail_unit - oldProduct.productCart_unit;
+          }else{
+            commit('setVisibleSucess', true);
           }
 
         }
       }
+      setTimeout(() => {
+        commit('setVisibleWarning', false);
+        commit('setVisibleSucess', false);
+      }, 2000)
       await this.$axios.$post('/product-cart', {unit: newValue, product: product}).then(()=> {
       })
     },
@@ -267,7 +288,7 @@ export const AUTH_MUTATIONS = {
       })
       commit('updateProductInCart', {id: id, unit: unit})
     },
-    //UpdateProduct Detail
+    // UpdateProduct Detail
     async updateProductDetail({ commit, dispatch }, {id,productDetail}){
       console.log(id)
       console.log(productDetail)
@@ -351,12 +372,16 @@ export const AUTH_MUTATIONS = {
     async deleteProductFromCart({commit}, id){
       await this.$axios.$delete('/product-cart/'+id).then(()=>{})
       commit('deleteProductInCart', id)
+    },
+
+    checkOutProduct({state}, { sellerId }){
+      this.$axios.$delete('/product-cart').then(()=>{})
+      this.$axios.$post('/product-solds/'+sellerId, state.productInCart).then(res=>{
+        console.log(res);
+      })
     }
 
   }
-
-
-
   export const getters = {
     // determine if the user is authenticated based on the presence of the access token
     isAuthenticated: (state) => {
@@ -387,5 +412,8 @@ export const AUTH_MUTATIONS = {
     },
     loginmessage(state){
       return state.loginErr;
+    },
+    search(state){
+      return state.search;
     }
   }
