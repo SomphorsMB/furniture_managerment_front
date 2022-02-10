@@ -35,10 +35,13 @@
             <div id="field_container">
                 <input type="text" v-model="newValue" class="text-center" />
             </div>
-            <div class="mpbtn plus text-h6" v-on:click="plus()">+</div>
+            <div class="mpbtn plus text-h6" v-on:click="plus(product.productDetail_unit)">+</div>
         </div>
-        <v-btn>
+        <v-btn @click="addProductCart(product.productDetail_id, newValue)" v-if="product.productDetail_unit > 0">
             <v-icon>mdi-cart</v-icon>
+        </v-btn>
+        <v-btn v-else>
+            <v-icon class="grey--text">mdi-cart</v-icon>
         </v-btn>
     </v-card-actions>
 
@@ -49,6 +52,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 export default {
     props: ['product', 'productName'],
     data() {
@@ -60,18 +64,24 @@ export default {
         };
     },
     methods: {
-        plus: function () {
-            if (this.max === undefined || this.newValue < this.max) {
+        plus: function (unit) {
+            console.log(unit)
+            if (this.max === undefined || this.newValue < unit) {
                 this.newValue = this.newValue + 1;
-                // this.$emit('input', this.newValue)
             }
         },
         minus: function () {
             if (this.newValue > this.min) {
                 this.newValue = this.newValue - 1;
-                // this.$emit('input', this.newValue)
             }
         },
+        ...mapActions(['addProductToCart','getProductInCart']),
+        async addProductCart(id, newValue){
+            await this.addProductToCart({product: id, newValue: newValue});
+            this.getProductInCart();
+
+            
+        }
     },
 };
 </script>

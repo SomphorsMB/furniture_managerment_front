@@ -7,7 +7,7 @@
     </div>
     <filter-search />
     <v-row>
-        <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="product in productDiscount" :key="product">
+        <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="product in productDiscount" :key="product.id">
             <!-- <card /> -->
             <product-card :product="product" />
         </v-col>

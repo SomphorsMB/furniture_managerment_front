@@ -5,13 +5,14 @@
             <v-img class="white--text d-flex justify-center align-center" elevation="2" height="80vh" src="https://images.squarespace-cdn.com/content/v1/5a85f1ae010027c3e21cfb7e/1598488914272-U54L2WW06JI3SLNFPTMN/OS_room4_rev2+%281%29.jpg">
                 <v-card class="
               cards
-              mx-auto
+              mx-16
               rounded-xl
               text-center
               align-center
               py-6
               rounded-0
-            " width="70%">
+                
+            " >
                     <v-card-text class="#212121--text text-h4 py-0">Elegant</v-card-text>
                     <v-card-text class="black--text text-h3 py-0 font-weight-black">Furniture</v-card-text>
                     <v-card-text class="#212121--text text-h4 py-0">Modern</v-card-text>

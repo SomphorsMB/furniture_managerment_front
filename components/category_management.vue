@@ -4,16 +4,16 @@
         <h1>Categories Management</h1>
     </div>
     <div class="text-center">
-        <v-dialog v-model="dialog" width="350">
-            <template v-slot:activator="{ on, attrs }">
-                <div class="float-right">
-                    <v-btn class="mx-2" fab color="C4C4C4" v-bind="attrs" v-on="on">
-                        <v-icon dark>
-                            mdi-plus
-                        </v-icon>
-                    </v-btn>
-                </div>
-            </template>
+        <template>
+            <div class="float-right">
+                <v-btn class="mx-2" fab color="C4C4C4" @click="openFormCreate">
+                    <v-icon dark>
+                        mdi-plus
+                    </v-icon>
+                </v-btn>
+            </div>
+        </template>
+        <v-dialog persistent v-model="dialog" width="350">
             <v-card>
                 <div align="center" class="grey lighten-3 pa-3">
                     <h2>
@@ -33,9 +33,9 @@
                 </v-card-text>
                 <v-card-actions class="action">
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="create">
-                        Save
-                    </v-btn>
+                    <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
+                    <v-btn color="primary" v-show="addBtn" text @click="create">Add</v-btn>
+                    <v-btn color="primary" v-show="updateBtn" text @click="update">Update</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -50,14 +50,14 @@
                             <v-icon small color="red" class="delete mr-2" @click="deleted(category.id)">
                                 mdi-delete
                             </v-icon>
-                            <v-icon small color="#00E676" class="edit">
+                            <v-icon small color="#00E676" class="edit" @click="openFormUpdate(category)">
                                 mdi-pencil
                             </v-icon>
                         </td>
                     </tr>
                 </tbody>
                 <!--  -->
-                <v-dialog v-model="dialogDelete" max-width="350px">
+                <v-dialog persistent v-model="dialogDelete" max-width="350px">
                     <v-card>
                         <div align="center" class="grey lighten-3 pa-3">
                             <h2>
@@ -68,8 +68,8 @@
                             <p>Are you sure you want to remove this category ?</p>
                         </div>
                         <v-card-actions>
-                            <v-btn color="red darken-1" text @click="closeDelete">Cancel</v-btn>
                             <v-spacer></v-spacer>
+                            <v-btn color="red darken-1" text @click="closeDialog">Cancel</v-btn>
                             <v-btn color="blue darken-1" text @click="deleteCategoryConfirm">Yes</v-btn>
                         </v-card-actions>
                     </v-card>
@@ -91,6 +91,9 @@ export default {
             dialogDelete: false,
             name: '',
             categoryId:null,
+            addBtn:true,
+            updateBtn:false,
+            categoryId : null,
             headers: [
                 {
                     text: 'Name',
@@ -108,28 +111,50 @@ export default {
         ...mapState(['categories']),
     },
     methods: {
-        ...mapActions(['createCategory','getAllCategories','deleteCategory']),
-        closeDelete() {
+        ...mapActions(['createCategory','getAllCategories','deleteCategory','updateCategory']),
+        closeDialog() {
+            this.addBtn = true;
+            this.updateBtn = false;
             this.dialogDelete = false;
+            this.dialog = false;
             this.categoryId = null;
+            this.name = null;
         },
         async deleteCategoryConfirm() {
             await this.deleteCategory(this.categoryId);
             this.getAllCategories();
-
-            this.closeDelete();
+            this.closeDialog();
         },
         deleted(categoryId) {
             this.dialogDelete = true;
             this.categoryId = categoryId
         },
+
+        openFormCreate(){
+            this.dialog = true;
+        },
+        openFormUpdate(category){
+            this.addBtn = false;
+            this.updateBtn = true;
+            this.categoryId = category.id;
+            this.name = category.name;
+            this.dialog = true;
+        },
+        async update(){
+            const category = {name:this.name}
+            const categoryData = {
+                id:this.categoryId,
+                category:category
+            }
+            await this.updateCategory(categoryData);
+            this.getAllCategories();
+            this.closeDialog();
+        },
         async create(){
             const category = {name:this.name}
             await this.createCategory(category);
             this.getAllCategories();
-
-            this.dialog = false;
-            this.name="";
+            this.closeDialog();
         }
     },
     mounted() {
