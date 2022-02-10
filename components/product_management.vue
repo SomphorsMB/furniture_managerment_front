@@ -443,8 +443,8 @@ export default {
             this.closeDialog();
         },
         getAllProduct(){
-            this.$axios.$get('products').then((res) => {
-                this.products = res.items;
+            this.$axios.$get('products/getAll').then((res) => {
+                this.products = res.data;
             }).catch((err) => {
                 console.log(err);
             })

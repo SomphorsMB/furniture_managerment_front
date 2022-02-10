@@ -11,7 +11,7 @@
               align-center
               py-6
               rounded-0
-                
+
             " >
                     <v-card-text class="#212121--text text-h4 py-0">Elegant</v-card-text>
                     <v-card-text class="black--text text-h3 py-0 font-weight-black">Furniture</v-card-text>
@@ -38,6 +38,9 @@
                         <v-col cols="12" sm="12" md="12" class="py-0">
                             <v-text-field v-model="password" label="Password" :type="show1 ? 'text' : 'password'" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="passwordRule" @click:append="show1 = !show1" outlined dense></v-text-field>
                         </v-col>
+                        <v-col cols="12" sm="12" md="12" class="py-0 mb-3" align="center" style="margin-top: -20px">
+                            <small class="red--text"><strong>{{ loginErr }}</strong></small>
+                        </v-col>
                         <v-btn @click="userLogin" class="mx-auto font-weight-black white--text grey" width="40%">Login</v-btn>
                         <!-- <v-btn @click="getSeller" class="mx-auto font-weight-black white--text grey" width="40%">getSeller</v-btn> -->
                     </v-row>
@@ -49,7 +52,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 export default {
     layout: "login",
     data() {
@@ -62,6 +65,8 @@ export default {
             access_token: ''
         };
     },
+    computed:
+        mapState(['loginErr']),
     methods:{
         ...mapActions(['login','getSellers']),
         async userLogin() {
@@ -70,7 +75,7 @@ export default {
                 password:this.password
             }
             this.login(user);
-
+            console.log(this.loginErr);
         },
 
     },
