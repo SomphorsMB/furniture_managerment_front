@@ -275,10 +275,8 @@ export default {
             this.dialogDiscount = false;
             this.productId = null;
         },
-        async deleteItemConfirm() {
-            await this.deleteProduct(this.productId);
-            this.getAllProduct();
-
+        deleteItemConfirm() {
+            this.deleteProduct(this.productId);
             this.closeDialog();
 
         },
@@ -294,7 +292,7 @@ export default {
         },
 
         addAmount(productDetail) {
-            
+
             // this.productDetail.avatar = productDetail.productDetail_avatar;
             // this.productDetail.avatar = productDetail.productDetail_unit;
             // this.productDetail.avatar = productDetail.productDetail_price;
@@ -307,15 +305,14 @@ export default {
             this.dialogAdd = true;
         },
 
-        async discountItemConfirm() {
+        discountItemConfirm() {
             const discount = {
                 product:this.id,
                 discount:parseInt(this.discount),
                 start_at:this.start_at,
                 end_at:this.end_at
             }
-            await this.createDiscount(discount);
-            this.getAllProduct();
+            this.createDiscount(discount)
             this.closeDialog();
         },
 
@@ -327,7 +324,7 @@ export default {
         selectImage(event){
             this.avatar = event.target.files[0]
         },
-        async create(){
+        create(){
             const product = {
                 name:this.name,
                 category:this.category.id,
@@ -344,8 +341,7 @@ export default {
                 product: product,
                 productDetail: productDetail
             }
-            await this.createProduct(productData);
-            this.getAllProduct();
+            this.createProduct(productData);
             this.dialog = false;
             this.name = '';
             this.brand = null;

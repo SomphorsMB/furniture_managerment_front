@@ -68,6 +68,8 @@ export default {
     },
     data() {
         return {
+            products: [],
+            productDiscount: [],
             brands: [{
                     name: "asdfghjkl",
                     logo: "https://www.furniturebrandsinternational.co.uk/media/logo/stores/4/logo.png"
@@ -87,11 +89,25 @@ export default {
             ]
         }
     },
-    computed:
-        mapState(['products','productDiscount']),
+    // computed:
+    //     mapState(['productDiscount']),
     methods: {
-        ...mapActions(['getAllProduct']),
-        ...mapActions(['getAllProductDiscount']),
+        // ...mapActions(['getAllProduct']),
+        // ...mapActions(['getAllProductDiscount']),
+        getAllProduct(){
+            this.$axios.$get('products/getAll').then((res) => {
+                this.products = res.data
+            }).catch((err) => {
+                console.log(err);
+            })
+        },
+        getAllProductDiscount(){
+            this.$axios.$get('discount/getAll').then((res) => {
+                this.productDiscount = res.data
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
     },
     mounted(){
         this.getAllProduct();
