@@ -9,7 +9,7 @@
             </v-card-title>
             <div class="d-flex justify-center flex-wrap mx-auto mx-0 px-0">
                 <v-row>
-                    <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="(product,index) of productDiscount" :key="index">
+                    <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="(product,index) of productDiscount" :key="product.productDetail_id">
                         <product-card v-if="index <= 3" :product="product" />
                     </v-col>
                 </v-row>
@@ -26,7 +26,7 @@
             </v-card-title>
             <div class="d-flex justify-center flex-wrap mx-auto mx-0 px-0">
                 <v-row>
-                    <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="(product,index) of products" :key="index">
+                    <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="(product,index) of products" :key="product.productDetail_id">
                         <product-card v-if="index <= 3 " :product="product" />
                     </v-col>
                 </v-row>
@@ -42,8 +42,8 @@
         </v-card-title>
         <div class=" mx-auto mx-0 px-0">
             <v-row class="mx-10">
-                <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="m in brands" :key="m.title">
-                    <v-img width="70%" class="mx-auto" :src="m.logo"></v-img>
+                <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="(brand,index) in brands" :key="brand.id">
+                    <v-img width="70%" class="mx-auto" v-if="index <= 3 " :src="brand.logo"></v-img>
                 </v-col>
             </v-row>
         </div>
@@ -68,34 +68,17 @@ export default {
     },
     data() {
         return {
-            brands: [{
-                    name: "asdfghjkl",
-                    logo: "https://www.furniturebrandsinternational.co.uk/media/logo/stores/4/logo.png"
-                },
-                {
-                    name: "asdfghjkl",
-                    logo: "https://grandluxuryfurniture.com/wp-content/uploads/2019/06/lfd-png-logo.png"
-                },
-                {
-                    name: "asdfghjkl",
-                    logo: "https://www.kare-design.com/migrate/img/logo.png"
-                },
-                {
-                    name: "asdfghjkl",
-                    logo: "https://www.pinclipart.com/picdir/big/366-3669007_today-nann-is-an-international-brand-of-furniture.png"
-                },
-            ]
         }
     },
     computed:
-        mapState(['products','productDiscount']),
+        mapState(['products','productDiscount', 'brands']),
     methods: {
-        ...mapActions(['getAllProduct']),
-        ...mapActions(['getAllProductDiscount']),
+        ...mapActions(['getAllProduct', 'getAllProductDiscount', 'getAllBrands']),
     },
     mounted(){
         this.getAllProduct();
         this.getAllProductDiscount();
+        this.getAllBrands();
 
     }
 

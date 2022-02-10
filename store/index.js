@@ -93,8 +93,8 @@ export const AUTH_MUTATIONS = {
         }
       }
       state.productInCart = array;
-    }
-    
+    },
+   
   }
   
   export const actions = {
@@ -200,6 +200,7 @@ export const AUTH_MUTATIONS = {
     async getAllProduct({commit, state}){
       // const allProducts = [];
         await this.$axios.$get('/products').then(res=>{
+          console.log(res.item)
           commit('addproducts', [...res.data])
       }).catch(error=>{
           console.log(error)
@@ -347,6 +348,13 @@ export const AUTH_MUTATIONS = {
     async deleteProductFromCart({commit}, id){
       await this.$axios.$delete('/product-cart/'+id).then(()=>{})
       commit('deleteProductInCart', id)
+    },
+
+    checkOutProduct({state}, { sellerId }){
+      this.$axios.$delete('/product-cart').then(()=>{})
+      this.$axios.$post('/product-solds/'+sellerId, state.productInCart).then(res=>{
+        console.log(res);
+      })
     }
     
   }
