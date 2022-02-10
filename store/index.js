@@ -11,6 +11,7 @@ export const AUTH_MUTATIONS = {
     id: null, // user id
     email: null, // user email address
     role:null,
+    search:null,
     products: [],
     categories:[],
     brands:[],
@@ -72,6 +73,9 @@ export const AUTH_MUTATIONS = {
     },
     setProductInCart(state, products){
       state.productInCart = products;
+    },
+    addsearch(state,search){
+      state.search=search;
     }
   }
   
@@ -165,6 +169,10 @@ export const AUTH_MUTATIONS = {
       // commit the user and tokens to the state
       commit(AUTH_MUTATIONS.SET_USER, user)
       commit(AUTH_MUTATIONS.SET_PAYLOAD, payload)
+    },
+
+    async setSearch({ commit, state },value){
+      await commit('addsearch', value);
     },
 
 
@@ -307,12 +315,6 @@ export const AUTH_MUTATIONS = {
 
      commit('setProductInCart', [...array])
     },
-
-    // logout the user
-    logout ({ commit, state }) {
-      commit(AUTH_MUTATIONS.LOGOUT)
-
-    },
     async deleteProduct({commit, state},id){
       await this.$axios.$delete('/products/'+id).then(res=>{
           console.log(res);
@@ -370,5 +372,8 @@ export const AUTH_MUTATIONS = {
     },
     rols(state){
       return state.role;
+    },
+    search(state){
+      return state.search;
     }
   }

@@ -2,7 +2,7 @@
 <v-app light>
     <v-navigation-drawer class="grey lighten-1" v-model="drawer" :clipped="clipped" temporary fixed app>
         <v-list>
-                <v-list-item-title class="text-center ">
+                <v-list-item-title class="text-center">
                     <h2 class="accent--text font-weight-medium text-shadow">Elegant</h2>
                     <h4 class="display-1 font-weight-medium text-shadow">FURNITURE</h4>
                     <h2 class="accent--text font-weight-medium text-shadow  mb-2">Modern</h2>
@@ -50,8 +50,8 @@
                     <p>Are you sure you want to logout?</p>
                 </div>
                 <v-card-actions>
-                    <v-btn color="red darken-1" text @click="closeDialogLogout">No</v-btn>
                     <v-spacer></v-spacer>
+                    <v-btn color="red darken-1" text @click="closeDialogLogout">No</v-btn>
                     <v-btn color="blue darken-1" text @click="logoutConfirm">Yes</v-btn>
                 </v-card-actions>
             </v-card>
@@ -61,18 +61,18 @@
     <v-app-bar class="grey lighten-1" fixed app>
         <v-icon size="36px" @click.stop="drawer = !drawer" class="ml-lg-12 ml-sm-6">mdi-menu</v-icon>
         <v-spacer />
-        <input class="input-search" type="text" placeholder="Search for furniture...">
-        <v-btn icon class="mr-lg-6">
+        <input class="input-search" v-model="searchValue" type="text" placeholder="Search for furniture...">
+        <!-- <v-btn icon class="mr-lg-6"> -->
             <v-icon>mdi-magnify</v-icon>
-        </v-btn>
-        <v-badge class="mr-lg-12 mr-sm-6 mt-3" bordered color="error" :icon="productInCart.length" overlap>
+        <!-- </v-btn> -->
+        <!-- <v-badge class="mr-lg-12 mr-sm-6 mt-3" bordered color="error" v-if="productInCart.length!==0" :icon="productInCart.length.toString()" overlap> -->
             <v-btn icon>
                 <v-icon class="mb-3" size="36px" @click="dialogCart = true">mdi-cart-outline</v-icon>
             </v-btn>
-        </v-badge>
+        <!-- </v-badge> -->
     </v-app-bar>
     <v-main color="red">
-        <Nuxt />
+        <Nuxt/>
     </v-main>
 
     <product-cart v-if="dialogCart" @close="dialogCart = false" />
@@ -90,6 +90,7 @@ export default {
             clipped: false,
             drawer: false,
             fixed: false,
+            searchValue:'',
             sellerNav: [{
                     icon: 'mdi-home',
                     title: 'Home',
@@ -118,8 +119,13 @@ export default {
                 }
             ],
             miniVariant: false,
-            number: "28",
+            // number: "28",
             dialogLogout:false,
+        }
+    },
+    watch:{
+        searchValue(){
+           this.setSearch(this.searchValue);
         }
     },
     computed:{
@@ -127,7 +133,7 @@ export default {
         ...mapState(['role'])
     },
     methods:{
-        ...mapActions(['getUserRole','logout']),
+        ...mapActions(['getUserRole','logout','setSearch']),
         userLogout(){
             this.dialogLogout = true;
         },

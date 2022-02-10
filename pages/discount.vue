@@ -5,7 +5,7 @@
             <v-img src="https://media.vogue.in/wp-content/uploads/2019/05/hive-feature.jpg" height="400px"></v-img>
         </v-card>
     </div>
-    <filter-search />
+    <filter-search @search="search" />
     <v-row>
         <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="product in productDiscount" :key="product.id">
             <!-- <card /> -->
@@ -47,6 +47,9 @@ export default {
         mapState(['productDiscount']),
     methods: {
         ...mapActions(['getAllProductDiscount']),
+        search(value){
+            console.log(value)
+        }
     },
     mounted(){
         this.getAllProductDiscount();
