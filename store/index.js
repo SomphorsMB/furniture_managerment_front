@@ -20,6 +20,8 @@ export const AUTH_MUTATIONS = {
     products: [],
     productDiscount: [],
     productInCart: [],
+    visibleWarning: false,
+    visibleSucess: false,
   })
 
   export const mutations = {
@@ -95,7 +97,12 @@ export const AUTH_MUTATIONS = {
       }
       state.productInCart = array;
     },
-   
+    setVisibleWarning(state, visible){
+      state.visibleWarning = visible;
+    },
+    setVisibleSucess(state, visible){
+      state.visibleSucess = visible;
+    }
   }
 
   export const actions = {
@@ -246,12 +253,18 @@ export const AUTH_MUTATIONS = {
       for (let oldProduct of state.productInCart){
         if (oldProduct.productCart_productId === product){
           if(oldProduct.productCart_unit+newValue > oldProduct.productDetail_unit){
-            console.log(12)
-            newValue = oldProduct.productCart_unit+newValue - oldProduct.productDetail_unit;
+            commit('setVisibleWarning', true);
+            newValue = oldProduct.productDetail_unit - oldProduct.productCart_unit;
+          }else{
+            commit('setVisibleSucess', true);
           }
 
         }
       }
+      setTimeout(() => {
+        commit('setVisibleWarning', false);
+        commit('setVisibleSucess', false);
+      }, 2000)
       await this.$axios.$post('/product-cart', {unit: newValue, product: product}).then(()=> {
       })
     },
