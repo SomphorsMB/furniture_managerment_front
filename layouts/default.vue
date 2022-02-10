@@ -65,7 +65,7 @@
         <v-btn icon class="mr-lg-6">
             <v-icon>mdi-magnify</v-icon>
         </v-btn>
-        <v-badge class="mr-lg-12 mr-sm-6 mt-3" bordered color="error" :icon="productInCart.length" overlap>
+        <v-badge class="mr-lg-12 mr-sm-6 mt-3" bordered color="error" :content="productInCart.length" overlap>
             <v-btn icon>
                 <v-icon class="mb-3" size="36px" @click="dialogCart = true">mdi-cart-outline</v-icon>
             </v-btn>
@@ -123,11 +123,10 @@ export default {
         }
     },
     computed:{
-        ...mapGetters(['productInCart']),
-        ...mapState(['role'])
+        ...mapState(['role','productInCart']),
     },
     methods:{
-        ...mapActions(['getUserRole','logout']),
+        ...mapActions(['getUserRole','logout','getProductInCart']),
         userLogout(){
             this.dialogLogout = true;
         },
@@ -141,6 +140,7 @@ export default {
     },
     mounted(){
         this.getUserRole();
+        this.getProductInCart();
     }
 }
 </script>

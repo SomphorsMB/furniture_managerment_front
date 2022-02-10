@@ -72,7 +72,29 @@ export const AUTH_MUTATIONS = {
     },
     setProductInCart(state, products){
       state.productInCart = products;
+    },
+    updateProductInCart(state, {id, unit}){
+      let array = []
+      for(let product of state.productInCart){
+        if (product.productCart_id == id){
+            product.productCart_unit = unit;
+            array.push({...product});
+        }else{
+          array.push({...product});
+        }
+      }
+    },
+    deleteProductInCart(state, id){
+      let array = []
+      for(let product of state.productInCart){
+        if (product.productCart_id != id){
+            // product.productCart_unit = unit;
+            array.push({...product});
+        }
+      }
+      state.productInCart = array;
     }
+    
   }
   
   export const actions = {
@@ -88,7 +110,6 @@ export const AUTH_MUTATIONS = {
         this.$router.push('/home')
       })
       
-      
     },
     // logout the user
     logout ({ commit, state }) {
@@ -103,14 +124,6 @@ export const AUTH_MUTATIONS = {
       const role = window.localStorage.getItem('role');
       console.log(role)
       commit('addrole',role)
-    },
-
-    async getSellers () {
-       await this.$axios.get('sellers').then(res => {
-        console.log(res)
-      })
-      
-      
     },
     async createProduct({ commit, append },{product,productDetail}){
       await this.$axios.$post('/products',product).then(product=>{
@@ -227,28 +240,25 @@ export const AUTH_MUTATIONS = {
       });
     },
   
-    async addProductToCart({commit}, {product, newValue}){
-      const newProduct = {
-        product: product,
-        unit: newValue
+    async addProductToCart({commit, state}, {product, newValue}){
+      for (let oldProduct of state.productInCart){
+        if (oldProduct.productCart_productId === product){
+          if(oldProduct.productCart_unit+newValue > oldProduct.productDetail_unit){
+            console.log(12)
+            newValue = oldProduct.productCart_unit+newValue - oldProduct.productDetail_unit;
+          }
+          
+        }
       }
-      commit('addProductCart', {...newProduct})
+      await this.$axios.$post('/product-cart', {unit: newValue, product: product}).then(()=> {
+      })
     },
 
-    async updateProductInCart({commit, state}, {id, unit}){
-      let array = []
-     for(let product of state.productInCart){
-      console.log(id, unit)
+    async updateProductInCart({commit, state}, {id, unit, product}){
+      await this.$axios.$patch('/product-cart/'+id, {unit: unit, product: product}).then(()=> {
+      })
 
-       if (product.product.productDetail_id == id){
-          product.unit = unit;
-          array.push({...product});
-       }else{
-        array.push({...product});
-       }
-     }
-
-     commit('setProductInCart', [...array])
+     commit('updateProductInCart', {id: id, unit: unit})
     },
 
     // logout the user
@@ -275,11 +285,18 @@ export const AUTH_MUTATIONS = {
       await this.$axios.$delete('/product-suppliers/'+id).then(res=>{
           console.log(res);
       })
+    },
+    async getProductInCart({commit}){
+      await this.$axios.$get('/product-cart').then(res=>{
+        commit('setProductInCart', [...res.data])
+    })
+    },
+    async deleteProductFromCart({commit}, id){
+      await this.$axios.$delete('/product-cart/'+id).then(()=>{})
+      commit('deleteProductInCart', id)
     }
-  
     
   }
-
 
 
   
@@ -292,7 +309,7 @@ export const AUTH_MUTATIONS = {
       return state.access_token;
     },
 
-    productInCart(state){
+    async productInCart(state){
       return state.productInCart;
     },
 
