@@ -98,8 +98,8 @@ export const AUTH_MUTATIONS = {
         }
       }
       state.productInCart = array;
-    }
-
+    },
+   
   }
 
   export const actions = {
@@ -353,6 +353,13 @@ export const AUTH_MUTATIONS = {
     async deleteProductFromCart({commit}, id){
       await this.$axios.$delete('/product-cart/'+id).then(()=>{})
       commit('deleteProductInCart', id)
+    },
+
+    checkOutProduct({state}, { sellerId }){
+      this.$axios.$delete('/product-cart').then(()=>{})
+      this.$axios.$post('/product-solds/'+sellerId, state.productInCart).then(res=>{
+        console.log(res);
+      })
     }
 
   }
