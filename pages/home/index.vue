@@ -102,8 +102,8 @@ export default {
             })
         },
         getAllProductDiscount(){
-            this.$axios.$get('discount/getAll').then((res) => {
-                this.productDiscount = res.data
+            this.$axios.$get('products/discount-products').then((res) => {
+                this.productDiscount = res.items
             }).catch((err) => {
                 console.log(err);
             })

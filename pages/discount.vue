@@ -53,7 +53,7 @@ export default {
     methods: {
         ...mapActions(['getAllProductDiscount']),
         getDiscount() {
-            this.$axios.$get('discount?page=' + this.pagination.current).then((res) => {
+            this.$axios.$get('products/discount-products?page=' + this.pagination.current).then((res) => {
                 this.productDiscount = res.items;
                 this.pagination.current = res.meta.currentPage;
                 this.pagination.total = res.meta.totalPages;
