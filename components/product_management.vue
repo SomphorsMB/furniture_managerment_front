@@ -328,7 +328,7 @@ export default {
             }else{
                 product.category = this.category.id;
             }
-           
+
             const productDetail =  new FormData();
             if(this.brand.id == undefined){
                 productDetail.append("supplier",this.brandId);
@@ -440,7 +440,7 @@ export default {
             }
             await this.createProduct(productData);
             this.getAllProduct();
-            this.closeDialog();  
+            this.closeDialog();
         },
     },
     mounted() {

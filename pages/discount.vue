@@ -12,8 +12,8 @@
             <product-card :product="product" />
         </v-col>
     </v-row>
-    <div class="text-center mt-4">
-        <v-pagination v-model="page" :length="3" color="grey"></v-pagination>
+    <div class="text-center mt-8">
+        <v-pagination v-model="pagination.current" :length="pagination.total" @input="onPageChange" :total-visible="7" color="grey"></v-pagination>
     </div>
 </div>
 </template>
@@ -42,17 +42,29 @@ export default {
         category: null,
         brand: null,
         size: null,
+        pagination: {
+            current: 1,
+            total: 0
+        },
+        productDiscount: []
     }),
-    computed:
-        mapState(['productDiscount']),
+    // computed:
+    //     mapState(['productDiscount']),
     methods: {
         ...mapActions(['getAllProductDiscount']),
-        search(value){
-            console.log(value)
-        }
+        getDiscount() {
+            this.$axios.$get('discount?page=' + this.pagination.current).then((res) => {
+                this.productDiscount = res.items;
+                this.pagination.current = res.meta.currentPage;
+                this.pagination.total = res.meta.totalPages;
+            })
+        },
+        onPageChange() {
+            this.getDiscount();
+        },
     },
     mounted(){
-        this.getAllProductDiscount();
+        this.getDiscount();
     }
 }
 </script>

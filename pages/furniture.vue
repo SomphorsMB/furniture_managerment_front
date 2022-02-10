@@ -10,11 +10,15 @@
     <v-row >
         <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="product in listproducts" :key="product.product_id">
             <!-- <card /> -->
+        <!-- {{meta}}
+        {{links}} -->
+        <!-- <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="product in products" :key="product.product_id"> -->
             <product-card :product="product"/>
+            <!-- <p>product</p> -->
         </v-col>
     </v-row>
-    <div class="text-center mt-4">
-        <v-pagination v-model="page" :length="3" color="grey"></v-pagination>
+    <div class="text-center mt-8">
+        <v-pagination v-model="pagination.current" :length="pagination.total" @input="onPageChange" :total-visible="7" color="grey"></v-pagination>
     </div>
 </div>
 </template>
@@ -36,6 +40,11 @@ export default {
         page: 1,
         filters:{min:null,max:null,category:null,size:null,brand:null},
         listproducts:[],
+        products: [],
+        pagination: {
+            current: 1,
+            total: 0
+        },
     }),
     watch:{
         search(){
@@ -43,7 +52,7 @@ export default {
         },
     },
     computed:
-        mapState(['products','search']),
+        mapState(['search','meta', 'links']),
     methods: {
         ...mapActions(['getAllProduct']),
        
@@ -73,10 +82,22 @@ export default {
                 this.listproducts = this.listproducts.filter(product => product.product_name.toLowerCase().includes(search.toLowerCase()));
             }
         },
+        getProduct() {
+            this.$axios.$get('products?page=' + this.pagination.current).then((res) => {
+                this.listproducts = res.items;
+                this.pagination.current = res.meta.currentPage;
+                this.pagination.total = res.meta.totalPages;
+            })
+        },
+        onPageChange() {
+            this.getProduct();
+        },
     },
     async mounted(){
         await this.getAllProduct();
-        this.listproducts = this.products;
+        this.getProduct();
+        // this.listproducts = this.products;
+   
     }
 }
 </script>

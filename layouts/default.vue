@@ -64,12 +64,11 @@
         <input class="input-search" v-model="searchValue" type="text" placeholder="Search for furniture...">
         <!-- <v-btn icon class="mr-lg-6"> -->
             <v-icon>mdi-magnify</v-icon>
-        <!-- </v-btn> -->
-        <!-- <v-badge class="mr-lg-12 mr-sm-6 mt-3" bordered color="error" v-if="productInCart.length!==0" :icon="productInCart.length.toString()" overlap> -->
+        <v-badge class="mr-lg-12 mr-sm-6 mt-3" bordered color="error" :content="productInCart.length" overlap>
             <v-btn icon>
                 <v-icon class="mb-3" size="36px" @click="dialogCart = true">mdi-cart-outline</v-icon>
             </v-btn>
-        <!-- </v-badge> -->
+        </v-badge>
     </v-app-bar>
     <v-main color="red">
         <Nuxt/>
@@ -129,11 +128,10 @@ export default {
         }
     },
     computed:{
-        ...mapGetters(['productInCart']),
-        ...mapState(['role'])
+        ...mapState(['role','productInCart']),
     },
     methods:{
-        ...mapActions(['getUserRole','logout','setSearch']),
+        ...mapActions(['getUserRole','logout','setSearch','getProductInCart']),
         userLogout(){
             this.dialogLogout = true;
         },
@@ -147,6 +145,7 @@ export default {
     },
     mounted(){
         this.getUserRole();
+        this.getProductInCart();
     }
 }
 </script>
