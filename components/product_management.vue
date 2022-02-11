@@ -41,14 +41,20 @@
                                 <v-col cols="12" class="text-area">
                                     <v-textarea outlined name="input-7-4" v-model="rawMaterial" label="Raw Materials" value=""></v-textarea>
                                 </v-col>
-                                <v-col cols="12" sm="10" class="price">
+                                <v-col cols="12" class="price pb-0">
                                     <v-text-field v-model="price" label="Price: XXX$" dense small outlined clearable></v-text-field>
                                 </v-col>
-                                <v-col cols="12" sm="2" class="file">
-                                    <label for="file-input">
+                                <v-col cols="12" class="file pb-0">
+                                    <!-- <label for="file-input">
                                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV9ef4mu_ntPiqBjBlsGQNRNDLBKNILEnBoBP1rJlD_0P3cQ_f3DbGdeR-i5PAffS7oo8&usqp=CAU" width="40px" height="40px" />
                                     </label>
-                                    <input type="file" show-size counter multiple label="File input" id="file-input" class="file-input" @change="selectImage"/>
+                                    <input type="file" show-size counter multiple label="File input" id="file-input" class="file-input" @change="selectImage"/> -->
+                                    <v-file-input
+                                        truncate-length="10"
+                                        label="Choose image"
+                                        @change="selectImage"
+                                        how-size counter multiple
+                                    ></v-file-input>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -419,7 +425,7 @@ export default {
         },
 
         selectImage(event){
-            this.avatar = event.target.files[0]
+            this.avatar = event[0]
         },
         async create(){
             const product = {
