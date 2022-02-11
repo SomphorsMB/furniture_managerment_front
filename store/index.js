@@ -125,6 +125,7 @@ export const AUTH_MUTATIONS = {
       ).then(res => {
         window.localStorage.setItem('role',res.data.user.role);
         window.localStorage.setItem('token',res.data.access_token);
+        commit('loginmessage', '');
         commit(AUTH_MUTATIONS.SET_USER, res.data.user)
         commit(AUTH_MUTATIONS.SET_PAYLOAD, res.data.access_token, null)
         this.$router.push('/home')

@@ -11,6 +11,9 @@
             <!-- <card /> -->
             <product-card :product="product" />
         </v-col>
+        <div class="empty_product grey--text">
+            <h2 v-show="listproducts.length == 0">No result found here.</h2>
+        </div>
     </v-row>
     <div class="text-center mt-8">
         <v-pagination v-model="pagination.current" :length="pagination.total" @input="onPageChange" :total-visible="7" color="grey"></v-pagination>
@@ -95,5 +98,7 @@ export default {
 </script>
 
 <style scoped>
-
+.empty_product{
+    margin-left: 42%;
+}
 </style>
