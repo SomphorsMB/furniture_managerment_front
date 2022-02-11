@@ -2,7 +2,7 @@
 <section>
 <v-card class="mt-4 mx-1 rounded-0">
     <v-card-text class="cardNew py-1 black white--text rounded-0">New</v-card-text>
-    <v-card-text class="cardDiscount py-1 grey darken-1 white--text" v-if="product.discount_discount !== null">-{{product.discount_discount}}%</v-card-text>
+    <v-card-text class="cardDiscount py-1 grey darken-1 white--text" v-if="product.discount_discount !== null || product.discount_discount > 0">-{{product.discount_discount}}%</v-card-text>
     <v-hover v-slot="{ hover }" >
         <v-img :src="'http://localhost:5000/api/product-details/image/'+product.productDetail_avatar" height="320px" >
             <v-overlay
@@ -46,27 +46,47 @@
     </v-card-actions>
 
     <product-detail v-if="dialog" @close="dialog = false" :product="product"/>
-
+    <v-snackbar v-model="sucess" auto-height color="success" :multi-line="false" timeout="1500" :top="true">
+        <v-layout align-center pr-4>
+            <v-icon class="pr-3" dark large>mdi-check-circle</v-icon>
+            <strong>Add product to cart sucessfully</strong>
+        </v-layout>
+    </v-snackbar>
+    <v-snackbar v-model="warning" auto-height color="warning" :multi-line="false" timeout="1500" :top="true">
+        <v-layout align-center pr-4>
+            <v-icon class="pr-3" dark large>mdi-alert</v-icon>
+            <strong>This product in your cart is full</strong>
+        </v-layout>
+    </v-snackbar>
 </v-card>
 </section>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 export default {
     props: ['product', 'productName'],
     data() {
         return {
             min: 1,
-            max: 100,
             newValue: 1,
-            dialog: false
+            dialog: false,
+            warning: false,
+            sucess: false,
         };
+    },
+    computed: mapState(['visibleSucess','visibleWarning']),
+    watch:{
+        visibleSucess(val){
+            this.sucess = val
+        },
+        visibleWarning(val){
+            this.warning = val
+        }
     },
     methods: {
         plus: function (unit) {
-            console.log(unit)
-            if (this.max === undefined || this.newValue < unit) {
+            if (this.newValue < unit) {
                 this.newValue = this.newValue + 1;
             }
         },
@@ -79,8 +99,7 @@ export default {
         async addProductCart(id, newValue){
             await this.addProductToCart({product: id, newValue: newValue});
             this.getProductInCart();
-
-            
+           
         }
     },
 };

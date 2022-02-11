@@ -36,10 +36,16 @@
                                     <v-text-field v-model="country" label="Country" dense small outlined clearable></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="12" class="file">
-                                    <label for="file-input">
+                                    <!-- <label for="file-input">
                                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV9ef4mu_ntPiqBjBlsGQNRNDLBKNILEnBoBP1rJlD_0P3cQ_f3DbGdeR-i5PAffS7oo8&usqp=CAU" width="40px" height="40px"/>
                                     </label>
-                                    <input type="file" @change="selectLogo" show-size counter multiple label="File input" id="file-input" class="file-input"/>
+                                    <input type="file" @change="selectLogo" show-size counter multiple label="File input" id="file-input" class="file-input"/> -->
+                                    <v-file-input
+                                        truncate-length="10"
+                                        label="Choose image"
+                                        @change="selectLogo"
+                                        how-size counter multiple
+                                    ></v-file-input>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -160,7 +166,8 @@ export default {
             this.dialogDelete = true;
         },
         selectLogo(event){
-            this.logo = event.target.files[0]
+            console.log(event[0])
+            this.logo = event[0]
         },
         openFormCreate(){
             this.dialog = true;

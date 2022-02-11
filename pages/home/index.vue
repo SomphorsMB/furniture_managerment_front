@@ -43,7 +43,7 @@
         <div class=" mx-auto mx-0 px-0">
             <v-row class="mx-10">
                 <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="(brand,index) in brands" :key="brand.id">
-                    <v-img width="70%" class="mx-auto" v-if="index <= 3 " :src="'http://localhost:5000/api/product-details/image/'+brand.logo"></v-img>
+                    <v-img width="70%" class="mx-auto" v-if="index <= 3 " :src="'http://localhost:5000/api/product-details/image/' + brand.logo"></v-img>
                 </v-col>
             </v-row>
         </div>

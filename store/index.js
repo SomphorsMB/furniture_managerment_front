@@ -13,6 +13,7 @@ export const AUTH_MUTATIONS = {
     role:null,
     search:null,
     products: [],
+    loginErr: '',
     meta: [],
     links: [],
     categories:[],
@@ -21,6 +22,8 @@ export const AUTH_MUTATIONS = {
     products: [],
     productDiscount: [],
     productInCart: [],
+    visibleWarning: false,
+    visibleSucess: false,
   })
 
   export const mutations = {
@@ -42,6 +45,10 @@ export const AUTH_MUTATIONS = {
       state.role = null
       state.access_token = null
       state.refresh_token = null
+    },
+    loginmessage(state, message){
+      console.log(message);
+      state.loginErr = message
     },
     addproducts(state, products){
       for(let product of products.items) {
@@ -98,7 +105,12 @@ export const AUTH_MUTATIONS = {
       }
       state.productInCart = array;
     },
-   
+    setVisibleWarning(state, visible){
+      state.visibleWarning = visible;
+    },
+    setVisibleSucess(state, visible){
+      state.visibleSucess = visible;
+    }
   }
 
   export const actions = {
@@ -112,12 +124,10 @@ export const AUTH_MUTATIONS = {
         commit(AUTH_MUTATIONS.SET_USER, res.data.user);
         commit(AUTH_MUTATIONS.SET_PAYLOAD, res.data.access_token, null);
         this.$router.push('/home')
+      }).catch((err) => {
+        commit('loginmessage',err.response.data.message);
       })
 
-    },
-    async isLogin({commit},auth){
-      console.log(auth);
-      await commit('addauthentication',auth);
     },
     // logout the user
     logout ({ commit, state }) {
@@ -254,12 +264,18 @@ export const AUTH_MUTATIONS = {
       for (let oldProduct of state.productInCart){
         if (oldProduct.productCart_productId === product){
           if(oldProduct.productCart_unit+newValue > oldProduct.productDetail_unit){
-            console.log(12)
-            newValue = oldProduct.productCart_unit+newValue - oldProduct.productDetail_unit;
+            commit('setVisibleWarning', true);
+            newValue = oldProduct.productDetail_unit - oldProduct.productCart_unit;
+          }else{
+            commit('setVisibleSucess', true);
           }
 
         }
       }
+      setTimeout(() => {
+        commit('setVisibleWarning', false);
+        commit('setVisibleSucess', false);
+      }, 2000)
       await this.$axios.$post('/product-cart', {unit: newValue, product: product}).then(()=> {
       })
     },
@@ -390,6 +406,9 @@ export const AUTH_MUTATIONS = {
     },
     rols(state){
       return state.role;
+    },
+    loginmessage(state){
+      return state.loginErr;
     },
     search(state){
       return state.search;

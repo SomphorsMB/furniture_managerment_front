@@ -130,10 +130,11 @@ export default {
     deleteProduct(id, unit, price, discount){
       this.deleteProductFromCart(id)
       console.log(discount)
-      if (discount != null){
+      if (discount != null || discount != undefined){
         price = price-price*discount/100
       }
       this.totalPrice = this.totalPrice - unit*price
+      console.log(unit*price)
     },
     totalProductPrice(){
       this.totalPrice = 0

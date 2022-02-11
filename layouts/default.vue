@@ -81,6 +81,13 @@
 <script>
 import {mapActions,mapState, mapGetters} from 'vuex';
 export default {
+    middleware({ store, redirect,axios }) {
+      // If the user is not authenticated
+      console.log(axios);
+      if (!store.state.authenticated) {
+        return redirect('/login')
+      }
+    },
     name: 'DefaultLayout',
     data() {
         return {
@@ -141,6 +148,7 @@ export default {
             this.dialogLogout = false;
             this.logout();
         },
+        
     },
     mounted(){
         this.getUserRole();
