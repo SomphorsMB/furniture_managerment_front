@@ -1,5 +1,10 @@
 <template>
 <div>
+    <div class="z-index" align="center">
+        <v-alert  v-model="alert" type="success" width="502px">
+        {{text}}
+        </v-alert>
+    </div>
     <div class="seller-management mb-2 text-h4" align="center">
         <h1>Sellers Management</h1>
     </div>
@@ -120,6 +125,8 @@ export default {
             sellerId:null,
             addBtn:true,
             updateBtn:false,
+            alert:false,
+            text:null,
             headers: [{
                     text: 'First Name',
                     value: 'firstName'
@@ -167,6 +174,7 @@ export default {
         },
         async deleteSellerConfirm() {
             await this.deleteSeller(this.sellerId);
+            this.alertMessage("Seller was deleted successfully.")
             this.getAllsellers();
             this.closeDialog();
         },
@@ -201,6 +209,7 @@ export default {
             }
             const sellerData = {id:this.sellerId,seller:seller}
             await this.updateSeller(sellerData);
+            this.alertMessage("Seller was updated successfully.")
             this.getAllsellers();
             this.closeDialog();
         },
@@ -213,8 +222,14 @@ export default {
                 address:this.address
             }
             await this.createSeller(seller);
+            this.alertMessage("Seller was created successfully.")
             this.getAllsellers();
             this.closeDialog();
+        },
+        alertMessage(message){
+            this.alert = true;
+            this.text=message;
+            setTimeout(()=>{this.alert = false},1500);
         }
     },
     mounted() {
@@ -247,5 +262,11 @@ export default {
 .gender {
     margin-top: -50px;
     margin-bottom: -30px;
+}
+.z-index{
+    z-index: 99;
+    position: absolute;
+    margin-top: 100px;
+    margin-left: 445px;
 }
 </style>

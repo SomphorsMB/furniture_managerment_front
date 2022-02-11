@@ -81,7 +81,6 @@
 <script>
 import {mapActions,mapState, mapGetters} from 'vuex';
 export default {
-    // layout: "default",
     name: 'DefaultLayout',
     data() {
         return {
@@ -141,7 +140,7 @@ export default {
         logoutConfirm(){
             this.dialogLogout = false;
             this.logout();
-        }
+        },
     },
     mounted(){
         this.getUserRole();

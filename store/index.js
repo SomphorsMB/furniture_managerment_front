@@ -43,7 +43,6 @@ export const AUTH_MUTATIONS = {
       state.access_token = null
       state.refresh_token = null
     },
-
     addproducts(state, products){
       for(let product of products.items) {
         state.products.push(product)
@@ -110,11 +109,15 @@ export const AUTH_MUTATIONS = {
       ).then(res => {
         window.localStorage.setItem('role',res.data.user.role);
         window.localStorage.setItem('token',res.data.access_token);
-        commit(AUTH_MUTATIONS.SET_USER, res.data.user)
-        commit(AUTH_MUTATIONS.SET_PAYLOAD, res.data.access_token, null)
+        commit(AUTH_MUTATIONS.SET_USER, res.data.user);
+        commit(AUTH_MUTATIONS.SET_PAYLOAD, res.data.access_token, null);
         this.$router.push('/home')
       })
 
+    },
+    async isLogin({commit},auth){
+      console.log(auth);
+      await commit('addauthentication',auth);
     },
     // logout the user
     logout ({ commit, state }) {
@@ -194,9 +197,6 @@ export const AUTH_MUTATIONS = {
     async setSearch({ commit, state },value){
       await commit('addsearch', value);
     },
-
-
-
 
     // given the current refresh token, refresh the user's access token to prevent expiry
     async refresh ({ commit, state }) {

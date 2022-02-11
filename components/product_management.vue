@@ -1,6 +1,11 @@
 <template>
 <div>
-    <div class="seller-management mb-2 text-h4" align="center">
+    <div class="z-index" align="center">
+        <v-alert  v-model="alert" type="success" width="502px">
+        {{text}}
+        </v-alert>
+    </div>
+    <div class="product-management mb-2 text-h4" align="center">
         <h1>Products Management</h1>
     </div>
     <div class="text-center">
@@ -250,6 +255,8 @@ export default {
                     sortable: false,
                 },
             ],
+            alert:false,
+            text:null,
             products: [],
             productId:null,
             productDetailId:null,
@@ -348,11 +355,13 @@ export default {
                 productDetail: productDetail
             }
             await this.updateProduct(productData);
+            this.alertMessage("Product was updated successfully");
             this.getAllProduct();
             this.closeDialog();
         },
         async deleteItemConfirm() {
             await this.deleteProduct(this.productId);
+            this.alertMessage("Product was deleted successfully");
             this.getAllProduct();
             this.closeDialog();
         },
@@ -369,6 +378,7 @@ export default {
                 productDetail:this.productDetail
             }
             await this.updateProductDetail(productDetailData);
+            this.alertMessage("Amount of product was updated successfully");
             this.amount = null;
             this.getAllProduct();
             this.closeDialog();
@@ -386,17 +396,25 @@ export default {
         },
 
         async discountItemConfirm() {
-            const discount = {
-                product:this.productDetailId,
-                discount:parseInt(this.discount),
-                start_at:this.start_at,
-                end_at:this.end_at
-            }
-            console.log(this.discountId);
-            if(this.discountId !== null){
-              await this.updateDiscount({id:this.discountId,discount:discount});
+            const discounts = {};
+            discounts.product=this.productDetailId;
+           
+            if(parseInt(this.discount) !==0){
+                discounts.discount=parseInt(this.discounts);
+                discounts.start_at=this.start_at;
+                discounts.end_at=this.end_at;
             }else{
-              await this.createDiscount(discount);
+                discounts.discount=null;
+                discounts.start_at=null;
+                discounts.end_at=null;
+            }
+            
+            if(this.discountId !== null){
+              await this.updateDiscount({id:this.discountId,discount:discounts});
+            this.alertMessage("Discount was updated successfully.");
+            }else{
+              await this.createDiscount(discounts);
+              this.alertMessage("Discount was created successfully.");
             }
             this.getAllProduct();
             this.closeDialog();
@@ -439,6 +457,7 @@ export default {
                 productDetail: productDetail
             }
             await this.createProduct(productData);
+            this.alertMessage("Product was created successfully.")
             this.getAllProduct();
             this.closeDialog();
         },
@@ -448,6 +467,11 @@ export default {
             }).catch((err) => {
                 console.log(err);
             })
+        },
+        alertMessage(message){
+            this.alert = true;
+            this.text=message;
+            setTimeout(()=>{this.alert = false},1500);
         }
     },
     mounted() {
@@ -459,7 +483,7 @@ export default {
 </script>
 
 <style scoped>
-.seller-management {
+.product-management {
     text-shadow: 0px 2px 4px #3b3b3b;
 }
 
@@ -498,5 +522,11 @@ export default {
 
 .start_date, .end_date {
     margin-top: -30px;
+}
+.z-index{
+    z-index: 99;
+    position: absolute;
+    margin-top: 100px;
+    margin-left: 445px;
 }
 </style>
