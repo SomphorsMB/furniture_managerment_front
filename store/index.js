@@ -203,9 +203,6 @@ export const AUTH_MUTATIONS = {
       await commit('addsearch', value);
     },
 
-
-
-
     // given the current refresh token, refresh the user's access token to prevent expiry
     async refresh ({ commit, state }) {
       const { refresh_token } = state

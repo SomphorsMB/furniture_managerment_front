@@ -68,7 +68,7 @@ export default {
     computed:
         mapState(['loginErr']),
     methods:{
-        ...mapActions(['login','getSellers']),
+        ...mapActions(['login','getSellers','isLogin']),
         async userLogin() {
             const user = {
                 email:this.email,

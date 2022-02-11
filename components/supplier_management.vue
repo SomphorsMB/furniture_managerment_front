@@ -1,5 +1,10 @@
 <template>
 <div>
+    <div class="z-index" align="center">
+        <v-alert  v-model="alert" type="success" width="502px">
+        {{text}}
+        </v-alert>
+    </div>
     <div class="supplier-management mb-2 text-h4" align="center">
         <h1>Suppliers Management</h1>
     </div>
@@ -114,6 +119,8 @@ export default {
             addBtn : true,
             updateBtn : false,
             supplierId : null,
+            alert:false,
+            text:null,
             headers: [{
                     text: 'Logo',
                     value: 'logo',
@@ -150,6 +157,7 @@ export default {
         },
         async deleteSupplierConfirm() {
             await this.deleteSupplier(this.supplierId);
+            this.alertMessage('Supplier was deleted successfully.');
             this.getAllBrands();
             this.closeDialog();
         },
@@ -183,6 +191,7 @@ export default {
                 supplier:supplier,
             }
             await this.updateBrand(supplierData);
+            this.alertMessage('Supplier was updated successfully.');
             this.getAllBrands();
             this.closeDialog(); 
 
@@ -193,8 +202,14 @@ export default {
             supplier.append('country',this.country);
             supplier.append('logo',this.logo);
             await this.createBrand(supplier);
+            this.alertMessage('Supplier was created successfully.');
             this.getAllBrands();
             this.closeDialog();         
+        },
+        alertMessage(message){
+            this.alert = true;
+            this.text=message;
+            setTimeout(()=>{this.alert = false},1500);
         }
     },
     mounted() {
@@ -232,5 +247,12 @@ export default {
 
 .file-input {
     display: none;
+}
+.z-index{
+    z-index: 99;
+    position: absolute;
+    margin-top: 100px;
+    margin-left: 445px;
+
 }
 </style>

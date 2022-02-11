@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div class="index" align="center">
+    <div class="z-index" align="center">
         <v-alert  v-model="alert" type="success" width="502px">
         {{text}}
         </v-alert>
@@ -207,7 +207,7 @@ export default {
 .delete:hover, .edit:hover {
     cursor: pointer;
 }
-.index{
+.z-index{
     z-index: 99;
     position: absolute;
     margin-top: 100px;

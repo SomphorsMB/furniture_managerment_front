@@ -73,7 +73,8 @@ export default {
     computed:
         mapState(['products','productDiscount', 'brands']),
     methods: {
-        ...mapActions(['getAllProduct', 'getAllProductDiscount', 'getAllBrands']),
+        ...mapActions(['getAllProduct', 'getAllProductDiscount', 'getAllBrands','isLogin']),
+        
     },
     mounted(){
         this.getAllProduct();
