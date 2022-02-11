@@ -2,7 +2,7 @@
 <section>
 <v-card class="mt-4 mx-1 rounded-0">
     <v-card-text class="cardNew py-1 black white--text rounded-0">New</v-card-text>
-    <v-card-text class="cardDiscount py-1 grey darken-1 white--text" v-if="product.discount_discount !== null">-{{product.discount_discount}}%</v-card-text>
+    <v-card-text class="cardDiscount py-1 grey darken-1 white--text" v-if="product.discount_discount !== null || product.discount_discount > 0">-{{product.discount_discount}}%</v-card-text>
     <v-hover v-slot="{ hover }" >
         <v-img :src="'http://localhost:5000/api/product-details/image/'+product.productDetail_avatar" height="320px" >
             <v-overlay

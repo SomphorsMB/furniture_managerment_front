@@ -14,7 +14,7 @@
           <v-container class="pt-0 mt-0">
               <v-row>
                   <v-col cols="5" class="pa-0">
-                    <v-card-text class="black white--text pa-1 cardDiscount" v-if="product.discount_discount !== null">-{{product.discount_discount}}%</v-card-text>
+                    <v-card-text class="black white--text pa-1 cardDiscount" v-if="product.discount_discount !== null || product.discount_discount > 0">-{{product.discount_discount}}%</v-card-text>
                       <v-img
           :src="'http://localhost:5000/api/product-details/image/'+product.productDetail_avatar"
           height="82vh"
