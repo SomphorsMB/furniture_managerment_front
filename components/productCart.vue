@@ -29,7 +29,7 @@
                       height="200px"
                     ></v-img>
                     </v-col>
-                    <v-card-subtitle class="pt-0 text-h6"
+                    <v-card-subtitle class="pt-0 text-h6 title" @click="dialogDetail = true"
                       >{{product.product_name}}</v-card-subtitle
                     >
                   </v-col>
@@ -61,6 +61,7 @@
                     <div class="space"></div>
                     <v-icon class="float-end mr-5" @click="deleteProduct(product.productCart_id, product.productCart_unit, product.productDetail_price, product.discount_discount)">mdi-delete</v-icon>
                   </v-col>
+                  <product-detail v-if="dialogDetail" @close="dialogDetail = false" :product="product" />
                 </v-row>
               </v-col>
               <v-col cols="4" class="brown lighten-5">
@@ -79,15 +80,7 @@
                     dense
                     outlined
                     ></v-select>
-                    <!-- <v-textarea
-                        outlined
-                        name="input-1-1"
-                        rows="1"
-                        row-height="15"
-                        label="Description"
-                    ></v-textarea> -->
-
-                    <v-btn width="100%" class="" dark @click="checkOut">Check out</v-btn>
+                    <v-btn width="100%" class="black white--text" :disabled="disable" @click="checkOut">Check out</v-btn>
               </v-col>
             </v-row>
           </v-container>
@@ -101,15 +94,26 @@
 import { mapGetters, mapActions, mapState} from "vuex"
 export default {
   data: () => ({
+    dialogDetail: false,
     dialog: true,
     min: 1,
     max: 100,
     newValue: 1,
     seller:"",
-    totalPrice: 0
+    totalPrice: 0,
+    disable: true
   }),
   computed:{
     ...mapState(['productInCart','sellers']),
+  },
+  watch:{
+    seller(){
+      if (this.seller !== ""){
+        this.disable = false
+      }else{
+        this.disable = true
+      }
+    }
   },
   methods: {
     ...mapActions(['updateProductInCart', 'getProductInCart', 'deleteProductFromCart', 'getAllsellers', 'checkOutProduct']),
@@ -146,22 +150,20 @@ export default {
         }
       }
     },
-    checkOut(){
+    async checkOut(){
       console.log(this.seller)
-      this.checkOutProduct({ sellerId:this.seller.id});
+      await this.checkOutProduct({ sellerId:this.seller.id});
+      this.totalPrice = 0;
+      this.disable = true
+     
+      
+
     }
   },
   async mounted(){
     await this.getProductInCart()
     this.getAllsellers()
     this.totalProductPrice()
-    // for(let product of this.productInCart){
-    //     if (product.discount_discount !== null){
-    //       this.totalPrice += (product.productDetail_price-product.productDetail_price*product.discount_discount/100)*product.productCart_unit
-    //     }else {
-    //       this.totalPrice += (product.productDetail_price)*product.productCart_unit
-    //     }
-    //   }
   }
 
 };
@@ -207,5 +209,11 @@ export default {
 }
 .image{
   width: 100px;
+}
+.title{
+  cursor: pointer;
+}
+.title:hover {
+  text-decoration-line: underline;
 }
 </style>

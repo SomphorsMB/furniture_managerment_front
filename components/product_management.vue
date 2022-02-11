@@ -17,32 +17,32 @@
                     <h2>Create a Product</h2>
                 </div>
                 <v-card-text>
-                    <v-form>
+                    <v-form v-model="valid">
                         <v-container>
                             <v-row>
                                 <v-col cols="12" sm="6" class="name">
-                                    <v-text-field v-model="name" label="Name" dense small outlined clearable></v-text-field>
+                                    <v-text-field v-model="name" label="Name" dense small :rules="rule.nameRule" outlined clearable></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="6" class="category">
-                                    <v-select :items="categories" item-text="name" v-model="category" label="Category" return-object filled dense small outlined clearable></v-select>
+                                    <v-select :items="categories" item-text="name" v-model="category" :rules="rule.categoryRule" label="Category" return-object filled dense small outlined clearable></v-select>
                                 </v-col>
                                 <v-col cols="12" sm="6" class="brand">
-                                    <v-select :items="brands" item-text="brand" v-model="brand" label="Brand" return-object dense small outlined clearable></v-select>
+                                    <v-select :items="brands" item-text="brand" v-model="brand" label="Brand" :rules="rule.brandRule" return-object dense small outlined clearable></v-select>
                                 </v-col>
                                 <v-col cols="12" sm="6" class="size">
-                                    <v-select :items="sizes" v-model="size" label="Size" dense small outlined clearable></v-select>
+                                    <v-select :items="sizes" v-model="size" label="Size" dense small outlined :rules="rule.sizeRule" clearable></v-select>
                                 </v-col>
                                 <v-col cols="12" sm="6" class="unit">
-                                    <v-text-field v-model="unit" label="Unit" dense small outlined clearable></v-text-field>
+                                    <v-text-field v-model="unit" label="Unit" dense small outlined clearable :rules="rule.unitRule"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" sm="6" class="color">
-                                    <v-select :items="colors" label="Color" v-model="color" dense small outlined clearable></v-select>
+                                    <v-select :items="colors" label="Color" v-model="color" dense small outlined clearable :rules="rule.color"></v-select>
                                 </v-col>
                                 <v-col cols="12" class="text-area">
-                                    <v-textarea outlined name="input-7-4" v-model="rawMaterial" label="Raw Materials" value=""></v-textarea>
+                                    <v-textarea outlined name="input-7-4" v-model="rawMaterial" label="Raw Materials" value="" :rules="rule.rawRule"></v-textarea>
                                 </v-col>
                                 <v-col cols="12" class="price pb-0">
-                                    <v-text-field v-model="price" label="Price: XXX$" dense small outlined clearable></v-text-field>
+                                    <v-text-field v-model="price" label="Price: XXX$" dense small outlined clearable :rules="rule.priceRule"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" class="file pb-0">
                                     <!-- <label for="file-input">
@@ -50,21 +50,20 @@
                                     </label>
                                     <input type="file" show-size counter multiple label="File input" id="file-input" class="file-input" @change="selectImage"/> -->
                                     <v-file-input
-                                        truncate-length="10"
                                         label="Choose image"
                                         @change="selectImage"
-                                        how-size counter multiple
+                                        :rules="rule.imageRule"
                                     ></v-file-input>
                                 </v-col>
                             </v-row>
                         </v-container>
                     </v-form>
                 </v-card-text>
-                <v-card-actions>
+                <v-card-actions class="mt-2">
                     <v-spacer></v-spacer>
                     <v-btn color="red darken-1" text @click="closeDialog" class="cancel">Cancel</v-btn>
-                    <v-btn color="primary" v-show="addBtn" text @click="create" class="add">Add</v-btn>
-                    <v-btn color="primary" v-show="updateBtn" text @click="update" class="update">Update</v-btn>
+                    <v-btn color="primary" v-show="addBtn" text @click="create" class="add" :disabled="valid">Add</v-btn>
+                    <v-btn color="primary" v-show="updateBtn" text @click="update" :disabled="valid" class="update">Update</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -184,19 +183,20 @@ import productCardVue from './productCard.vue';
 export default {
     data() {
         return {
+            valid: true,
             dialog: false,
             dialogDelete: false,
             dialogAdd: false,
             dialogDiscount: false,
-            name: "",
+            name: null,
             brand:null,
-            size:"",
+            size:null,
             category:null,
-            color:"",
+            color:null,
             unit:0,
-            rawMaterial:"",
+            rawMaterial:null,
             price:0,
-            avatar:"",
+            avatar:null,
             discount: "0%",
             amount: 0,
             start_date: false,
@@ -265,6 +265,26 @@ export default {
             productDetail:{},
             addBtn : true,
             updateBtn : false,
+            rule:
+             {
+                nameRule: [],
+                brandRule: [],
+                unitRule: [],
+                categoryRule: [],
+                sizeRule: [],
+                colorRule: [],
+                rawRule: [],
+                priceRule: [],
+                imageRule: [],
+            }
+            
+            // [
+            //     // (value) => value!==null || "required.",
+            //     (value) => value!=='' || "required.",
+            
+            // ],
+            // brandRule:[],
+            // numbertRule: [],
         };
     },
     computed: {
@@ -278,9 +298,82 @@ export default {
         ...mapState(['categories','brands']),
 
     },
+    watch: {
+        name(val){
+            this.rule.nameRule = [
+                (value) => !!value || "required.",
+            
+            ]
+            this.checkData(val)
+        },
+        color(val){
+            this.rule.colorRule = [
+                (value) => !!value || "required.",
+            
+            ]
+            this.checkData(val)
+        },
+        categoty(val){
+            this.rule.categoryRule = [
+                (value) => !!value || "required.",
+            
+            ]
+            this.checkData(val)
+        },
+        rawMaterial(val){
+            this.rule.rawRule = [
+                (value) => !!value || "required.",
+            ]
+            this.checkData(val)
+        },
+        avatar(val){
+            this.rule.imageRule = [
+                (value) => !!value || "required.",
+            
+            ]
+            this.checkData(val)
+        },
+        size(val){
+            this.rule.sizeRule = [
+                (value) => !!value || "required.",
+            
+            ]
+            this.checkData(val)
+        },
+        brand(val){
+            this.rule.brandRule = [
+                (value) => !!value || "required.",
+            
+            ]
+            this.checkData(val)
+        },
+        unit(val){
+            this.rule.unitRule = [
+                (value) => !!value || "required.",
+                (value) => /^\d+$/.test(value) || "Must be number"
+            ]
+            this.checkData(val)
+        },
+
+        price(val){
+            this.rule.priceRule = [
+                (value) => !!value || "required.",
+                (value) => /^\d+$/.test(value) || "Must be number"
+            ]
+            this.checkData(val)
+        },
+        // valid(){
+        //     this.valid = false;
+        // }
+    },
     methods: {
         ...mapActions(['createProduct','createDiscount','getAllCategories','getAllBrands','deleteProduct','updateProductDetail','updateProduct','updateDiscount']),
-
+        checkData(data){
+            
+            if ((data == null || data == '')){
+                this.valid = true;
+            }
+        },
         closeDialog() {
             this.dialogDelete = false;
             this.dialog = false;
@@ -289,15 +382,16 @@ export default {
             this.productId = null;
             this.productDetailId = null;
             this.discountId = null;
-            this.name = '';
+            this.name = null;
             this.brand = null;
-            this.rawMaterial = '';
+            this.rawMaterial = null;
             this.price = 0;
-            this.avatar = '';
-            this.unit = '';
-            this.size = '';
-            this.color = '';
+            this.avatar = null;
+            this.unit = null;
+            this.size = null;
+            this.color = null;
             this.category =  null;
+            // this.$refs.form.reset()
         },
 
         addDialog(){
@@ -307,6 +401,7 @@ export default {
         },
 
         updateDialog(product){
+            this.valid = false;
             this.productId = product.product_id;
             this.productDetailId = product.productDetail_id;
             this.categoryId = product.category_id;

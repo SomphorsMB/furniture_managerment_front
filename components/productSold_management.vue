@@ -10,9 +10,9 @@
                     <tr v-for="product_sold in items" :key="product_sold.id">
                         <td>{{ product_sold.product_name }}</td>
                         <td>{{ product_sold.productDetail_unit }}</td>
-                        <td>{{ "Bopha Phoung" }}</td>
-                        <td>{{ "30%" }}</td>
-                        <td>{{ product_sold.productDetail_price }}</td>
+                        <td>{{ product_sold.seller_firstName }} {{ product_sold.seller_lastName }}</td>
+                        <td class="green--text">{{ product_sold.productSold_discount }} %</td>
+                        <td class="orange--text">{{ product_sold.productSold_unit*product_sold.productDetail_price }} $</td>
                     </tr>
                 </tbody>
             </template>

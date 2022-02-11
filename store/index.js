@@ -105,6 +105,10 @@ export const AUTH_MUTATIONS = {
       }
       state.productInCart = array;
     },
+    deleteProductAllInCart(state){
+      state.productInCart = []
+      console.log(state.productInCart)
+    },
     setVisibleWarning(state, visible){
       state.visibleWarning = visible;
     },
@@ -374,8 +378,10 @@ export const AUTH_MUTATIONS = {
       commit('deleteProductInCart', id)
     },
 
-    checkOutProduct({state}, { sellerId }){
-      this.$axios.$delete('/product-cart').then(()=>{})
+    checkOutProduct({commit, state}, { sellerId }){
+      this.$axios.$delete('/product-cart').then(()=>{
+        commit('deleteProductAllInCart')
+      })
       this.$axios.$post('/product-solds/'+sellerId, state.productInCart).then(res=>{
         console.log(res);
       })
