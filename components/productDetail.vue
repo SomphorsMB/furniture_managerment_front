@@ -13,14 +13,14 @@
         <v-card-text>
           <v-container class="pt-0 mt-0">
               <v-row>
-                  <v-col cols="5" class="pa-0">
+                  <v-col cols="5" xl="6" lg="6" md="6" sm="12" xs="12" class="pa-0">
                     <v-card-text class="black white--text pa-1 cardDiscount" v-if="product.discount_discount !== null || product.discount_discount > 0">-{{product.discount_discount}}%</v-card-text>
                       <v-img
           :src="'http://localhost:5000/api/product-details/image/'+product.productDetail_avatar"
           height="82vh"
         ></v-img>
                   </v-col>
-                  <v-col cols="7" class="">
+                  <v-col cols="7" xl="6" lg="6" md="6" sm="12" xs="12" class="">
                       <h1 class="black--text text-uppercase">{{ product.product_name }}</h1>
                       <v-card-text class="d-flex px-0">
                           <span  class="green--text font-weight-bold" v-if="product.productDetail_unit > 0">
@@ -57,11 +57,11 @@
                                 <div id="field_container">
                                 <input type="text" v-model="newValue" class="text-center" />
                                 </div>
-                                <div class="mpbtn plus text-h6" v-on:click="plus()">+</div>
+                                <div class="mpbtn plus text-h6" v-on:click="plus(product.productDetail_unit)">+</div>
                             </div>
                       </v-card-text>
                       <v-card-text class="px-0 d-flex justify-space-between">
-                        <v-btn width="49%" class="rounded-0" dark>Add to cart</v-btn>
+                        <v-btn width="49%" class="rounded-0" dark @click="addProductCart(product.productDetail_id, newValue)">Add to cart</v-btn>
                         <!-- <v-btn width="49%">Add to cart</v-btn> -->
                       </v-card-text>
                       <v-card-title class="py-0 px-0 black--text">Description</v-card-title>
@@ -96,29 +96,46 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
 export default {
-  props: ['product'],
-  data: () => ({
-    dialog: true,
-    min: 1,
-    max: 100,
-    newValue: 1,
-  }),
-  methods:{
-      plus: function () {
-      if (this.max === undefined || this.newValue < this.max) {
-        this.newValue = this.newValue + 1;
-        // this.$emit('input', this.newValue)
-      }
+    props: ['product'],
+    data() {
+        return {
+            min: 1,
+            newValue: 1,
+            dialog: true,
+            warning: false,
+            sucess: false,
+        };
     },
-    minus: function () {
-      if (this.newValue > this.min) {
-        this.newValue = this.newValue - 1;
-        // this.$emit('input', this.newValue)
-      }
+    computed: mapState(['visibleSucess','visibleWarning']),
+    watch:{
+        visibleSucess(val){
+            this.sucess = val
+        },
+        visibleWarning(val){
+            this.warning = val
+        }
     },
-  }
-}
+    methods: {
+        plus: function (unit) {
+            if (this.newValue < unit) {
+                this.newValue = this.newValue + 1;
+            }
+        },
+        minus: function () {
+            if (this.newValue > this.min) {
+                this.newValue = this.newValue - 1;
+            }
+        },
+        ...mapActions(['addProductToCart','getProductInCart']),
+        async addProductCart(id, newValue){
+            await this.addProductToCart({product: id, newValue: newValue});
+            this.getProductInCart();
+           
+        }
+    },
+};
 </script>
 
 <style scoped>
