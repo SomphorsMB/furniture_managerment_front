@@ -75,7 +75,6 @@ export default {
                 password:this.password
             }
             this.login(user);
-            console.log(this.loginErr);
         },
 
     },

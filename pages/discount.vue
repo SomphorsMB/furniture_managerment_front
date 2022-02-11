@@ -8,7 +8,6 @@
     <filter-search @filter="filter" />
     <v-row>
         <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="product in listproducts" :key="product.id">
-            <!-- <card /> -->
             <product-card :product="product" />
         </v-col>
         <div class="empty_product grey--text">
@@ -22,14 +21,12 @@
 </template>
 
 <script>
-import card from '~/components/card.vue'
 import filter_search from '../components/filter_search.vue';
 import ProductCard from '../components/productCard.vue';
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 export default {
     layout: "default",
     components: {
-        'card': card,
         'filter-search': filter_search,
         ProductCard
     },

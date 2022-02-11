@@ -126,19 +126,16 @@ export default {
     },
     async minus(id, unit, productId) {
         if (unit >= this.min) {
-          console.log(unit)
             await this.updateProductInCart({id: id, unit: unit, product: productId})
             this.totalProductPrice();
         }
     },
     deleteProduct(id, unit, price, discount){
       this.deleteProductFromCart(id)
-      console.log(discount)
       if (discount != null || discount != undefined){
         price = price-price*discount/100
       }
       this.totalPrice = this.totalPrice - unit*price
-      console.log(unit*price)
     },
     totalProductPrice(){
       this.totalPrice = 0
@@ -150,12 +147,12 @@ export default {
         }
       }
     },
+    ...mapActions(['getAllProduct']),
     async checkOut(){
-      console.log(this.seller)
       await this.checkOutProduct({ sellerId:this.seller.id});
       this.totalPrice = 0;
       this.disable = true
-     
+      this.getAllProduct();
       
 
     }

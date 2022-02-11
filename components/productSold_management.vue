@@ -9,7 +9,7 @@
                 <tbody>
                     <tr v-for="product_sold in items" :key="product_sold.id">
                         <td>{{ product_sold.product_name }}</td>
-                        <td>{{ product_sold.productDetail_unit }}</td>
+                        <td>{{ product_sold.productSold_unit }}</td>
                         <td>{{ product_sold.seller_firstName }} {{ product_sold.seller_lastName }}</td>
                         <td class="green--text">{{ product_sold.productSold_discount }} %</td>
                         <td class="orange--text">{{ product_sold.productSold_unit*product_sold.productDetail_price }} $</td>
@@ -54,7 +54,6 @@ export default {
         getProductSold() {
             this.$axios.$get('product-solds').then((product_sold) => {
                 this.products_sold = product_sold;
-                console.log(this.products_sold);
             }).catch((err) => {
                 console.log(err);
             })

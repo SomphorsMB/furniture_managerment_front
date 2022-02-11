@@ -9,12 +9,7 @@
     <filter-search @filter="filter"/>
     <v-row >
         <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="product in listproducts" :key="product.product_id">
-            <!-- <card /> -->
-        <!-- {{meta}}
-        {{links}} -->
-        <!-- <v-col cols="3" xl="2" lg="3" md="4" sm="6" xs="12" class="px-2" v-for="product in products" :key="product.product_id"> -->
             <product-card :product="product"/>
-            <!-- <p>product</p> -->
         </v-col>
         <div class="empty_product grey--text">
             <h2 v-show="listproducts.length == 0">No result found here.</h2>
@@ -28,14 +23,12 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import card from '~/components/card.vue'
 import filter_search from '~/components/filter_search.vue';
 import ProductCard from '../components/productCard.vue';
 
 export default {
     layout: "default",
     components: {
-        'card': card,
         'filter-search': filter_search,
         ProductCard
     },
@@ -65,7 +58,6 @@ export default {
             this.searching(this.search,value);
         },
         searching(search,filter){
-            console.log(search,filter);
             this.listproducts = this.products;
             if(!(filter.min === null || filter.min==='')){
                 this.listproducts = this.listproducts.filter(product => product.productDetail_price >= filter.min);

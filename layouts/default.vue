@@ -61,9 +61,7 @@
     <v-app-bar class="grey lighten-1" fixed app>
         <v-icon size="36px" @click.stop="drawer = !drawer" class="ml-lg-12 ml-sm-6">mdi-menu</v-icon>
         <v-spacer />
-        <input class="input-search" v-model="searchValue" type="text" placeholder="Search for furniture...">
-        <!-- <v-btn icon class="mr-lg-6"> -->
-            <v-icon>mdi-magnify</v-icon>
+        <v-text-field class="input-search" v-model="searchValue" type="text" placeholder="Search for furniture..." append-icon="mdi-magnify" />
         <v-badge class="mr-lg-12 mr-sm-6 mt-3" bordered color="error" :content="productInCart.length" overlap>
             <v-btn icon>
                 <v-icon class="mb-3" size="36px" @click="dialogCart = true">mdi-cart-outline</v-icon>
@@ -155,7 +153,7 @@ export default {
     background: white;
     outline: none;
     height: 70%;
-    width: 30%;
+    width: 10%;
     padding: 5px;
     border-radius: 5px;
 }

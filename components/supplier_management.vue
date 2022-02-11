@@ -158,7 +158,6 @@ export default {
             this.dialogDelete = true;
         },
         selectLogo(event){
-            console.log(event[0])
             this.logo = event[0]
         },
         openFormCreate(){

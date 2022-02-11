@@ -47,7 +47,6 @@ export const AUTH_MUTATIONS = {
       state.refresh_token = null
     },
     loginmessage(state, message){
-      console.log(message);
       state.loginErr = message
     },
     addproducts(state, products){
@@ -71,12 +70,9 @@ export const AUTH_MUTATIONS = {
     },
     addproductDiscount(state, productDiscount){
       state.productDiscount = productDiscount;
-      console.log(state.productDiscount)
-
     },
     addProductCart(state, product){
       state.productInCart.push({...product})
-      console.log(state.productInCart)
     },
     setProductInCart(state, products){
       state.productInCart = products;
@@ -107,7 +103,6 @@ export const AUTH_MUTATIONS = {
     },
     deleteProductAllInCart(state){
       state.productInCart = []
-      console.log(state.productInCart)
     },
     setVisibleWarning(state, visible){
       state.visibleWarning = visible;
@@ -150,49 +145,44 @@ export const AUTH_MUTATIONS = {
     },
 
     async getSellers () {
-      await this.$axios.get('sellers').then(res => {
-        console.log(res)
+      await this.$axios.get('sellers').then(() => {
       })
     },
 
     async createProduct({ commit, append },{product,productDetail}){
       await this.$axios.$post('/products',product).then(product=>{
         productDetail.append("product",product.productId);
-        this.$axios.$post('/product-details',productDetail).then(res=>{
-          console.log(res)
+        this.$axios.$post('/product-details',productDetail).then(()=>{
+
         }).catch(error=>{
           console.log(error)
-      });
+        });
       }).catch(error=>{
         console.log(error)
       });
     },
 
     async createDiscount({ commit, dispatch }, discount){
-      await this.$axios.$post('/discount',discount).then(discount=>{
-        console.log(discount);
+      await this.$axios.$post('/discount',discount).then(()=>{
       }).catch(error=>{
         console.log(error)
       });
     },
 
     async createCategory({ commit, dispatch }, category){
-      await this.$axios.$post('/categories',category).then(category=>{
-        console.log(category);
+      await this.$axios.$post('/categories',category).then(()=>{
       }).catch(error=>{
         console.log(error)
       });
     },
 
     async createBrand({ commit, dispatch }, brand){
-      await this.$axios.$post('/product-suppliers',brand).then(brand=>{
-        console.log(brand);
+      await this.$axios.$post('/product-suppliers',brand).then(()=>{
       });
     },
 
     async createSeller({ commit, dispatch }, seller){
-      await this.$axios.$post('/sellers',seller).then(seller=>{
-        console.log(seller);
+      await this.$axios.$post('/sellers',seller).then(()=>{
       }).catch(error=>{
         console.log(error);
       });
@@ -229,7 +219,6 @@ export const AUTH_MUTATIONS = {
 
     async getAllProduct({commit, state}){
         await this.$axios.$get('/products').then(res=>{
-          console.log(res);
           commit('addproducts', res)
       }).catch(error=>{
           console.log(error)
@@ -272,13 +261,18 @@ export const AUTH_MUTATIONS = {
       for (let oldProduct of state.productInCart){
         if (oldProduct.productCart_productId === product){
           if(oldProduct.productCart_unit+newValue > oldProduct.productDetail_unit){
-            commit('setVisibleWarning', true);
+            await commit('setVisibleWarning', true);
             newValue = oldProduct.productDetail_unit - oldProduct.productCart_unit;
           }else{
-            commit('setVisibleSucess', true);
+            await commit('setVisibleSucess', true);
           }
 
+        }else{
+          await commit('setVisibleSucess', true);
         }
+      }
+      if (state.productInCart.length == 0){
+        await commit('setVisibleSucess', true);
       }
       setTimeout(() => {
         commit('setVisibleWarning', false);
@@ -295,78 +289,67 @@ export const AUTH_MUTATIONS = {
     },
     // UpdateProduct Detail
     async updateProductDetail({ commit, dispatch }, {id,productDetail}){
-      console.log(id)
-      console.log(productDetail)
-      await this.$axios.$patch('/product-details/'+id,productDetail).then(res=>{
-        console.log(res);
+      await this.$axios.$patch('/product-details/'+id,productDetail).then(()=>{
       })
     },
 
     async updateProduct({ commit, append },{productId,product,productDetailId,productDetail}){
       await this.$axios.$patch('/products/'+productId,product).then(()=>{
         productDetail.append("product",productId);
-        this.$axios.$patch('/product-details/'+productDetailId,productDetail).then(res=>{
-          console.log(res)
+        this.$axios.$patch('/product-details/'+productDetailId,productDetail).then(()=>{
         }).catch(error=>{
           console.log(error)
-      });
+        });
       }).catch(error=>{
         console.log(error)
       });
     },
 
     async updateCategory({ commit, dispatch }, {id,category}){
-      await this.$axios.$patch('/categories/'+id,category).then(category=>{
-        console.log(category);
+      await this.$axios.$patch('/categories/'+id,category).then(()=>{
       }).catch(error=>{
         console.log(error)
       });
     },
 
     async updateBrand({ commit, dispatch }, {id,supplier}){
-      await this.$axios.$patch('/product-suppliers/'+id,supplier).then(supplier=>{
-        console.log(supplier);
+      await this.$axios.$patch('/product-suppliers/'+id,supplier).then(()=>{
+
       }).catch(error=>{
         console.log(error)
       });
     },
 
     async updateSeller({ commit, dispatch }, {id,seller}){
-      await this.$axios.$patch('/sellers/'+id,seller).then(seller=>{
-        console.log(seller);
+      await this.$axios.$patch('/sellers/'+id,seller).then(()=>{
       }).catch(error=>{
         console.log(error)
       });
     },
     async updateDiscount({ commit, dispatch }, {id,discount}){
-      await this.$axios.$patch('/discount/'+id,discount).then(discount=>{
-        console.log(discount);
+      await this.$axios.$patch('/discount/'+id,discount).then(()=>{
       }).catch(error=>{
         console.log(error)
       });
     },
 
     async deleteProduct({commit, state},id){
-      await this.$axios.$delete('/products/'+id).then(res=>{
-          console.log(res);
+      await this.$axios.$delete('/products/'+id).then(()=>{
       })
     },
 
     async deleteSeller({commit, state},id){
-      await this.$axios.$delete('/sellers/'+id).then(res=>{
-          console.log(res);
+      await this.$axios.$delete('/sellers/'+id).then(()=>{
       })
     },
 
     async deleteCategory({commit, state},id){
-      await this.$axios.$delete('/categories/'+id).then(res=>{
-          console.log(res);
+      await this.$axios.$delete('/categories/'+id).then(()=>{
       })
     },
 
     async deleteSupplier({commit, state},id){
-      await this.$axios.$delete('/product-suppliers/'+id).then((res)=>{
-          console.log(res);
+      await this.$axios.$delete('/product-suppliers/'+id).then(()=>{
       })
     },
     async getProductInCart({commit}){
@@ -383,8 +366,7 @@ export const AUTH_MUTATIONS = {
       this.$axios.$delete('/product-cart').then(()=>{
         commit('deleteProductAllInCart')
       })
-      this.$axios.$post('/product-solds/'+sellerId, state.productInCart).then(res=>{
-        console.log(res);
+      this.$axios.$post('/product-solds/'+sellerId, state.productInCart).then(()=>{
       })
     }
 

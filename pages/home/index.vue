@@ -59,7 +59,7 @@
 <script>
 import HomeCard from '~/components/homeCard.vue'
 import slider from '~/components/slider.vue'
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 export default {
     layout: "default",
     components: {

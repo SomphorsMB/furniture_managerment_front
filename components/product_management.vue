@@ -45,10 +45,6 @@
                                     <v-text-field v-model="price" label="Price: XXX$" dense small outlined clearable :rules="rule.priceRule"></v-text-field>
                                 </v-col>
                                 <v-col cols="12" class="file pb-0">
-                                    <!-- <label for="file-input">
-                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV9ef4mu_ntPiqBjBlsGQNRNDLBKNILEnBoBP1rJlD_0P3cQ_f3DbGdeR-i5PAffS7oo8&usqp=CAU" width="40px" height="40px" />
-                                    </label>
-                                    <input type="file" show-size counter multiple label="File input" id="file-input" class="file-input" @change="selectImage"/> -->
                                     <v-file-input
                                         label="Choose image"
                                         @change="selectImage"
@@ -63,7 +59,8 @@
                     <v-spacer></v-spacer>
                     <v-btn color="red darken-1" text @click="closeDialog" class="cancel">Cancel</v-btn>
                     <v-btn color="primary" v-show="addBtn" text @click="create" class="add" :disabled="valid">Add</v-btn>
-                    <v-btn color="primary" v-show="updateBtn" text @click="update" :disabled="valid" class="update">Update</v-btn>
+                    <v-btn color="primary" v-show="updateBtn" text @click="update" class="update" v-if="name!=='' && unit!=='' && category!=='' && colo!=='' && size!=='' && rawMaterial!=='' && price!==''">Update</v-btn>
+                    <v-btn color="grey" v-show="updateBtn" text class="update" v-else>Update</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -299,81 +296,67 @@ export default {
 
     },
     watch: {
-        name(val){
+        name(){
             this.rule.nameRule = [
                 (value) => !!value || "required.",
             
             ]
-            this.checkData(val)
         },
-        color(val){
+        color(){
             this.rule.colorRule = [
                 (value) => !!value || "required.",
             
             ]
-            this.checkData(val)
         },
-        categoty(val){
+        categoty(){
             this.rule.categoryRule = [
                 (value) => !!value || "required.",
             
             ]
-            this.checkData(val)
         },
-        rawMaterial(val){
+        rawMaterial(){
             this.rule.rawRule = [
                 (value) => !!value || "required.",
             ]
-            this.checkData(val)
         },
-        avatar(val){
+        avatar(){
             this.rule.imageRule = [
                 (value) => !!value || "required.",
             
             ]
-            this.checkData(val)
         },
-        size(val){
+        size(){
             this.rule.sizeRule = [
                 (value) => !!value || "required.",
             
             ]
-            this.checkData(val)
         },
-        brand(val){
+        brand(){
             this.rule.brandRule = [
                 (value) => !!value || "required.",
             
             ]
-            this.checkData(val)
         },
-        unit(val){
+        unit(){
             this.rule.unitRule = [
                 (value) => !!value || "required.",
                 (value) => /^\d+$/.test(value) || "Must be number"
             ]
-            this.checkData(val)
         },
 
-        price(val){
+        price(){
             this.rule.priceRule = [
                 (value) => !!value || "required.",
                 (value) => /^\d+$/.test(value) || "Must be number"
             ]
-            this.checkData(val)
         },
-        // valid(){
-        //     this.valid = false;
-        // }
+        valid(){
+            this.valid = false;
+        }
     },
     methods: {
         ...mapActions(['createProduct','createDiscount','getAllCategories','getAllBrands','deleteProduct','updateProductDetail','updateProduct','updateDiscount']),
-        checkData(data){
-            
-            if ((data == null || data == '')){
-                this.valid = true;
-            }
-        },
+
         closeDialog() {
             this.dialogDelete = false;
             this.dialog = false;
@@ -493,7 +476,6 @@ export default {
                 start_at:this.start_at,
                 end_at:this.end_at
             }
-            console.log(this.discountId);
             if(this.discountId !== null){
               await this.updateDiscount({id:this.discountId,discount:discount});
             }else{
