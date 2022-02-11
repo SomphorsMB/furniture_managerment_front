@@ -9,9 +9,9 @@
                 v-if="hover"
                 absolute
                 color="rgba(79, 79, 79, 0.53)"
-                @click.stop="dialog = true"
+                @click.stop="dialog = false, dialog = true"
             > 
-                <v-icon class="font-weight-black" @click.stop="dialog = true">mdi-eye</v-icon>
+                <v-icon class="font-weight-black" @click.stop="dialog = false, dialog = true">mdi-eye</v-icon>
             </v-overlay>
 
         </v-img>

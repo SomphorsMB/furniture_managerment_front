@@ -105,6 +105,10 @@ export const AUTH_MUTATIONS = {
       }
       state.productInCart = array;
     },
+    deleteProductAllInCart(state){
+      state.productInCart = []
+      console.log(state.productInCart)
+    },
     setVisibleWarning(state, visible){
       state.visibleWarning = visible;
     },
@@ -121,8 +125,9 @@ export const AUTH_MUTATIONS = {
       ).then(res => {
         window.localStorage.setItem('role',res.data.user.role);
         window.localStorage.setItem('token',res.data.access_token);
-        commit(AUTH_MUTATIONS.SET_USER, res.data.user);
-        commit(AUTH_MUTATIONS.SET_PAYLOAD, res.data.access_token, null);
+        commit('loginmessage', '');
+        commit(AUTH_MUTATIONS.SET_USER, res.data.user)
+        commit(AUTH_MUTATIONS.SET_PAYLOAD, res.data.access_token, null)
         this.$router.push('/home')
       }).catch((err) => {
         commit('loginmessage',err.response.data.message);
@@ -371,8 +376,10 @@ export const AUTH_MUTATIONS = {
       commit('deleteProductInCart', id)
     },
 
-    checkOutProduct({state}, { sellerId }){
-      this.$axios.$delete('/product-cart').then(()=>{})
+    checkOutProduct({commit, state}, { sellerId }){
+      this.$axios.$delete('/product-cart').then(()=>{
+        commit('deleteProductAllInCart')
+      })
       this.$axios.$post('/product-solds/'+sellerId, state.productInCart).then(res=>{
         console.log(res);
       })
