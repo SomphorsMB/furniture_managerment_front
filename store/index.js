@@ -13,6 +13,7 @@ export const AUTH_MUTATIONS = {
     role:null,
     search:null,
     products: [],
+    loginErr: '',
     meta: [],
     links: [],
     categories:[],
@@ -45,7 +46,10 @@ export const AUTH_MUTATIONS = {
       state.access_token = null
       state.refresh_token = null
     },
-
+    loginmessage(state, message){
+      console.log(message);
+      state.loginErr = message
+    },
     addproducts(state, products){
       for(let product of products.items) {
         state.products.push(product)
@@ -120,6 +124,8 @@ export const AUTH_MUTATIONS = {
         commit(AUTH_MUTATIONS.SET_USER, res.data.user)
         commit(AUTH_MUTATIONS.SET_PAYLOAD, res.data.access_token, null)
         this.$router.push('/home')
+      }).catch((err) => {
+        commit('loginmessage',err.response.data.message);
       })
 
     },
@@ -403,6 +409,9 @@ export const AUTH_MUTATIONS = {
     },
     rols(state){
       return state.role;
+    },
+    loginmessage(state){
+      return state.loginErr;
     },
     search(state){
       return state.search;
