@@ -134,7 +134,6 @@ export const AUTH_MUTATIONS = {
       window.localStorage.setItem('token',null);
       window.localStorage.setItem('role',null);
       this.$router.push('/login')
-      this.$axios.$post('/auth/logout');
       commit(AUTH_MUTATIONS.LOGOUT)
     },
 

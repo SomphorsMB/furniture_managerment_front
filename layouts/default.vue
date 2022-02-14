@@ -108,11 +108,6 @@ export default {
                     title: 'Management',
                     to: '/management'
                 },
-                {
-                    icon: 'mdi-finance',
-                    title: 'Statistic',
-                    to: '/statistic'
-                }
             ],
             miniVariant: false,
             // number: "28",
@@ -139,7 +134,7 @@ export default {
             this.dialogLogout = false;
             this.logout();
         },
-        
+
     },
     mounted(){
         this.getUserRole();
